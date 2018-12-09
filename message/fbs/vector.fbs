@@ -1,0 +1,6 @@
+namespace message;
+
+struct Vector {
+	X:float;
+	Y:float;
+}

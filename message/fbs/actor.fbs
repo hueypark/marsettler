@@ -1,0 +1,9 @@
+include "vector.fbs";
+
+namespace message;
+
+table Actor {
+	Position:Vector;
+}
+
+root_type Actor;

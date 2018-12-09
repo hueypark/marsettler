@@ -1,0 +1,9 @@
+include "vector.fbs";
+
+namespace message;
+
+table ActorMove {
+	Position:Vector;
+}
+
+root_type ActorMove;

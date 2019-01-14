@@ -1,8 +1,9 @@
 include "vector.fbs";
 
-namespace message;
+namespace fbs;
 
 table Actor {
+	Id:int64;
 	Position:Vector;
 }
 

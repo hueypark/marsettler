@@ -1,56 +1,92 @@
 package net
 
 import (
+	"encoding/binary"
 	"log"
-	"net/http"
+	"net"
 
-	"github.com/gorilla/websocket"
+	"github.com/hueypark/marsettler/message"
 )
 
+// Server represent server
 type Server struct {
-	newUser func(*websocket.Conn) User
+	newConns  chan net.Conn
+	deadConns chan net.Conn
+	conns     map[net.Conn]bool
 }
 
-func NewServer(newUser func(*websocket.Conn) User) *Server {
+// NewServer create server
+func NewServer() *Server {
 	server := &Server{
-		newUser,
+		make(chan net.Conn),
+		make(chan net.Conn),
+		make(map[net.Conn]bool),
 	}
 
 	return server
 }
 
-func (server Server) ListenAndServe() {
-	http.HandleFunc(
-		"/",
-		func(response http.ResponseWriter, request *http.Request) { server.handler(response, request) })
-	http.ListenAndServe("localhost:8080", nil)
-}
-
-func (server *Server) handler(response http.ResponseWriter, request *http.Request) {
-	var upgrader websocket.Upgrader
-	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-
-	conn, err := upgrader.Upgrade(response, request, nil)
+// Listen open port and listen to connections
+func (server Server) Listen(address string) {
+	listener, err := net.Listen("tcp", address)
 	if err != nil {
-		log.Print("upgrade:", err)
-		return
+		log.Fatalln(err)
 	}
-
-	user := server.newUser(conn)
-	user.OnCreated()
-
 	defer func() {
-		user.OnClosed()
-		conn.Close()
+		err := listener.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
+
+	go func() {
+		for {
+			conn, err := listener.Accept()
+			if err != nil {
+				log.Println(err)
+			}
+
+			server.newConns <- conn
+		}
 	}()
 
 	for {
-		_, message, err := conn.ReadMessage()
+		select {
+		case conn := <-server.newConns:
+			server.conns[conn] = true
+			go func() {
+				server.handle(conn)
+			}()
+		case deadConn := <-server.deadConns:
+			err := deadConn.Close()
+			if err != nil {
+				log.Println(err)
+			}
+			delete(server.conns, deadConn)
+		}
+	}
+}
+
+func (server *Server) handle(conn net.Conn) {
+	for {
+		head := make([]byte, 8)
+		body := message.MakeActor(291452, 111210.0, 312312.0)
+
+		id := 197
+		size := len(body)
+
+		binary.LittleEndian.PutUint32(head[0:], uint32(id))
+		binary.LittleEndian.PutUint32(head[4:], uint32(size))
+
+		_, err := conn.Write(head)
 		if err != nil {
-			log.Printf("Read failed. [err: %v]", err)
+			log.Println(err)
 			break
 		}
-
-		user.OnMessage(message)
+		_, _ = conn.Write(body)
+		if err != nil {
+			log.Println(err)
+			break
+		}
 	}
 }

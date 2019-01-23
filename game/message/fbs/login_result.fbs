@@ -1,0 +1,5 @@
+namespace fbs;
+
+struct LoginResult {
+	Id:int64;
+}

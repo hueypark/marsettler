@@ -1,0 +1,10 @@
+include "vector.fbs";
+
+namespace fbs;
+
+table Actor {
+	Id:int64;
+	Position:Vector;
+}
+
+root_type Actor;

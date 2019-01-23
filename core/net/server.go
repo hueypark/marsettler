@@ -1,26 +1,28 @@
 package net
 
 import (
-	"encoding/binary"
 	"log"
 	"net"
-
-	"github.com/hueypark/marsettler/message"
 )
 
 // Server represent server
 type Server struct {
 	newConns  chan net.Conn
 	deadConns chan net.Conn
-	conns     map[net.Conn]bool
+	newUser   func(conn net.Conn) interface{}
+	handler   func(user interface{}) error
 }
 
 // NewServer create server
-func NewServer() *Server {
+func NewServer(
+	newUser func(conn net.Conn) interface{},
+	handler func(user interface{}) error,
+) *Server {
 	server := &Server{
 		make(chan net.Conn),
 		make(chan net.Conn),
-		make(map[net.Conn]bool),
+		newUser,
+		handler,
 	}
 
 	return server
@@ -53,7 +55,6 @@ func (server Server) Listen(address string) {
 	for {
 		select {
 		case conn := <-server.newConns:
-			server.conns[conn] = true
 			go func() {
 				server.handle(conn)
 			}()
@@ -62,31 +63,22 @@ func (server Server) Listen(address string) {
 			if err != nil {
 				log.Println(err)
 			}
-			delete(server.conns, deadConn)
 		}
 	}
 }
 
 func (server *Server) handle(conn net.Conn) {
+	user := server.newUser(conn)
+
 	for {
-		head := make([]byte, 8)
-		body := message.MakeActor(291452, 111210.0, 312312.0)
-
-		id := 197
-		size := len(body)
-
-		binary.LittleEndian.PutUint32(head[0:], uint32(id))
-		binary.LittleEndian.PutUint32(head[4:], uint32(size))
-
-		_, err := conn.Write(head)
+		err := server.read(user)
 		if err != nil {
 			log.Println(err)
-			break
-		}
-		_, _ = conn.Write(body)
-		if err != nil {
-			log.Println(err)
-			break
+			return
 		}
 	}
+}
+
+func (server *Server) read(user interface{}) error {
+	return server.handler(user)
 }

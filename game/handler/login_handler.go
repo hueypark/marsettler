@@ -6,7 +6,7 @@ import (
 	"github.com/hueypark/marsettler/game/message/fbs"
 )
 
-func handleLogin(user game.User, login fbs.Login) error {
+func handleLogin(user *game.User, login fbs.Login) error {
 	id := login.Id()
 	if id == 0 {
 		id = id_generator.Generate()

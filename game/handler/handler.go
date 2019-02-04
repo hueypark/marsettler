@@ -12,7 +12,7 @@ import (
 
 // Handle handle message
 func Handle(iUser interface{}) error {
-	user := iUser.(game.User)
+	user := iUser.(*game.User)
 
 	head := make([]byte, fbs.HeadSize)
 	read, err := user.Conn.Read(head)

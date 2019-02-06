@@ -1,5 +1,7 @@
 namespace fbs;
 
-struct Login {
+table Login {
 	Id:int64;
 }
+
+root_type Login;

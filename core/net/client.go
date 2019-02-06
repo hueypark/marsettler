@@ -7,19 +7,31 @@ import (
 
 // Client represents network client
 type Client struct {
-	conn net.Conn
+	Conn    net.Conn
+	handler func(conn net.Conn) error
 }
 
 // NewClient create new client
-func NewClient(address string) *Client {
+func NewClient(address string, handler func(conn net.Conn) error) *Client {
 	conn, err := net.Dial("tcp", address)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	return &Client{conn}
+	client := &Client{
+		Conn:    conn,
+		handler: handler}
+
+	go client.handle()
+
+	return client
 }
 
-// Tick called when every tick in game world
-func (client Client) Tick() {
+func (client *Client) handle() {
+	for {
+		err := client.handler(client.Conn)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
 }

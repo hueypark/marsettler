@@ -7,19 +7,21 @@ import (
 
 // Client represents network client
 type Client struct {
-	Conn    net.Conn
-	handler func(conn net.Conn) error
+	conn    net.Conn
+	address string
+	handler func(client interface{}) error
 }
 
 // NewClient create new client
-func NewClient(address string, handler func(conn net.Conn) error) *Client {
+func NewClient(address string, handler func(client interface{}) error) *Client {
 	conn, err := net.Dial("tcp", address)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 
 	client := &Client{
-		Conn:    conn,
+		conn:    conn,
+		address: address,
 		handler: handler}
 
 	go client.handle()
@@ -27,11 +29,16 @@ func NewClient(address string, handler func(conn net.Conn) error) *Client {
 	return client
 }
 
+// Conn returns network connection.
+func (client *Client) Conn() net.Conn {
+	return client.conn
+}
+
 func (client *Client) handle() {
 	for {
-		err := client.handler(client.Conn)
+		err := client.handler(client)
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
 		}
 	}
 }

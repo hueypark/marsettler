@@ -12,7 +12,7 @@ import (
 func Handle(iUser interface{}) error {
 	user := iUser.(*game.User)
 
-	id, body, err := message.ReadMessage(user.Conn)
+	id, body, err := message.ReadMessage(user)
 	if err != nil {
 		return err
 	}

@@ -3,13 +3,17 @@ package message
 import (
 	"encoding/binary"
 	"fmt"
-	"net"
 
 	"github.com/hueypark/marsettler/game/message/fbs"
 )
 
 // ReadMessage reads message from conn.
-func ReadMessage(conn net.Conn) (id fbs.MessageID, body []byte, err error) {
+func ReadMessage(client client) (id fbs.MessageID, body []byte, err error) {
+	conn := client.Conn()
+	if conn == nil {
+		return id, body, fmt.Errorf("conn is null")
+	}
+
 	head := make([]byte, fbs.HeadSize)
 	read, err := conn.Read(head)
 	if err != nil {

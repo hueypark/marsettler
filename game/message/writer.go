@@ -2,16 +2,16 @@ package message
 
 import (
 	"encoding/binary"
-	"fmt"
+	"log"
 
 	"github.com/hueypark/marsettler/game/message/fbs"
 )
 
 // WriteHead sends message head.
-func WriteHead(client client, id fbs.MessageID, size int) error {
+func WriteHead(client client, id fbs.MessageID, size int) {
 	conn := client.Conn()
 	if conn == nil {
-		return fmt.Errorf("conn is null")
+		log.Println("conn is null")
 	}
 
 	head := make([]byte, fbs.HeadSize)
@@ -20,16 +20,20 @@ func WriteHead(client client, id fbs.MessageID, size int) error {
 	binary.LittleEndian.PutUint32(head[4:], uint32(size))
 
 	_, err := conn.Write(head)
-	return err
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 // WriteBody sends message body.
-func WriteBody(client client, bytes []byte) error {
+func WriteBody(client client, bytes []byte) {
 	conn := client.Conn()
 	if conn == nil {
-		return fmt.Errorf("conn is null")
+		log.Println("conn is null")
 	}
 
 	_, err := client.Conn().Write(bytes)
-	return err
+	if err != nil {
+		log.Println(err)
+	}
 }

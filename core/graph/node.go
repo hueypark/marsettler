@@ -1,7 +1,8 @@
 package graph
 
-import "gitlab.com/legionary/legionary/core/math/vector"
+import "github.com/hueypark/marsettler/core/math/vector"
 
+// Node represents graph node.
 type Node interface {
 	ID() int64
 	Position() vector.Vector

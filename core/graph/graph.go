@@ -3,15 +3,17 @@ package graph
 import (
 	"errors"
 
-	"gitlab.com/legionary/legionary/core/graph/astar"
-	"gitlab.com/legionary/legionary/core/id_generator"
+	"github.com/hueypark/marsettler/core/graph/astar"
+	"github.com/hueypark/marsettler/core/id_generator"
 )
 
+// Graph represents graph.
 type Graph struct {
 	nodes map[int64]Node
 	edges map[int64]map[int64]Edge
 }
 
+// NewGraph create new graph.
 func NewGraph() *Graph {
 	return &Graph{
 		make(map[int64]Node),
@@ -19,14 +21,17 @@ func NewGraph() *Graph {
 	}
 }
 
+// AddNode adds node.
 func (graph *Graph) AddNode(node Node) {
 	graph.nodes[node.ID()] = node
 }
 
+// Nodes returns nodes.
 func (graph Graph) Nodes() map[int64]Node {
 	return graph.nodes
 }
 
+// AddEdge adds edge.
 func (graph *Graph) AddEdge(from, to int64) {
 	if _, ok := graph.edges[from]; !ok {
 		graph.edges[from] = make(map[int64]Edge)
@@ -35,6 +40,7 @@ func (graph *Graph) AddEdge(from, to int64) {
 	graph.edges[from][to] = Edge{id_generator.Generate(), from, to}
 }
 
+// Edges returns edges.
 func (graph Graph) Edges() (edges []Edge) {
 	for _, val := range graph.edges {
 		for _, edge := range val {
@@ -45,16 +51,17 @@ func (graph Graph) Edges() (edges []Edge) {
 	return edges
 }
 
+// Path returns path between nodes.
 func (graph Graph) Path(fromNodeID, toNodeID int64) (path Path, err error) {
 	openList := astar.NewOpenList()
 	closedList := astar.NewClosedList()
 
 	openList.Push(&astar.Score{
-		fromNodeID,
-		0,
-		0,
-		0,
-		0})
+		ID:       fromNodeID,
+		F:        0,
+		G:        0,
+		H:        0,
+		ParentID: 0})
 
 	toNode := graph.nodes[toNodeID]
 
@@ -79,11 +86,11 @@ func (graph Graph) Path(fromNodeID, toNodeID int64) (path Path, err error) {
 			h := toNode.Len(neighbor)
 
 			openList.Push(&astar.Score{
-				neighbor.ID(),
-				g + h,
-				g,
-				h,
-				openScore.ID})
+				ID:       neighbor.ID(),
+				F:        g + h,
+				G:        g,
+				H:        h,
+				ParentID: openScore.ID})
 		}
 	}
 

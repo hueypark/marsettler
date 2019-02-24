@@ -6,12 +6,12 @@ import (
 )
 
 // MakeActor makes actor
-func MakeActor(id int64, posX, posY float32) []byte {
+func MakeActor(id, nodID int64) []byte {
 	builder := flatbuffers.NewBuilder(0)
 
 	fbs.ActorStart(builder)
 	fbs.ActorAddId(builder, id)
-	fbs.ActorAddPosition(builder, fbs.CreateVector(builder, posX, posY))
+	fbs.ActorAddNodeId(builder, nodID)
 	builder.Finish(fbs.ActorEnd(builder))
 
 	return builder.Bytes[builder.Head():]
@@ -23,7 +23,7 @@ func MakeLogin(b []byte) *fbs.Login {
 }
 
 // MakeLoginMessage makes Login
-func MakeLoginMessage(id int64) (bytes []byte, size int) {
+func MakeLoginMessage(id int64) (bytes []byte) {
 	builder := flatbuffers.NewBuilder(0)
 
 	fbs.LoginStart(builder)
@@ -33,7 +33,7 @@ func MakeLoginMessage(id int64) (bytes []byte, size int) {
 	builder.Finish(fbs.LoginEnd(builder))
 
 	bytes = builder.Bytes[builder.Head():]
-	return bytes, len(bytes)
+	return bytes
 }
 
 // MakeLoginResult makes login result.
@@ -42,7 +42,7 @@ func MakeLoginResult(b []byte) *fbs.LoginResult {
 }
 
 // MakeLoginResultMessage makes login result message.
-func MakeLoginResultMessage(id int64) (bytes []byte, size int) {
+func MakeLoginResultMessage(id int64) (bytes []byte) {
 	builder := flatbuffers.NewBuilder(0)
 
 	fbs.LoginResultStart(builder)
@@ -52,5 +52,5 @@ func MakeLoginResultMessage(id int64) (bytes []byte, size int) {
 	builder.Finish(fbs.LoginResultEnd(builder))
 
 	bytes = builder.Bytes[builder.Head():]
-	return bytes, len(bytes)
+	return bytes
 }

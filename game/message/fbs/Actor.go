@@ -38,17 +38,16 @@ func (rcv *Actor) MutateId(n int64) bool {
 	return rcv._tab.MutateInt64Slot(4, n)
 }
 
-func (rcv *Actor) Position(obj *Vector) *Vector {
+func (rcv *Actor) NodeId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(6))
 	if o != 0 {
-		x := o + rcv._tab.Pos
-		if obj == nil {
-			obj = new(Vector)
-		}
-		obj.Init(rcv._tab.Bytes, x)
-		return obj
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
-	return nil
+	return 0
+}
+
+func (rcv *Actor) MutateNodeId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(6, n)
 }
 
 func ActorStart(builder *flatbuffers.Builder) {
@@ -57,8 +56,8 @@ func ActorStart(builder *flatbuffers.Builder) {
 func ActorAddId(builder *flatbuffers.Builder, Id int64) {
 	builder.PrependInt64Slot(0, Id, 0)
 }
-func ActorAddPosition(builder *flatbuffers.Builder, Position flatbuffers.UOffsetT) {
-	builder.PrependStructSlot(1, flatbuffers.UOffsetT(Position), 0)
+func ActorAddNodeId(builder *flatbuffers.Builder, NodeId int64) {
+	builder.PrependInt64Slot(1, NodeId, 0)
 }
 func ActorEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
 	return builder.EndObject()

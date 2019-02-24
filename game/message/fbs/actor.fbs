@@ -4,7 +4,7 @@ namespace fbs;
 
 table Actor {
 	Id:int64;
-	Position:Vector;
+	NodeId:int64;
 }
 
 root_type Actor;

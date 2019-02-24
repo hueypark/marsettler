@@ -1,0 +1,6 @@
+namespace fbs;
+
+struct Edge {
+	StartNodeID:int64;
+	EndNodeID:int64;
+}

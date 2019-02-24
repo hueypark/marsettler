@@ -3,25 +3,30 @@ package net
 import (
 	"log"
 	"net"
+
+	"github.com/hueypark/marsettler/core/id_generator"
 )
 
 // Server represent server
 type Server struct {
 	newConns  chan net.Conn
 	deadConns chan net.Conn
-	newUser   func(conn net.Conn) interface{}
-	handler   func(user interface{}) error
+	onAccept  func(userID int64, conn net.Conn)
+	onClose   func(userID int64)
+	handler   func(userID int64, conn net.Conn) error
 }
 
 // NewServer create server
 func NewServer(
-	newUser func(conn net.Conn) interface{},
-	handler func(user interface{}) error,
+	onAccept func(userID int64, conn net.Conn),
+	onClose func(userID int64),
+	handler func(userID int64, conn net.Conn) error,
 ) *Server {
 	server := &Server{
 		make(chan net.Conn),
 		make(chan net.Conn),
-		newUser,
+		onAccept,
+		onClose,
 		handler,
 	}
 
@@ -68,17 +73,17 @@ func (server Server) Listen(address string) {
 }
 
 func (server *Server) handle(conn net.Conn) {
-	user := server.newUser(conn)
+	id := id_generator.Generate()
+	server.onAccept(id, conn)
 
 	for {
-		err := server.read(user)
+		err := server.handler(id, conn)
 		if err != nil {
 			log.Println(err)
-			return
+			break
 		}
 	}
-}
 
-func (server *Server) read(user interface{}) error {
-	return server.handler(user)
+	server.onClose(id)
+	server.deadConns <- conn
 }

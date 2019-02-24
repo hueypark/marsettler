@@ -8,7 +8,8 @@ import (
 
 func main() {
 	server := net.NewServer(
-		game.NewUser,
+		game.OnAccept,
+		game.OnClose,
 		handler.Handle)
 	server.Listen(":8080")
 }

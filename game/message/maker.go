@@ -2,6 +2,7 @@ package message
 
 import (
 	flatbuffers "github.com/google/flatbuffers/go"
+	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/game/message/fbs"
 )
 
@@ -53,4 +54,18 @@ func MakeLoginResultMessage(id int64) (bytes []byte) {
 
 	bytes = builder.Bytes[builder.Head():]
 	return bytes
+}
+
+// MakeNode makes node message.
+func MakeNode(id int64, position vector.Vector) []byte {
+	builder := flatbuffers.NewBuilder(0)
+
+	fbs.NodeStart(builder)
+
+	fbs.NodeAddId(builder, id)
+	fbs.NodeAddPosition(builder, fbs.CreateVector(builder, position.X, position.Y))
+
+	builder.Finish(fbs.NodeEnd(builder))
+
+	return builder.Bytes[builder.Head():]
 }

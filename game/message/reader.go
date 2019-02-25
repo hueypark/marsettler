@@ -10,6 +10,10 @@ import (
 
 // ReadMessage reads message from conn.
 func ReadMessage(conn net.Conn) (id fbs.MessageID, body []byte, err error) {
+	if conn == nil {
+		return id, body, fmt.Errorf("conn is nil")
+	}
+
 	head := make([]byte, fbs.HeadSize)
 	read, err := conn.Read(head)
 	if err != nil {

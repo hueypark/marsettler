@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+	game.NewWorld()
+
 	server := net.NewServer(
 		game.OnAccept,
 		game.OnClose,

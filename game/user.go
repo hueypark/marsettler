@@ -41,9 +41,25 @@ func OnClose(userID int64) {
 	delete(users, userID)
 }
 
-// SendLoginResult sends login result
+// SendLoginResult sends login result message.
 func (u *User) SendLoginResult(id int64) {
 	loginResult := message.MakeLoginResultMessage(id)
 
 	message.Write(u.conn, fbs.LoginResultID, loginResult)
+}
+
+// SendNode sends node message.
+func (u *User) SendNode(node *Node) {
+	messageNode := message.MakeNode(node.ID(), node.Position())
+
+	message.Write(u.conn, fbs.NodeID, messageNode)
+}
+
+// ForEachUser executes a function for all users.
+func ForEachUser(f func(user *User)) {
+	mux.RLock()
+	defer mux.RUnlock()
+	for _, user := range users {
+		f(user)
+	}
 }

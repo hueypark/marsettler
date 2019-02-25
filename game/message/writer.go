@@ -10,6 +10,11 @@ import (
 
 // Write writes message.
 func Write(conn net.Conn, id fbs.MessageID, bytes []byte) {
+	if conn == nil {
+		log.Println("conn is nil")
+		return
+	}
+
 	size := uint32(len(bytes))
 
 	head := make([]byte, fbs.HeadSize)

@@ -13,6 +13,9 @@ func handleLogin(user *game.User, login *fbs.Login) error {
 	}
 
 	user.SendLoginResult(id)
+	game.ForEachNode(func(node *game.Node) {
+		user.SendNode(node)
+	})
 
 	return nil
 }

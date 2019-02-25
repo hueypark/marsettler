@@ -1,10 +1,16 @@
 package game
 
 import (
+	"sync"
 	"time"
 
 	"github.com/hueypark/marsettler/core/graph"
 	"github.com/hueypark/marsettler/core/math/vector"
+)
+
+var (
+	nodeMux sync.RWMutex
+	nodes   = map[int64]*Node{}
 )
 
 // Node represents major hub of the world.
@@ -15,10 +21,15 @@ type Node struct {
 
 // NewNode create new node.
 func NewNode(id int64, position vector.Vector) *Node {
+	nodeMux.Lock()
+	defer nodeMux.Unlock()
+
 	node := &Node{
 		id,
 		position,
 	}
+
+	nodes[id] = node
 
 	return node
 }
@@ -40,6 +51,13 @@ func (node Node) Distance(o graph.Node) float64 {
 
 // Tick ticks node.
 func (node *Node) Tick(now time.Time) {
-	// 모든 유저에게 내 정보 보내기
+}
 
+// ForEachNode executes a function for all nodes.
+func ForEachNode(f func(node *Node)) {
+	nodeMux.RLock()
+	defer nodeMux.RUnlock()
+	for _, node := range nodes {
+		f(node)
+	}
 }

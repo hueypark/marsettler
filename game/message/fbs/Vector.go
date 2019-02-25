@@ -19,23 +19,23 @@ func (rcv *Vector) Table() flatbuffers.Table {
 	return rcv._tab.Table
 }
 
-func (rcv *Vector) X() float32 {
-	return rcv._tab.GetFloat32(rcv._tab.Pos + flatbuffers.UOffsetT(0))
+func (rcv *Vector) X() float64 {
+	return rcv._tab.GetFloat64(rcv._tab.Pos + flatbuffers.UOffsetT(0))
 }
-func (rcv *Vector) MutateX(n float32) bool {
-	return rcv._tab.MutateFloat32(rcv._tab.Pos+flatbuffers.UOffsetT(0), n)
-}
-
-func (rcv *Vector) Y() float32 {
-	return rcv._tab.GetFloat32(rcv._tab.Pos + flatbuffers.UOffsetT(4))
-}
-func (rcv *Vector) MutateY(n float32) bool {
-	return rcv._tab.MutateFloat32(rcv._tab.Pos+flatbuffers.UOffsetT(4), n)
+func (rcv *Vector) MutateX(n float64) bool {
+	return rcv._tab.MutateFloat64(rcv._tab.Pos+flatbuffers.UOffsetT(0), n)
 }
 
-func CreateVector(builder *flatbuffers.Builder, X float32, Y float32) flatbuffers.UOffsetT {
-	builder.Prep(4, 8)
-	builder.PrependFloat32(Y)
-	builder.PrependFloat32(X)
+func (rcv *Vector) Y() float64 {
+	return rcv._tab.GetFloat64(rcv._tab.Pos + flatbuffers.UOffsetT(8))
+}
+func (rcv *Vector) MutateY(n float64) bool {
+	return rcv._tab.MutateFloat64(rcv._tab.Pos+flatbuffers.UOffsetT(8), n)
+}
+
+func CreateVector(builder *flatbuffers.Builder, X float64, Y float64) flatbuffers.UOffsetT {
+	builder.Prep(8, 16)
+	builder.PrependFloat64(Y)
+	builder.PrependFloat64(X)
 	return builder.Offset()
 }

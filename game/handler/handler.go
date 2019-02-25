@@ -12,7 +12,7 @@ import (
 // Handle handle message
 func Handle(userID int64, conn net.Conn) error {
 	user := game.GetUser(userID)
-	if user != nil {
+	if user == nil {
 		return fmt.Errorf("user is nil id: %d", userID)
 	}
 

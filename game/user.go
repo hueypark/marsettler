@@ -43,7 +43,7 @@ func OnClose(userID int64) {
 
 // SendLoginResult sends login result message.
 func (u *User) SendLoginResult(id int64) {
-	loginResult := message.MakeLoginResultMessage(id)
+	loginResult := message.MakeLoginResult(id)
 
 	message.Write(u.conn, fbs.LoginResultID, loginResult)
 }

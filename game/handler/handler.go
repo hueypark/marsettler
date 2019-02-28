@@ -23,7 +23,7 @@ func Handle(userID int64, conn net.Conn) error {
 
 	switch messageID {
 	case fbs.LoginID:
-		login := message.MakeLogin(body)
+		login := message.NewLogin(body)
 		return handleLogin(user, login)
 	}
 

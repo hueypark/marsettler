@@ -4,7 +4,7 @@ include "vector.fbs";
 namespace fbs;
 
 table Node {
-	Id:int64;
+	ID:int64;
 	Position:Vector;
 	Edges:[Edge];
 }

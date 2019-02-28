@@ -18,13 +18,13 @@ func MakeActor(id, nodID int64) []byte {
 	return builder.Bytes[builder.Head():]
 }
 
-// MakeLogin makes Login
-func MakeLogin(b []byte) *fbs.Login {
+// NewLogin makes Login
+func NewLogin(b []byte) *fbs.Login {
 	return fbs.GetRootAsLogin(b, 0)
 }
 
-// MakeLoginMessage makes Login
-func MakeLoginMessage(id int64) (bytes []byte) {
+// MakeLogin makes Login
+func MakeLogin(id int64) (bytes []byte) {
 	builder := flatbuffers.NewBuilder(0)
 
 	fbs.LoginStart(builder)
@@ -37,13 +37,13 @@ func MakeLoginMessage(id int64) (bytes []byte) {
 	return bytes
 }
 
-// MakeLoginResult makes login result.
-func MakeLoginResult(b []byte) *fbs.LoginResult {
+// NewLoginResult creates login result.
+func NewLoginResult(b []byte) *fbs.LoginResult {
 	return fbs.GetRootAsLoginResult(b, 0)
 }
 
-// MakeLoginResultMessage makes login result message.
-func MakeLoginResultMessage(id int64) (bytes []byte) {
+// MakeLoginResult makes login result message.
+func MakeLoginResult(id int64) (bytes []byte) {
 	builder := flatbuffers.NewBuilder(0)
 
 	fbs.LoginResultStart(builder)
@@ -56,13 +56,18 @@ func MakeLoginResultMessage(id int64) (bytes []byte) {
 	return bytes
 }
 
+// NewNode creates node.
+func NewNode(b []byte) *fbs.Node {
+	return fbs.GetRootAsNode(b, 0)
+}
+
 // MakeNode makes node message.
 func MakeNode(id int64, position vector.Vector) []byte {
 	builder := flatbuffers.NewBuilder(0)
 
 	fbs.NodeStart(builder)
 
-	fbs.NodeAddId(builder, id)
+	fbs.NodeAddID(builder, id)
 	fbs.NodeAddPosition(builder, fbs.CreateVector(builder, position.X, position.Y))
 
 	builder.Finish(fbs.NodeEnd(builder))

@@ -26,7 +26,7 @@ func (rcv *Node) Table() flatbuffers.Table {
 	return rcv._tab
 }
 
-func (rcv *Node) Id() int64 {
+func (rcv *Node) ID() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(4))
 	if o != 0 {
 		return rcv._tab.GetInt64(o + rcv._tab.Pos)
@@ -34,7 +34,7 @@ func (rcv *Node) Id() int64 {
 	return 0
 }
 
-func (rcv *Node) MutateId(n int64) bool {
+func (rcv *Node) MutateID(n int64) bool {
 	return rcv._tab.MutateInt64Slot(4, n)
 }
 
@@ -73,8 +73,8 @@ func (rcv *Node) EdgesLength() int {
 func NodeStart(builder *flatbuffers.Builder) {
 	builder.StartObject(3)
 }
-func NodeAddId(builder *flatbuffers.Builder, Id int64) {
-	builder.PrependInt64Slot(0, Id, 0)
+func NodeAddID(builder *flatbuffers.Builder, ID int64) {
+	builder.PrependInt64Slot(0, ID, 0)
 }
 func NodeAddPosition(builder *flatbuffers.Builder, Position flatbuffers.UOffsetT) {
 	builder.PrependStructSlot(1, flatbuffers.UOffsetT(Position), 0)

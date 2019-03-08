@@ -5,7 +5,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/hueypark/marsettler/game/message/fbs"
+	"github.com/hueypark/marsettler/server/game/message/fbs"
 )
 
 // Write writes message.

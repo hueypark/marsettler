@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/hueypark/marsettler/game"
-	"github.com/hueypark/marsettler/game/message"
-	"github.com/hueypark/marsettler/game/message/fbs"
+	"github.com/hueypark/marsettler/server/game"
+	"github.com/hueypark/marsettler/server/game/message"
+	"github.com/hueypark/marsettler/server/game/message/fbs"
 )
 
 // Handle handle message

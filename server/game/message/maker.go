@@ -3,7 +3,7 @@ package message
 import (
 	flatbuffers "github.com/google/flatbuffers/go"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/game/message/fbs"
+	"github.com/hueypark/marsettler/server/game/message/fbs"
 )
 
 // MakeActor makes actor

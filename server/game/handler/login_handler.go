@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/hueypark/marsettler/core/id_generator"
-	"github.com/hueypark/marsettler/game"
-	"github.com/hueypark/marsettler/game/message/fbs"
+	"github.com/hueypark/marsettler/server/game"
+	"github.com/hueypark/marsettler/server/game/message/fbs"
 )
 
 func handleLogin(user *game.User, login *fbs.Login) error {

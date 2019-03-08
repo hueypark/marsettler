@@ -1,7 +1,12 @@
 package main
 
-import "github.com/hueypark/marsettler/server"
+import (
+	"github.com/hueypark/marsettler/client"
+	"github.com/hueypark/marsettler/server"
+)
 
 func main() {
-	server.Run()
+	go func(){server.Run()}()
+
+	client.Run()
 }

@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"github.com/hueypark/marsettler/core/net"
@@ -6,7 +6,7 @@ import (
 	"github.com/hueypark/marsettler/server/game/handler"
 )
 
-func Run() {
+func main() {
 	game.NewWorld()
 
 	server := net.NewServer(

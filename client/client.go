@@ -1,4 +1,4 @@
-package client
+package main
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ var (
 	ball *game.Actor
 )
 
-func Run() {
+func main() {
 	conn.SendLogin(0)
 
 	ball = game.NewActor(cp.Vector{})

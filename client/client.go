@@ -5,10 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/hueypark/marsettler/client/renderer"
-
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/server/game"
 )
 

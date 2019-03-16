@@ -65,6 +65,11 @@ func RenderActor(screen *ebiten.Image, actor *game.Actor) {
 	Render(screen, actorImage, actor.Position())
 }
 
+// RenderCursor renders cursor.
+func RenderCursor(screen *ebiten.Image, position vector.Vector) {
+	Render(screen, cursorImage, position)
+}
+
 // Zoom returns zoom.
 func Zoom() float64 {
 	return zoom

@@ -50,6 +50,11 @@ func (world *World) ForEachActor(f func(a *Actor)) {
 	}
 }
 
+// GetCenterNodeId returns center node ID.
+func (world *World) GetCenterNodeId() int64 {
+	return world.centerNode.ID()
+}
+
 func newGraph() (g *graph.Graph, centerNode *Node) {
 	offset := 10.0
 	center := 30

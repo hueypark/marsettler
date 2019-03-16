@@ -1,25 +1,39 @@
 package renderer
 
 import (
+	"bytes"
+	"image"
 	"log"
 
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hueypark/marsettler/client/resource"
 	"golang.org/x/image/colornames"
 )
 
 var (
-	actorImage *ebiten.Image
-	nodeImage  *ebiten.Image
+	actorImage  *ebiten.Image
+	nodeImage   *ebiten.Image
+	cursorImage *ebiten.Image
 )
 
 func init() {
 	actorImage, _ = ebiten.NewImage(30, 30, ebiten.FilterDefault)
 	if err := actorImage.Fill(colornames.White); err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	nodeImage, _ = ebiten.NewImage(9, 9, ebiten.FilterDefault)
 	if err := nodeImage.Fill(colornames.Gray); err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
+	}
+
+	if img, _, err := image.Decode(bytes.NewReader(resource.Cursor)); err != nil {
+		log.Fatalln(err)
+	} else {
+		if ebitenImage, err := ebiten.NewImageFromImage(img, ebiten.FilterDefault); err != nil {
+			log.Fatalln(err)
+		} else {
+			cursorImage = ebitenImage
+		}
 	}
 }

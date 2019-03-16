@@ -35,6 +35,14 @@ func NewNode(id int64, position vector.Vector) *Node {
 	return node
 }
 
+// GetNode returns node.
+func GetNode(id int64) *Node {
+	nodeMux.RLock()
+	defer nodeMux.RUnlock()
+
+	return nodes[id]
+}
+
 // ID returns id.
 func (node Node) ID() int64 {
 	return node.id

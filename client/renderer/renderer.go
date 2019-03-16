@@ -54,6 +54,11 @@ func Render(screen *ebiten.Image, img *ebiten.Image, position vector.Vector) {
 	}
 }
 
+// RenderNode renders node.
+func RenderNode(screen *ebiten.Image, position vector.Vector) {
+	Render(screen, nodeImage, position)
+}
+
 // Zoom returns zoom.
 func Zoom() float64 {
 	return zoom

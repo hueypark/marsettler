@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/hueypark/marsettler/core/graph"
+	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
 )
 
@@ -51,6 +52,16 @@ func (node Node) Distance(o graph.Node) float64 {
 
 // Tick ticks node.
 func (node *Node) Tick(now time.Time) {
+}
+
+// NewActor creates new actor.
+func (node *Node) NewActor() *Actor {
+	actor := &Actor{
+		id_generator.Generate(),
+		node.id,
+	}
+
+	return actor
 }
 
 // ForEachNode executes a function for all nodes.

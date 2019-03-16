@@ -10,13 +10,18 @@ import (
 
 // World represents game world.
 type World struct {
-	graph *graph.Graph
+	graph      *graph.Graph
+	centerNode *Node
+	actors     map[int64]*Actor
 }
 
 // NewWorld create new world.
 func NewWorld() *World {
+	g, centerNode := newGraph()
 	world := &World{
-		newGraph(),
+		g,
+		centerNode,
+		map[int64]*Actor{},
 	}
 
 	return world
@@ -38,14 +43,25 @@ func (world *World) ForEachNode(f func(n *Node)) {
 	}
 }
 
-func newGraph() *graph.Graph {
+// ForEachActor executes function to all actors.
+func (world *World) ForEachActor(f func(a *Actor)) {
+	for _, a := range world.actors {
+		f(a)
+	}
+}
+
+func newGraph() (g *graph.Graph, centerNode *Node) {
 	offset := 10.0
 	center := 30
 
-	g := graph.NewGraph()
+	g = graph.NewGraph()
 	for x := 0; x < (center*2)+1; x++ {
 		for y := 0; y < (center*2)+1; y++ {
-			g.AddNode(NewNode(id_generator.Generate(), vector.Vector{X: float64(x) * offset, Y: float64(y) * offset}))
+			node := NewNode(id_generator.Generate(), vector.Vector{X: float64(x) * offset, Y: float64(y) * offset})
+			if center == x && center == y {
+				centerNode = node
+			}
+			g.AddNode(node)
 		}
 	}
 
@@ -57,5 +73,5 @@ func newGraph() *graph.Graph {
 		}
 	}
 
-	return g
+	return g, centerNode
 }

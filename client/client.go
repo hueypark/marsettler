@@ -32,5 +32,9 @@ func tick(screen *ebiten.Image) error {
 		renderer.RenderNode(screen, n.Position())
 	})
 
+	world.ForEachActor(func(a *game.Actor) {
+		renderer.RenderActor(screen, a)
+	})
+
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
 }

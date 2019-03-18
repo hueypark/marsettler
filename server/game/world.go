@@ -1,8 +1,6 @@
 package game
 
 import (
-	"time"
-
 	"github.com/hueypark/marsettler/core/graph"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
@@ -28,10 +26,10 @@ func NewWorld() *World {
 }
 
 // Tick ticks world.
-func (world *World) Tick(now time.Time) {
+func (world *World) Tick() {
 	for _, n := range world.graph.Nodes() {
 		node := n.(*Node)
-		node.Tick(now)
+		node.Tick()
 	}
 }
 

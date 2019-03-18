@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
@@ -31,8 +30,7 @@ func main() {
 }
 
 func tick(screen *ebiten.Image) error {
-	now := time.Now()
-	world.Tick(now)
+	world.Tick()
 
 	world.ForEachNode(func(node *game.Node) {
 		renderer.RenderNode(screen, node.Position())

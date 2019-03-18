@@ -17,8 +17,8 @@ var (
 )
 
 func init() {
-	actorImage, _ = ebiten.NewImage(30, 30, ebiten.FilterDefault)
-	if err := actorImage.Fill(colornames.White); err != nil {
+	actorImage, _ = ebiten.NewImage(6, 6, ebiten.FilterDefault)
+	if err := actorImage.Fill(colornames.Green); err != nil {
 		log.Fatalln(err)
 	}
 

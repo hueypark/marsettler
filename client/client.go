@@ -19,7 +19,9 @@ var (
 
 func main() {
 	world = game.NewWorld()
-	cursor = ui.NewCursor(world.GetCenterNodeId())
+	centerNode := world.GetCenterNode()
+	cursor = ui.NewCursor(centerNode)
+	centerNode.NewActor()
 
 	ebiten.SetRunnableInBackground(true)
 	err := ebiten.Run(tick, 800, 600, 1, "Marsettler")
@@ -32,12 +34,14 @@ func tick(screen *ebiten.Image) error {
 	now := time.Now()
 	world.Tick(now)
 
-	world.ForEachNode(func(n *game.Node) {
-		renderer.RenderNode(screen, n.Position())
+	world.ForEachNode(func(node *game.Node) {
+		renderer.RenderNode(screen, node.Position())
 	})
 
-	world.ForEachActor(func(a *game.Actor) {
-		renderer.RenderActor(screen, a)
+	world.ForEachNode(func(node *game.Node) {
+		node.ForEachActor(func(actor *game.Actor) {
+			renderer.RenderActor(screen, actor)
+		})
 	})
 
 	renderer.RenderCursor(screen, cursor.Position())

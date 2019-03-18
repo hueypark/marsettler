@@ -7,22 +7,17 @@ import (
 
 // Cursor represent cursor.
 type Cursor struct {
-	nodeID int64
+	node *game.Node
 }
 
 // NewCursor create new cursor.
-func NewCursor(nodeID int64) *Cursor {
-	cursor := &Cursor{nodeID}
+func NewCursor(node *game.Node) *Cursor {
+	cursor := &Cursor{node}
 
 	return cursor
 }
 
 // Position returns position.
 func (cursor *Cursor) Position() vector.Vector {
-	node := game.GetNode(cursor.nodeID)
-	if node == nil {
-		vector.Zero()
-	}
-
-	return node.Position()
+	return cursor.node.Position()
 }

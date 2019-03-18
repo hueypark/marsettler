@@ -12,7 +12,7 @@ import (
 type World struct {
 	graph      *graph.Graph
 	centerNode *Node
-	actors     map[int64]*Actor
+	nodes      map[int64]*Node
 }
 
 // NewWorld create new world.
@@ -21,7 +21,7 @@ func NewWorld() *World {
 	world := &World{
 		g,
 		centerNode,
-		map[int64]*Actor{},
+		map[int64]*Node{},
 	}
 
 	return world
@@ -43,21 +43,20 @@ func (world *World) ForEachNode(f func(n *Node)) {
 	}
 }
 
-// ForEachActor executes function to all actors.
-func (world *World) ForEachActor(f func(a *Actor)) {
-	for _, a := range world.actors {
-		f(a)
-	}
+// GetCenterNode returns center node.
+func (world *World) GetCenterNode() *Node {
+	return world.centerNode
 }
 
-// GetCenterNodeId returns center node ID.
-func (world *World) GetCenterNodeId() int64 {
-	return world.centerNode.ID()
+// GetNode returns node.
+func (world *World) GetNode(id int64) *Node {
+	return world.nodes[id]
 }
 
 func newGraph() (g *graph.Graph, centerNode *Node) {
 	offset := 10.0
 	center := 30
+	nodes := map[int64]*Node{}
 
 	g = graph.NewGraph()
 	for x := 0; x < (center*2)+1; x++ {
@@ -66,6 +65,7 @@ func newGraph() (g *graph.Graph, centerNode *Node) {
 			if center == x && center == y {
 				centerNode = node
 			}
+			nodes[node.ID()] = node
 			g.AddNode(node)
 		}
 	}

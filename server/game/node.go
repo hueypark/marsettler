@@ -1,7 +1,6 @@
 package game
 
 import (
-	"sync"
 	"time"
 
 	"github.com/hueypark/marsettler/core/graph"
@@ -9,38 +8,22 @@ import (
 	"github.com/hueypark/marsettler/core/math/vector"
 )
 
-var (
-	nodeMux sync.RWMutex
-	nodes   = map[int64]*Node{}
-)
-
 // Node represents major hub of the world.
 type Node struct {
 	id       int64
 	position vector.Vector
+	actors   []*Actor
 }
 
 // NewNode create new node.
 func NewNode(id int64, position vector.Vector) *Node {
-	nodeMux.Lock()
-	defer nodeMux.Unlock()
-
 	node := &Node{
 		id,
 		position,
+		[]*Actor{},
 	}
 
-	nodes[id] = node
-
 	return node
-}
-
-// GetNode returns node.
-func GetNode(id int64) *Node {
-	nodeMux.RLock()
-	defer nodeMux.RUnlock()
-
-	return nodes[id]
 }
 
 // ID returns id.
@@ -66,17 +49,17 @@ func (node *Node) Tick(now time.Time) {
 func (node *Node) NewActor() *Actor {
 	actor := &Actor{
 		id_generator.Generate(),
-		node.id,
+		node,
 	}
+
+	node.actors = append(node.actors, actor)
 
 	return actor
 }
 
-// ForEachNode executes a function for all nodes.
-func ForEachNode(f func(node *Node)) {
-	nodeMux.RLock()
-	defer nodeMux.RUnlock()
-	for _, node := range nodes {
-		f(node)
+// ForEachActor executes function to all actors.
+func (node *Node) ForEachActor(f func(a *Actor)) {
+	for _, a := range node.actors {
+		f(a)
 	}
 }

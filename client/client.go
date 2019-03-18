@@ -9,6 +9,7 @@ import (
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/server/game"
+	"github.com/hueypark/marsettler/server/game/ai"
 )
 
 var (
@@ -20,7 +21,7 @@ func main() {
 	world = game.NewWorld()
 	centerNode := world.GetCenterNode()
 	cursor = ui.NewCursor(centerNode)
-	centerNode.NewActor()
+	centerNode.NewActor(ai.NewWorker())
 
 	ebiten.SetRunnableInBackground(true)
 	err := ebiten.Run(tick, 800, 600, 1, "Marsettler")

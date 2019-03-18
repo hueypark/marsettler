@@ -1,13 +1,11 @@
-package composite
-
-import "gitlab.com/legionary/legionary/core/ai"
+package behavior_tree
 
 // Sequence Execute their children from left to right.
 // Stop when one of their children fails.
 // If a child fails, then the sequence fails.
 // If all the sequences's children succeed, then the sqeuence succeeds.
 type Sequence struct {
-	ai.Composite
+	Composite
 
 	index int
 }
@@ -17,25 +15,25 @@ func (s *Sequence) Init() {
 	s.index = 0
 }
 
-// Update updates sequnce.
-func (s *Sequence) Update(delta float64) ai.State {
+// Tick ticks sequnce.
+func (s *Sequence) Update(delta float64) State {
 	s.Composite.Update(delta)
 
 	if len(s.Children()) == 0 {
-		return ai.Success
+		return Success
 	}
 
 	for {
 		node := s.Children()[s.index]
 
-		state := ai.Update(node, delta)
-		if state != ai.Success {
+		state := Tick(node)
+		if state != Success {
 			return state
 		}
 
 		s.index++
 		if s.index == len(s.Children()) {
-			return ai.Success
+			return Success
 		}
 	}
 }

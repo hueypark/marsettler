@@ -1,4 +1,4 @@
-package ai
+package behavior_tree
 
 type Service struct {
 	interval float64

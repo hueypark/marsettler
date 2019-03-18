@@ -1,9 +1,7 @@
 package game
 
 import (
-	"log"
-
-	"github.com/hueypark/marsettler/core/ai"
+	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
 )
@@ -12,14 +10,15 @@ import (
 type Actor struct {
 	id           int64
 	node         *Node
-	behaviorTree ai.BehaviorTree
+	behaviorTree *behavior_tree.BehaviorTree
 }
 
 // NewActor creates new actor.
-func NewActor(node *Node) *Actor {
+func NewActor(node *Node, behaviorTree *behavior_tree.BehaviorTree) *Actor {
 	actor := &Actor{
-		id:   id_generator.Generate(),
-		node: node,
+		id_generator.Generate(),
+		node,
+		behaviorTree,
 	}
 
 	return actor
@@ -32,5 +31,5 @@ func (actor *Actor) Position() vector.Vector {
 
 // Tick ticks actor.
 func (actor *Actor) Tick() {
-	log.Println(actor)
+	actor.behaviorTree.Tick()
 }

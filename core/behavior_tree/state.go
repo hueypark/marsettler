@@ -1,4 +1,4 @@
-package ai
+package behavior_tree
 
 // State of behavior tree node.
 type State int

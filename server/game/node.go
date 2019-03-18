@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/graph"
 	"github.com/hueypark/marsettler/core/math/vector"
 )
@@ -46,8 +47,8 @@ func (node *Node) Tick() {
 }
 
 // NewActor creates new actor.
-func (node *Node) NewActor() *Actor {
-	actor := NewActor(node)
+func (node *Node) NewActor(behaviorTree *behavior_tree.BehaviorTree) *Actor {
+	actor := NewActor(node, behaviorTree)
 
 	node.actors = append(node.actors, actor)
 

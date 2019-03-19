@@ -2,11 +2,18 @@ package behavior_tree
 
 // BehaviorTree is tree for artificial intelligence.
 type BehaviorTree struct {
-	root *Node
+	root node
+}
+
+type node interface {
+	Init()
+	Tick() State
+	SetState(state State)
+	State() State
 }
 
 // SetRoot sets root node.
-func (bt *BehaviorTree) SetRoot(root *Node) {
+func (bt *BehaviorTree) SetRoot(root node) {
 	bt.root = root
 }
 
@@ -16,7 +23,7 @@ func (bt *BehaviorTree) Tick() {
 }
 
 // Update updates node.
-func Tick(n *Node) State {
+func Tick(n node) State {
 	if n.State() != Running {
 		n.Init()
 		n.SetState(Running)

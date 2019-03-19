@@ -4,17 +4,17 @@ package behavior_tree
 type Composite struct {
 	Node
 
-	children []*Node
+	children []node
 	services []*Service
 }
 
 // AddChild add child to composite.
-func (c *Composite) AddChild(n *Node) {
+func (c *Composite) AddChild(n node) {
 	c.children = append(c.children, n)
 }
 
 // Children return children fo composite.
-func (c *Composite) Children() []*Node {
+func (c *Composite) Children() []node {
 	return c.children
 }
 

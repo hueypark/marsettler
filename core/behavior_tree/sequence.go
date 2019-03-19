@@ -16,8 +16,8 @@ func (s *Sequence) Init() {
 }
 
 // Tick ticks sequnce.
-func (s *Sequence) Update(delta float64) State {
-	s.Composite.Update(delta)
+func (s *Sequence) Tick() State {
+	s.Composite.Tick()
 
 	if len(s.Children()) == 0 {
 		return Success

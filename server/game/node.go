@@ -1,7 +1,6 @@
 package game
 
 import (
-	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/graph"
 	"github.com/hueypark/marsettler/core/math/vector"
 )
@@ -10,7 +9,7 @@ import (
 type Node struct {
 	id       int64
 	position vector.Vector
-	actors   []*Actor
+	actors   map[int64]*Actor
 }
 
 // NewNode create new node.
@@ -18,7 +17,7 @@ func NewNode(id int64, position vector.Vector) *Node {
 	node := &Node{
 		id,
 		position,
-		[]*Actor{},
+		map[int64]*Actor{},
 	}
 
 	return node
@@ -47,12 +46,22 @@ func (node *Node) Tick() {
 }
 
 // NewActor creates new actor.
-func (node *Node) NewActor(behaviorTree *behavior_tree.BehaviorTree) *Actor {
-	actor := NewActor(node, behaviorTree)
+func (node *Node) NewActor() *Actor {
+	actor := NewActor(node)
 
-	node.actors = append(node.actors, actor)
+	node.actors[actor.ID()] = actor
 
 	return actor
+}
+
+// AddActor adds actor
+func (node *Node) AddActor(actor *Actor) {
+	node.actors[actor.ID()] = actor
+}
+
+// DeleteActor deletes actor.
+func (node *Node) DeleteActor(id int64) {
+	delete(node.actors, id)
 }
 
 // ForEachActor executes function to all actors.

@@ -21,7 +21,8 @@ func main() {
 	world = game.NewWorld()
 	centerNode := world.GetCenterNode()
 	cursor = ui.NewCursor(centerNode)
-	centerNode.NewActor(ai.NewWorker())
+	actor := centerNode.NewActor()
+	actor.SetBehaviorTree(ai.NewWorker(world.RandomPath, actor.Move))
 
 	ebiten.SetRunnableInBackground(true)
 	err := ebiten.Run(tick, 800, 600, 1, "Marsettler")

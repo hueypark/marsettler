@@ -6,8 +6,17 @@ import (
 	"github.com/hueypark/marsettler/core/math/vector"
 )
 
+var (
+	worlds map[int64]*World
+)
+
+func init() {
+	worlds = map[int64]*World{}
+}
+
 // World represents game world.
 type World struct {
+	id         int64
 	graph      *graph.Graph
 	centerNode *Node
 	nodes      map[int64]*Node
@@ -15,12 +24,15 @@ type World struct {
 
 // NewWorld create new world.
 func NewWorld() *World {
-	g, centerNode := newGraph()
+	g, nodes, centerNode := newGraph()
 	world := &World{
+		id_generator.Generate(),
 		g,
 		centerNode,
-		map[int64]*Node{},
+		nodes,
 	}
+
+	worlds[world.id] = world
 
 	return world
 }
@@ -51,10 +63,33 @@ func (world *World) GetNode(id int64) *Node {
 	return world.nodes[id]
 }
 
-func newGraph() (g *graph.Graph, centerNode *Node) {
+// RandomPath returns random path.
+func (world *World) RandomPath() *[]int64 {
+	var path []int64
+
+	for _, n := range world.graph.Nodes() {
+		path = append(path, n.ID())
+	}
+
+	return &path
+}
+
+// GetNode returns node.
+func GetNode(id int64) *Node {
+	for _, world := range worlds {
+		node := world.GetNode(id)
+		if node != nil {
+			return node
+		}
+	}
+
+	return nil
+}
+
+func newGraph() (g *graph.Graph, nodes map[int64]*Node, centerNode *Node) {
 	offset := 10.0
 	center := 30
-	nodes := map[int64]*Node{}
+	nodes = map[int64]*Node{}
 
 	g = graph.NewGraph()
 	for x := 0; x < (center*2)+1; x++ {
@@ -76,5 +111,5 @@ func newGraph() (g *graph.Graph, centerNode *Node) {
 		}
 	}
 
-	return g, centerNode
+	return g, nodes, centerNode
 }

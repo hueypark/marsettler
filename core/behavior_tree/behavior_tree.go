@@ -2,7 +2,8 @@ package behavior_tree
 
 // BehaviorTree is tree for artificial intelligence.
 type BehaviorTree struct {
-	root node
+	root       node
+	blackboard *Blackboard
 }
 
 type node interface {
@@ -10,6 +11,20 @@ type node interface {
 	Tick() State
 	SetState(state State)
 	State() State
+}
+
+// NewBehaviorTree creates new BehaviorTree.
+func NewBehaviorTree() *BehaviorTree {
+	behaviorTree := &BehaviorTree{
+		blackboard: NewBlackboard(),
+	}
+
+	return behaviorTree
+}
+
+// Blackboard returns blackboard.
+func (bt *BehaviorTree) Blackboard() *Blackboard {
+	return bt.blackboard
 }
 
 // SetRoot sets root node.

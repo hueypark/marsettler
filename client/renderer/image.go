@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hueypark/marsettler/client/resource"
+	"github.com/hueypark/marsettler/client/asset"
 	"golang.org/x/image/colornames"
 )
 
@@ -27,7 +27,7 @@ func init() {
 		log.Fatalln(err)
 	}
 
-	if img, _, err := image.Decode(bytes.NewReader(resource.Cursor)); err != nil {
+	if img, _, err := image.Decode(bytes.NewReader(asset.Cursor)); err != nil {
 		log.Fatalln(err)
 	} else {
 		if ebitenImage, err := ebiten.NewImageFromImage(img, ebiten.FilterDefault); err != nil {

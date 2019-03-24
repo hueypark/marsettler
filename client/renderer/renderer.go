@@ -54,13 +54,8 @@ func Render(screen *ebiten.Image, img *ebiten.Image, position vector.Vector) {
 	}
 }
 
-// Zoom returns zoom.
-func Zoom() float64 {
-	return zoom
-}
-
-// OnZoom process zoom.
-func OnZoom(delta float64) {
+// Zoom process zoom.
+func Zoom(delta float64) {
 	zoom += delta
 	if zoom <= minZoom {
 		zoom = minZoom

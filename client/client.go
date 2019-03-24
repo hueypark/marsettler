@@ -6,6 +6,8 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/ebiten/inpututil"
+	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/server/game"
 	"github.com/hueypark/marsettler/server/game/ai"
@@ -31,6 +33,14 @@ func main() {
 }
 
 func tick(screen *ebiten.Image) error {
+	if inpututil.IsKeyJustReleased(ebiten.KeyEqual) {
+		renderer.Zoom(0.5)
+	}
+
+	if inpututil.IsKeyJustReleased(ebiten.KeyMinus) {
+		renderer.Zoom(-0.5)
+	}
+
 	world.Tick()
 
 	world.ForEachNode(func(node *game.Node) {

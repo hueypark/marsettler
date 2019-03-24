@@ -3,6 +3,10 @@ package game
 import (
 	"log"
 
+	"github.com/hajimehoshi/ebiten"
+	"github.com/hueypark/marsettler/client/asset"
+	"github.com/hueypark/marsettler/client/renderer"
+
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
@@ -28,6 +32,11 @@ func NewActor(node *Node) *Actor {
 // SetBehaviorTree sets behavior tree.
 func (actor *Actor) SetBehaviorTree(behaviorTree *behavior_tree.BehaviorTree) {
 	actor.behaviorTree = behaviorTree
+}
+
+// Render renders actor in screen.
+func (actor *Actor) Render(screen *ebiten.Image) {
+	renderer.Render(screen, asset.Worker, actor.Position())
 }
 
 // ID returns id.

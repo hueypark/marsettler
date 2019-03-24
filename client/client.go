@@ -6,7 +6,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
-	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/server/game"
 	"github.com/hueypark/marsettler/server/game/ai"
@@ -35,16 +34,16 @@ func tick(screen *ebiten.Image) error {
 	world.Tick()
 
 	world.ForEachNode(func(node *game.Node) {
-		renderer.RenderNode(screen, node.Position())
+		node.Render(screen)
 	})
 
 	world.ForEachNode(func(node *game.Node) {
 		node.ForEachActor(func(actor *game.Actor) {
-			renderer.RenderActor(screen, actor)
+			actor.Render(screen)
 		})
 	})
 
-	renderer.RenderCursor(screen, cursor.Position())
+	cursor.Render(screen)
 
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
 }

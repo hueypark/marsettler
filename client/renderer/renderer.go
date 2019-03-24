@@ -5,7 +5,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/server/game"
 )
 
 const (
@@ -53,21 +52,6 @@ func Render(screen *ebiten.Image, img *ebiten.Image, position vector.Vector) {
 	if err != nil {
 		log.Println(err)
 	}
-}
-
-// RenderNode renders node.
-func RenderNode(screen *ebiten.Image, position vector.Vector) {
-	Render(screen, nodeImage, position)
-}
-
-// RenderActor renders actor.
-func RenderActor(screen *ebiten.Image, actor *game.Actor) {
-	Render(screen, actorImage, actor.Position())
-}
-
-// RenderCursor renders cursor.
-func RenderCursor(screen *ebiten.Image, position vector.Vector) {
-	Render(screen, cursorImage, position)
 }
 
 // Zoom returns zoom.

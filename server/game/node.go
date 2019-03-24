@@ -1,6 +1,9 @@
 package game
 
 import (
+	"github.com/hajimehoshi/ebiten"
+	"github.com/hueypark/marsettler/client/asset"
+	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/core/graph"
 	"github.com/hueypark/marsettler/core/math/vector"
 )
@@ -43,6 +46,11 @@ func (node *Node) Tick() {
 	for _, actor := range node.actors {
 		actor.Tick()
 	}
+}
+
+// Render renders node in screen
+func (node *Node) Render(screen *ebiten.Image) {
+	renderer.Render(screen, asset.Grass, node.Position())
 }
 
 // NewActor creates new actor.

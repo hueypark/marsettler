@@ -38,14 +38,12 @@ func generateAsset() {
 	}
 
 	for _, f := range files {
-		name := strings.Replace(filepath.Base(f), ".png", "", 1)
-
 		cmd := exec.Command(
 			"file2byteslice",
 			"-input", f,
 			"-output", strings.Replace(f, ".png", ".go", 1),
 			"-package", "asset",
-			"-var", strings.Title(name))
+			"-var", strings.Replace(filepath.Base(f), ".png", "", 1))
 
 		cmdOutput := &bytes.Buffer{}
 		cmd.Stdout = cmdOutput

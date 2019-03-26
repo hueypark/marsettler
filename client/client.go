@@ -6,8 +6,10 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/client/ui"
+	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/server/game"
 	"github.com/hueypark/marsettler/server/game/ai"
 )
@@ -32,8 +34,7 @@ func main() {
 }
 
 func tick(screen *ebiten.Image) error {
-	_, dy := ebiten.Wheel()
-	renderer.Zoom(dy * 0.1)
+	tickRenderer()
 
 	world.Tick()
 
@@ -50,4 +51,22 @@ func tick(screen *ebiten.Image) error {
 	cursor.Render(screen)
 
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
+}
+
+func tickRenderer() {
+	_, dy := ebiten.Wheel()
+	renderer.Zoom(dy * 0.1)
+
+	x, y := ebiten.CursorPosition()
+	cursorPosition := vector.Vector{X: float64(x), Y: float64(y)}
+
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		renderer.OnScrollStart(cursorPosition)
+	}
+
+	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+		renderer.OnScrollEnd()
+	}
+
+	renderer.Tick(cursorPosition)
 }

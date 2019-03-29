@@ -8,36 +8,27 @@ import (
 
 func TestPointToAABB(t *testing.T) {
 	tests := []struct {
-		lhs    testPoint
+		lhs    vector.Vector
 		rhs    testAABB
 		result bool
 	}{
 		{
-			testPoint{0, 0},
+			vector.Vector{0, 0},
 			testAABB{0, 10, 0, 10},
 			true,
 		},
 		{
-			testPoint{0, 0},
+			vector.Vector{0, 0},
 			testAABB{5, 10, 5, 10},
 			false,
 		},
 	}
 
 	for _, test := range tests {
-		if PointToAABB(&test.lhs, &test.rhs) != test.result {
+		if PointToAABB(test.lhs, &test.rhs) != test.result {
 			t.Errorf("failed: %v", test)
 		}
 	}
-}
-
-type testPoint struct {
-	x float64
-	y float64
-}
-
-func (p *testPoint) Position() vector.Vector {
-	return vector.Vector{X: p.x, Y: p.y}
 }
 
 type testAABB struct {

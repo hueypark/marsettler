@@ -10,17 +10,24 @@ import (
 
 // Node represents major hub of the world.
 type Node struct {
-	id       int64
-	position vector.Vector
-	actors   map[int64]*Actor
+	id                       int64
+	position                 vector.Vector
+	left, right, bottom, top float64
+	actors                   map[int64]*Actor
 }
 
 // NewNode create new node.
 func NewNode(id int64, position vector.Vector) *Node {
+	width, height := asset.Grass.Size()
+
 	node := &Node{
-		id,
-		position,
-		map[int64]*Actor{},
+		id:       id,
+		position: position,
+		left:     -float64(width),
+		right:    float64(width),
+		bottom:   -float64(height),
+		top:      float64(height),
+		actors:   map[int64]*Actor{},
 	}
 
 	return node
@@ -34,6 +41,26 @@ func (node Node) ID() int64 {
 // Position returns position.
 func (node Node) Position() vector.Vector {
 	return node.position
+}
+
+// Left returns geographic left.
+func (node *Node) Left() float64 {
+	return node.position.X + node.left
+}
+
+// Right returns geographic right.
+func (node *Node) Right() float64 {
+	return node.position.X + node.right
+}
+
+// Bottom returns geographic bottom.
+func (node *Node) Bottom() float64 {
+	return node.position.Y + node.bottom
+}
+
+// Top returns geographic top.
+func (node *Node) Top() float64 {
+	return node.position.Y + node.top
 }
 
 // Distance returns distance between another node.

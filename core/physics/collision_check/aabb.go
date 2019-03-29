@@ -2,28 +2,24 @@ package collision_check
 
 import "github.com/hueypark/marsettler/core/math/vector"
 
-func PointToAABB(point point, aabb aabb) bool {
-	if point.Position().X < aabb.Left() {
+func PointToAABB(point vector.Vector, aabb aabb) bool {
+	if point.X < aabb.Left() {
 		return false
 	}
 
-	if aabb.Right() < point.Position().X {
+	if aabb.Right() < point.X {
 		return false
 	}
 
-	if aabb.Top() < point.Position().Y {
+	if aabb.Top() < point.Y {
 		return false
 	}
 
-	if point.Position().Y < aabb.Bottom() {
+	if point.Y < aabb.Bottom() {
 		return false
 	}
 
 	return true
-}
-
-type point interface {
-	Position() vector.Vector
 }
 
 type aabb interface {

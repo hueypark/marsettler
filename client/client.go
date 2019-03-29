@@ -10,6 +10,7 @@ import (
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics/collision_check"
 	"github.com/hueypark/marsettler/server/game"
 	"github.com/hueypark/marsettler/server/game/ai"
 )
@@ -34,7 +35,13 @@ func main() {
 }
 
 func tick(screen *ebiten.Image) error {
-	tickRenderer()
+	x, y := ebiten.CursorPosition()
+	cursorPosition := vector.Vector{X: float64(x), Y: float64(y)}
+
+	worldPosition := renderer.WorldPosition(cursorPosition)
+
+	tickRenderer(cursorPosition)
+	tickCollision(worldPosition)
 
 	world.Tick()
 
@@ -53,12 +60,9 @@ func tick(screen *ebiten.Image) error {
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
 }
 
-func tickRenderer() {
+func tickRenderer(cursorPosition vector.Vector) {
 	_, dy := ebiten.Wheel()
 	renderer.Zoom(dy * 0.1)
-
-	x, y := ebiten.CursorPosition()
-	cursorPosition := vector.Vector{X: float64(x), Y: float64(y)}
 
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		renderer.OnScrollStart(cursorPosition)
@@ -69,4 +73,16 @@ func tickRenderer() {
 	}
 
 	renderer.Tick(cursorPosition)
+}
+
+func tickCollision(worldPosition vector.Vector) {
+	if !inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+		return
+	}
+
+	world.ForEachNode(func(node *game.Node) {
+		if collision_check.PointToAABB(worldPosition, node) {
+			cursor.SetNode(node)
+		}
+	})
 }

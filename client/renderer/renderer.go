@@ -83,8 +83,5 @@ func WorldPosition(cursorPosition vector.Vector) vector.Vector {
 		Y: (cursorPosition.Y - cameraPosition.Y - scroll.Y) / zoom,
 	}
 
-	log.Println(cameraPosition.X)
-	log.Println(zoom)
-	log.Println(worldPosition.X)
 	return worldPosition
 }

@@ -29,3 +29,8 @@ func (cursor *Cursor) Render(screen *ebiten.Image) {
 func (cursor *Cursor) Position() vector.Vector {
 	return cursor.node.Position()
 }
+
+// SetNode sets node.
+func (cursor *Cursor) SetNode(node *game.Node) {
+	cursor.node = node
+}

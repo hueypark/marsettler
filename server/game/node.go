@@ -10,10 +10,10 @@ import (
 
 // Node represents major hub of the world.
 type Node struct {
-	id                       int64
-	position                 vector.Vector
-	left, right, bottom, top float64
-	actors                   map[int64]*Actor
+	id         int64
+	position   vector.Vector
+	right, top float64
+	actors     map[int64]*Actor
 }
 
 // NewNode create new node.
@@ -23,9 +23,7 @@ func NewNode(id int64, position vector.Vector) *Node {
 	node := &Node{
 		id:       id,
 		position: position,
-		left:     -float64(width),
 		right:    float64(width),
-		bottom:   -float64(height),
 		top:      float64(height),
 		actors:   map[int64]*Actor{},
 	}
@@ -45,7 +43,7 @@ func (node Node) Position() vector.Vector {
 
 // Left returns geographic left.
 func (node *Node) Left() float64 {
-	return node.position.X + node.left
+	return node.position.X
 }
 
 // Right returns geographic right.
@@ -55,7 +53,7 @@ func (node *Node) Right() float64 {
 
 // Bottom returns geographic bottom.
 func (node *Node) Bottom() float64 {
-	return node.position.Y + node.bottom
+	return node.position.Y
 }
 
 // Top returns geographic top.

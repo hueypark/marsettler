@@ -45,9 +45,8 @@ func Render(screen *ebiten.Image, img *ebiten.Image, position vector.Vector) {
 	position.Y += cameraPosition.Y + scroll.Y
 
 	op.GeoM.Reset()
-	width, height := img.Size()
 	op.GeoM.Scale(zoom, zoom)
-	op.GeoM.Translate(position.X-(float64(width)*0.5), position.Y-(float64(height)*0.5))
+	op.GeoM.Translate(position.X, position.Y)
 	err := screen.DrawImage(img, &op)
 	if err != nil {
 		log.Println(err)

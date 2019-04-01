@@ -3,18 +3,21 @@ package asset
 import (
 	"bytes"
 	"image"
+	_ "image/png"
 	"log"
 
 	"github.com/hajimehoshi/ebiten"
 )
 
 var (
-	Grass  *ebiten.Image
-	Cursor *ebiten.Image
-	Worker *ebiten.Image
+	CityHall *ebiten.Image
+	Grass    *ebiten.Image
+	Cursor   *ebiten.Image
+	Worker   *ebiten.Image
 )
 
 func init() {
+	CityHall = newImageFromFileBytes(city_hall)
 	Grass = newImageFromFileBytes(grass)
 	Cursor = newImageFromFileBytes(cursor)
 	Worker = newImageFromFileBytes(worker)

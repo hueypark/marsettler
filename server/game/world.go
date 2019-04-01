@@ -87,8 +87,8 @@ func GetNode(id int64) *Node {
 }
 
 func newGraph() (g *graph.Graph, nodes map[int64]*Node, centerNode *Node) {
-	offset := 100.0
-	center := 30
+	offset := 32.0
+	center := 10
 	nodes = map[int64]*Node{}
 
 	g = graph.NewGraph()

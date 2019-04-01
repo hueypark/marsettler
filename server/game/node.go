@@ -79,8 +79,8 @@ func (node *Node) Render(screen *ebiten.Image) {
 }
 
 // NewActor creates new actor.
-func (node *Node) NewActor() *Actor {
-	actor := NewActor(node)
+func (node *Node) NewActor(image *ebiten.Image) *Actor {
+	actor := NewActor(node, image)
 
 	node.actors[actor.ID()] = actor
 

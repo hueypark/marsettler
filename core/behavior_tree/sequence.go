@@ -10,6 +10,10 @@ type Sequence struct {
 	index int
 }
 
+func NewSequence() *Sequence {
+	return &Sequence{}
+}
+
 // Init inits sqeuence.
 func (s *Sequence) Init() {
 	s.index = 0

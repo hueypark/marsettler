@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
+	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
@@ -24,8 +25,11 @@ func main() {
 	world = game.NewWorld()
 	centerNode := world.GetCenterNode()
 	cursor = ui.NewCursor(centerNode)
-	actor := centerNode.NewActor()
-	actor.SetBehaviorTree(ai.NewWorker(world.RandomPath, actor.Move))
+	actor := centerNode.NewActor(asset.CityHall)
+	actor.SetBehaviorTree(ai.NewCityHall(func() {
+		worker := centerNode.NewActor(asset.Worker)
+		worker.SetBehaviorTree(ai.NewWorker(world.RandomPath, worker.Move))
+	}))
 
 	ebiten.SetRunnableInBackground(true)
 	err := ebiten.Run(tick, 800, 600, 1, "Marsettler")

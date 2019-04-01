@@ -34,6 +34,10 @@ func (bt *BehaviorTree) SetRoot(root node) {
 
 // Tick ticks behavior tree.
 func (bt *BehaviorTree) Tick() {
+	if bt.root == nil {
+		return
+	}
+
 	Tick(bt.root)
 }
 

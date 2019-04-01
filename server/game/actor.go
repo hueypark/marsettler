@@ -4,9 +4,7 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/client/renderer"
-
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
@@ -17,13 +15,15 @@ type Actor struct {
 	id           int64
 	node         *Node
 	behaviorTree *behavior_tree.BehaviorTree
+	image        *ebiten.Image
 }
 
 // NewActor creates new actor.
-func NewActor(node *Node) *Actor {
+func NewActor(node *Node, image *ebiten.Image) *Actor {
 	actor := &Actor{
-		id:   id_generator.Generate(),
-		node: node,
+		id:    id_generator.Generate(),
+		node:  node,
+		image: image,
 	}
 
 	return actor
@@ -36,7 +36,7 @@ func (actor *Actor) SetBehaviorTree(behaviorTree *behavior_tree.BehaviorTree) {
 
 // Render renders actor in screen.
 func (actor *Actor) Render(screen *ebiten.Image) {
-	renderer.Render(screen, asset.Worker, actor.Position())
+	renderer.Render(screen, actor.image, actor.Position())
 }
 
 // ID returns id.

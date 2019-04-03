@@ -8,12 +8,12 @@ import (
 type CreateActor struct {
 	behavior_tree.Node
 
-	createActorFunc func()
+	actorID int64
 }
 
-func NewCreateActor(createActorFunc func()) *CreateActor {
+func NewCreateActor(actorID int64) *CreateActor {
 	task := &CreateActor{
-		createActorFunc: createActorFunc,
+		actorID: actorID,
 	}
 
 	return task
@@ -23,7 +23,8 @@ func (task *CreateActor) Init() {
 }
 
 func (task *CreateActor) Tick() behavior_tree.State {
-	task.createActorFunc()
+	// TODO: Implement create actor.
+	// task.createActorFunc()
 
 	return behavior_tree.Success
 }

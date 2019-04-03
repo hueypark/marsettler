@@ -1,6 +1,8 @@
 package task
 
 import (
+	"log"
+
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/server/game/ai/blackboard_key"
 )
@@ -11,16 +13,14 @@ type MoveTo struct {
 
 	blackboard         *behavior_tree.Blackboard
 	path               []int64
-	move               func(nodeID int64)
 	moveWaitTime       int
 	remainMoveWaitTime int
 }
 
 // NewMoveTo creates MoveTo task.
-func NewMoveTo(blackboard *behavior_tree.Blackboard, move func(nodeID int64), moveWaitTime int) *MoveTo {
+func NewMoveTo(blackboard *behavior_tree.Blackboard, moveWaitTime int) *MoveTo {
 	task := &MoveTo{
 		blackboard:   blackboard,
-		move:         move,
 		moveWaitTime: moveWaitTime,
 	}
 
@@ -50,7 +50,9 @@ func (task *MoveTo) Tick() behavior_tree.State {
 	nextNodeID := task.path[len(task.path)-1]
 	task.path = task.path[:len(task.path)-1]
 
-	task.move(nextNodeID)
+	// TODO: Implement move.
+	//task.move(nextNodeID)
+	log.Println(nextNodeID)
 
 	return behavior_tree.Running
 }

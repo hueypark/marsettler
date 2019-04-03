@@ -6,12 +6,12 @@ import (
 )
 
 // NewCityHall creates new city hall.
-func NewCityHall(createActorFunc func()) *behavior_tree.BehaviorTree {
+func NewCityHall() *behavior_tree.BehaviorTree {
 	cityHall := behavior_tree.NewBehaviorTree()
 
 	waitAndCreateActor := behavior_tree.NewSequence()
 	waitAndCreateActor.AddChild(task.NewWait(60))
-	waitAndCreateActor.AddChild(task.NewCreateActor(createActorFunc))
+	waitAndCreateActor.AddChild(task.NewCreateActor(2))
 
 	cityHall.SetRoot(waitAndCreateActor)
 

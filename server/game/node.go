@@ -6,6 +6,7 @@ import (
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/core/graph"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/data"
 )
 
 // Node represents major hub of the world.
@@ -79,8 +80,9 @@ func (node *Node) Render(screen *ebiten.Image) {
 }
 
 // NewActor creates new actor.
-func (node *Node) NewActor(image *ebiten.Image) *Actor {
-	actor := NewActor(node, image)
+func (node *Node) NewActor(actorData *data.Actor) *Actor {
+	actor := NewActor(node, actorData.Image)
+	actor.SetBehaviorTree(actorData.NewBehaviorTree())
 
 	node.actors[actor.ID()] = actor
 

@@ -24,13 +24,11 @@ type World struct {
 
 // NewWorld create new world.
 func NewWorld() *World {
-	g, nodes, centerNode := newGraph()
 	world := &World{
-		id_generator.Generate(),
-		g,
-		centerNode,
-		nodes,
+		id: id_generator.Generate(),
 	}
+
+	world.graph, world.nodes, world.centerNode = newGraph(world)
 
 	worlds[world.id] = world
 
@@ -86,7 +84,7 @@ func GetNode(id int64) *Node {
 	return nil
 }
 
-func newGraph() (g *graph.Graph, nodes map[int64]*Node, centerNode *Node) {
+func newGraph(world *World) (g *graph.Graph, nodes map[int64]*Node, centerNode *Node) {
 	offset := 32.0
 	center := 10
 	nodes = map[int64]*Node{}
@@ -94,7 +92,7 @@ func newGraph() (g *graph.Graph, nodes map[int64]*Node, centerNode *Node) {
 	g = graph.NewGraph()
 	for x := 0; x < (center*2)+1; x++ {
 		for y := 0; y < (center*2)+1; y++ {
-			node := NewNode(id_generator.Generate(), vector.Vector{X: float64(x) * offset, Y: float64(y) * offset})
+			node := NewNode(id_generator.Generate(), world, vector.Vector{X: float64(x) * offset, Y: float64(y) * offset})
 			if center == x && center == y {
 				centerNode = node
 			}

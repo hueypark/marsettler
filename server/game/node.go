@@ -1,6 +1,8 @@
 package game
 
 import (
+	"log"
+
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/client/renderer"
@@ -12,17 +14,19 @@ import (
 // Node represents major hub of the world.
 type Node struct {
 	id         int64
+	world      *World
 	position   vector.Vector
 	right, top float64
 	actors     map[int64]*Actor
 }
 
 // NewNode create new node.
-func NewNode(id int64, position vector.Vector) *Node {
+func NewNode(id int64, world *World, position vector.Vector) *Node {
 	width, height := asset.Grass.Size()
 
 	node := &Node{
 		id:       id,
+		world:    world,
 		position: position,
 		right:    float64(width),
 		top:      float64(height),
@@ -40,6 +44,10 @@ func (node Node) ID() int64 {
 // Position returns position.
 func (node Node) Position() vector.Vector {
 	return node.position
+}
+
+func (node *Node) World() *World {
+	return node.world
 }
 
 // Left returns geographic left.
@@ -80,9 +88,14 @@ func (node *Node) Render(screen *ebiten.Image) {
 }
 
 // NewActor creates new actor.
-func (node *Node) NewActor(actorData *data.Actor) *Actor {
+func (node *Node) NewActor(id int64) *Actor {
+	actorData := data.GetActor(id)
+	if actorData == nil {
+		log.Println("actor data is nil", id)
+		return nil
+	}
 	actor := NewActor(node, actorData.Image)
-	actor.SetBehaviorTree(actorData.NewBehaviorTree())
+	actor.SetBehaviorTree(actorData.NewBehaviorTree(actor))
 
 	node.actors[actor.ID()] = actor
 

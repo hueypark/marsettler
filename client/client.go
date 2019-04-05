@@ -11,7 +11,6 @@ import (
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics/collision_check"
-	"github.com/hueypark/marsettler/data"
 	"github.com/hueypark/marsettler/server/game"
 )
 
@@ -24,7 +23,7 @@ func main() {
 	world = game.NewWorld()
 	centerNode := world.GetCenterNode()
 	cursor = ui.NewCursor(centerNode)
-	centerNode.NewActor(data.GetActor(1))
+	centerNode.NewActor(1)
 
 	ebiten.SetRunnableInBackground(true)
 	err := ebiten.Run(tick, 800, 600, 1, "Marsettler")

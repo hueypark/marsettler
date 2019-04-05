@@ -5,6 +5,7 @@ import (
 	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/server/game/ai"
+	"github.com/hueypark/marsettler/server/game/ai/task"
 )
 
 func GetActor(id int64) *Actor {
@@ -13,7 +14,7 @@ func GetActor(id int64) *Actor {
 
 type Actor struct {
 	Image           *ebiten.Image
-	NewBehaviorTree func() *behavior_tree.BehaviorTree
+	NewBehaviorTree func(actor task.Actor) *behavior_tree.BehaviorTree
 }
 
 var actors = map[int64]*Actor{

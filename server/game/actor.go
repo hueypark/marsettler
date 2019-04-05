@@ -54,6 +54,14 @@ func (actor *Actor) Tick() {
 	actor.behaviorTree.Tick()
 }
 
+func (actor *Actor) CreateActor(id int64) {
+	actor.node.NewActor(id)
+}
+
+func (actor *Actor) FindPath() *[]int64 {
+	return actor.node.World().RandomPath()
+}
+
 // Move moves actor another node.
 func (actor *Actor) Move(nodeID int64) {
 	node := GetNode(nodeID)

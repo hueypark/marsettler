@@ -8,14 +8,14 @@ import (
 )
 
 // NewWorker creates new worker.
-func NewWorker() *behavior_tree.BehaviorTree {
+func NewWorker(actor task.Actor) *behavior_tree.BehaviorTree {
 	worker := behavior_tree.NewBehaviorTree()
 
 	findAndMove := &behavior_tree.Sequence{}
 	hasNotPath := decorator.NewBlackboard(worker.Blackboard(), &decorator.BlackboardConditionNotHasKey{Key: blackboard_key.Path})
-	hasNotPath.SetChild(task.NewFindPath(worker.Blackboard()))
+	hasNotPath.SetChild(task.NewFindPath(worker.Blackboard(), actor))
 	findAndMove.AddChild(hasNotPath)
-	findAndMove.AddChild(task.NewMoveTo(worker.Blackboard(), 60))
+	findAndMove.AddChild(task.NewMoveTo(worker.Blackboard(), actor, 60))
 
 	worker.SetRoot(findAndMove)
 

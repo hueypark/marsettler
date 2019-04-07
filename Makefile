@@ -9,3 +9,7 @@ server:
 .PHONY: generate
 generate:
 	go run cmd/generate/main.go
+
+.PHONY: test
+test:
+	go test ./...

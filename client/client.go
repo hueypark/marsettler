@@ -24,6 +24,7 @@ func main() {
 	centerNode := world.GetCenterNode()
 	cursor = ui.NewCursor(centerNode)
 	centerNode.NewActor(1)
+	centerNode.NewActor(100000)
 
 	ebiten.SetRunnableInBackground(true)
 	err := ebiten.Run(tick, 800, 600, 1, "Marsettler")

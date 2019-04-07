@@ -62,11 +62,18 @@ func (world *World) GetNode(id int64) *Node {
 }
 
 // RandomPath returns random path.
-func (world *World) RandomPath() *[]int64 {
+func (world *World) RandomPath(length int) *[]int64 {
 	var path []int64
 
+	var currentLength int
 	for _, n := range world.graph.Nodes() {
 		path = append(path, n.ID())
+
+		currentLength++
+
+		if length <= currentLength {
+			break
+		}
 	}
 
 	return &path

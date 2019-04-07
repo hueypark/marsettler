@@ -30,6 +30,7 @@ func NewMoveTo(blackboard *behavior_tree.Blackboard, actor Actor, moveWaitTime i
 // Init initializes task.
 func (task *MoveTo) Init() {
 	task.path = *task.blackboard.GetInt64s(blackboard_key.Path)
+	task.blackboard.Delete(blackboard_key.Path)
 	task.remainMoveWaitTime = 0
 }
 

@@ -51,7 +51,9 @@ func (actor *Actor) Position() vector.Vector {
 
 // Tick ticks actor.
 func (actor *Actor) Tick() {
-	actor.behaviorTree.Tick()
+	if actor.behaviorTree != nil {
+		actor.behaviorTree.Tick()
+	}
 }
 
 func (actor *Actor) CreateActor(id int64) {
@@ -59,7 +61,7 @@ func (actor *Actor) CreateActor(id int64) {
 }
 
 func (actor *Actor) FindPath() *[]int64 {
-	return actor.node.World().RandomPath()
+	return actor.node.World().RandomPath(3)
 }
 
 // Move moves actor another node.

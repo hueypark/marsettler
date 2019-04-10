@@ -1,6 +1,10 @@
 package task
 
-import "github.com/hueypark/marsettler/core/behavior_tree"
+import (
+	"fmt"
+
+	"github.com/hueypark/marsettler/core/behavior_tree"
+)
 
 // Wait represents wait task.
 type Wait struct {
@@ -31,4 +35,12 @@ func (task *Wait) Tick() behavior_tree.State {
 	}
 
 	return behavior_tree.Success
+}
+
+func (task *Wait) Marshal() string {
+	str := fmt.Sprintln("Wait:")
+	str += behavior_tree.Indent("waitTick: %v", task.waitTick)
+	str += behavior_tree.Indent("tick: %v", task.tick)
+
+	return str
 }

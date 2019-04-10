@@ -1,5 +1,9 @@
 package behavior_tree
 
+import (
+	"fmt"
+)
+
 // Sequence Execute their children from left to right.
 // Stop when one of their children fails.
 // If a child fails, then the sequence fails.
@@ -40,4 +44,13 @@ func (s *Sequence) Tick() State {
 			return Success
 		}
 	}
+}
+
+func (s *Sequence) Marshal() string {
+	str := fmt.Sprintln("Sequence:")
+	for _, child := range s.children {
+		str += Indent(child.Marshal())
+	}
+
+	return str
 }

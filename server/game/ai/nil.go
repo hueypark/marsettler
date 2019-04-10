@@ -6,5 +6,7 @@ import (
 )
 
 func NewNil(actor task.Actor) *behavior_tree.BehaviorTree {
+	nil := behavior_tree.NewBehaviorTree()
+
 	return nil
 }

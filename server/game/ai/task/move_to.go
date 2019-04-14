@@ -1,8 +1,6 @@
 package task
 
 import (
-	"fmt"
-
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/server/game/ai/blackboard_key"
 )
@@ -58,11 +56,20 @@ func (task *MoveTo) Tick() behavior_tree.State {
 	return behavior_tree.Running
 }
 
-func (task *MoveTo) Marshal() string {
-	str := fmt.Sprintln("MoveTo:")
-	str += behavior_tree.Indent("path: %v", task.path)
-	str += behavior_tree.Indent("moveWaitTime: %v", task.moveWaitTime)
-	str += behavior_tree.Indent("remainMoveWaitTime: %v", task.remainMoveWaitTime)
+func (task *MoveTo) MarshalYAML() (interface{}, error) {
+	type MoveTo struct {
+		Path               []int64 `yaml:"Path"`
+		MoveWaitTime       int     `yaml:"MoveWaitTime"`
+		RemainMoveWaitTime int     `yaml:"RemainMoveWaitTime"`
+	}
 
-	return str
+	return struct {
+		MoveTo `yaml:"MoveTo"`
+	}{
+		MoveTo: MoveTo{
+			Path:               task.path,
+			MoveWaitTime:       task.moveWaitTime,
+			RemainMoveWaitTime: task.remainMoveWaitTime,
+		},
+	}, nil
 }

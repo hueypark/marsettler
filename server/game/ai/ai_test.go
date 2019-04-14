@@ -17,47 +17,50 @@ func TestMarshal(t *testing.T) {
 	}{
 		{
 			`Sequence:
-- Wait:
-    waitTick: 60
-    tick: 0
-- CreateActor:
-    actorID: 2
+  Children:
+  - Wait:
+      WaitTick: 60
+      Tick: 0
+  - CreateActor:
+      ActorID: 2
 `,
 			NewCityHall(actor),
 		},
 		{
 			`Sequence:
-			Blackboard:
-				BlackboardConditionNotHasKey:
-					Key: 0
-			MoveTo:
-				path: []
-				moveWaitTime: 60
-				remainMoveWaitTime: 0
-			Wait:
-				waitTick: 60
-				tick: 0
-			CreateActor:
-				actorID: 3
-		`,
+  Children:
+  - BlackboardCondition:
+      Conditions:
+      - BlackboardConditionNotHasKey:
+          Key: 0
+      Child: FindPath
+  - MoveTo:
+      Path: []
+      MoveWaitTime: 60
+      RemainMoveWaitTime: 0
+  - Wait:
+      WaitTick: 60
+      Tick: 0
+  - CreateActor:
+      ActorID: 3
+`,
 			NewFairy(actor),
 		},
-		//{
-		//	``,
-		//	NewNil(actor),
-		//},
-		//{
-		//	`Sequence:
-		//	Blackboard:
-		//		BlackboardConditionNotHasKey:
-		//			Key: 0
-		//	MoveTo:
-		//		path: []
-		//		moveWaitTime: 60
-		//		remainMoveWaitTime: 0
-		//`,
-		//	NewWorker(actor),
-		//},
+		{
+			`Sequence:
+  Children:
+  - BlackboardCondition:
+      Conditions:
+      - BlackboardConditionNotHasKey:
+          Key: 0
+      Child: FindPath
+  - MoveTo:
+      Path: []
+      MoveWaitTime: 60
+      RemainMoveWaitTime: 0
+`,
+			NewWorker(actor),
+		},
 	}
 
 	for _, test := range tests {

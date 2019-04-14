@@ -4,8 +4,8 @@ import (
 	"github.com/hueypark/marsettler/core/behavior_tree"
 )
 
-// Blackboard is blackboard based decorator.
-type Blackboard struct {
+// BlackboardCondition is blackboard based decorator.
+type BlackboardCondition struct {
 	behavior_tree.Decorator
 
 	blackboard *behavior_tree.Blackboard
@@ -13,8 +13,8 @@ type Blackboard struct {
 }
 
 // NewBlackboard creates new blackboard.
-func NewBlackboard(blackboard *behavior_tree.Blackboard, conditions ...blackboardCondition) *Blackboard {
-	decorator := &Blackboard{
+func NewBlackboard(blackboard *behavior_tree.Blackboard, conditions ...blackboardCondition) *BlackboardCondition {
+	decorator := &BlackboardCondition{
 		blackboard: blackboard,
 		conditions: conditions,
 	}
@@ -23,7 +23,7 @@ func NewBlackboard(blackboard *behavior_tree.Blackboard, conditions ...blackboar
 }
 
 // Tick ticks task.
-func (decorator *Blackboard) Tick() behavior_tree.State {
+func (decorator *BlackboardCondition) Tick() behavior_tree.State {
 	for _, condition := range decorator.conditions {
 		if !condition.valid(decorator.blackboard) {
 			return behavior_tree.Failure
@@ -33,11 +33,16 @@ func (decorator *Blackboard) Tick() behavior_tree.State {
 	return decorator.Child().Tick()
 }
 
-func (decorator *Blackboard) MarshalYAML() (interface{}, error) {
+func (decorator *BlackboardCondition) MarshalYAML() (interface{}, error) {
+	type Blackboard struct {
+		Conditions []blackboardCondition `yaml:"Conditions"`
+		Child      behavior_tree.INode   `yaml:"Child"`
+	}
+
 	return struct {
-		Conditions []blackboardCondition `yaml:"Blackboard"`
+		Blackboard Blackboard `yaml:"BlackboardCondition"`
 	}{
-		Conditions: decorator.conditions,
+		Blackboard: Blackboard{decorator.conditions, decorator.Child()},
 	}, nil
 }
 

@@ -1,6 +1,6 @@
 package behavior_tree
 
-// State of behavior tree node.
+// State of behavior tree INode.
 type State int
 
 // Behavior tree States.

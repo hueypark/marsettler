@@ -1,11 +1,11 @@
 package behavior_tree
 
-// Node is base struct for all node.
+// Node is base struct for all INode.
 type Node struct {
 	state State
 }
 
-// Init initializes node.
+// Init initializes INode.
 func (node *Node) Init() {
 }
 
@@ -22,4 +22,13 @@ func (node *Node) SetState(state State) {
 // State returns state.
 func (node *Node) State() State {
 	return node.state
+}
+
+// INode represents the interface of the node.
+type INode interface {
+	Init()
+	Tick() State
+	SetState(state State)
+	State() State
+	MarshalYAML() (interface{}, error)
 }

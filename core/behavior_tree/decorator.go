@@ -3,17 +3,17 @@ package behavior_tree
 type Decorator struct {
 	Node
 
-	child node
+	child INode
 }
 
 func (decorator *Decorator) Init() {
 	decorator.Child().Init()
 }
 
-func (decorator *Decorator) SetChild(n node) {
+func (decorator *Decorator) SetChild(n INode) {
 	decorator.child = n
 }
 
-func (decorator *Decorator) Child() node {
+func (decorator *Decorator) Child() INode {
 	return decorator.child
 }

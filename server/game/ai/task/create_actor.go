@@ -32,7 +32,7 @@ func (task *CreateActor) Tick() behavior_tree.State {
 
 func (task *CreateActor) MarshalYAML() (interface{}, error) {
 	type CreateActor struct {
-		ActorID int64 `yaml:"actorID"`
+		ActorID int64 `yaml:"ActorID"`
 	}
 
 	return struct {

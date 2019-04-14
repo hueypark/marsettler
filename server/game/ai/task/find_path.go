@@ -30,6 +30,6 @@ func (task *FindPath) Tick() behavior_tree.State {
 	return behavior_tree.Success
 }
 
-func (task *FindPath) Marshal() string {
-	return "FindPath"
+func (task *FindPath) MarshalYAML() (interface{}, error) {
+	return "FindPath", nil
 }

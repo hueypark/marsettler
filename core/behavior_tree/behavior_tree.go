@@ -2,15 +2,8 @@ package behavior_tree
 
 // BehaviorTree is tree for artificial intelligence.
 type BehaviorTree struct {
-	root       node
+	root       INode
 	blackboard *Blackboard
-}
-
-type node interface {
-	Init()
-	Tick() State
-	SetState(state State)
-	State() State
 }
 
 // NewBehaviorTree creates new BehaviorTree.
@@ -27,8 +20,8 @@ func (bt *BehaviorTree) Blackboard() *Blackboard {
 	return bt.blackboard
 }
 
-// SetRoot sets root node.
-func (bt *BehaviorTree) SetRoot(root node) {
+// SetRoot sets root INode.
+func (bt *BehaviorTree) SetRoot(root INode) {
 	bt.root = root
 }
 
@@ -45,8 +38,8 @@ func (bt *BehaviorTree) MarshalYAML() (interface{}, error) {
 	return &bt.root, nil
 }
 
-// Update updates node.
-func Tick(n node) State {
+// Update updates INode.
+func Tick(n INode) State {
 	if n.State() != Running {
 		n.Init()
 		n.SetState(Running)

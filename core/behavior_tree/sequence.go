@@ -1,9 +1,5 @@
 package behavior_tree
 
-import (
-	"fmt"
-)
-
 // Sequence Execute their children from left to right.
 // Stop when one of their children fails.
 // If a child fails, then the sequence fails.
@@ -46,11 +42,10 @@ func (s *Sequence) Tick() State {
 	}
 }
 
-func (s *Sequence) Marshal() string {
-	str := fmt.Sprintln("Sequence:")
-	for _, child := range s.children {
-		str += Indent(child.Marshal())
-	}
-
-	return str
+func (s *Sequence) MarshalYAML() (interface{}, error) {
+	return struct {
+		Children []node `yaml:"Sequence"`
+	}{
+		Children: s.children,
+	}, nil
 }

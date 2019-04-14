@@ -11,7 +11,6 @@ type node interface {
 	Tick() State
 	SetState(state State)
 	State() State
-	Marshal() string
 }
 
 // NewBehaviorTree creates new BehaviorTree.
@@ -42,12 +41,8 @@ func (bt *BehaviorTree) Tick() {
 	Tick(bt.root)
 }
 
-func (bt *BehaviorTree) Marshal() string {
-	if bt.root == nil {
-		return ""
-	}
-
-	return bt.root.Marshal()
+func (bt *BehaviorTree) MarshalYAML() (interface{}, error) {
+	return &bt.root, nil
 }
 
 // Update updates node.

@@ -1,8 +1,6 @@
 package decorator
 
 import (
-	"fmt"
-
 	"github.com/hueypark/marsettler/core/behavior_tree"
 )
 
@@ -35,18 +33,17 @@ func (decorator *Blackboard) Tick() behavior_tree.State {
 	return decorator.Child().Tick()
 }
 
-func (decorator *Blackboard) Marshal() string {
-	str := fmt.Sprintln("Blackboard:")
-	for _, condition := range decorator.conditions {
-		str += behavior_tree.Indent(condition.marshal())
-	}
-
-	return str
+func (decorator *Blackboard) MarshalYAML() (interface{}, error) {
+	return struct {
+		Conditions []blackboardCondition `yaml:"Blackboard"`
+	}{
+		Conditions: decorator.conditions,
+	}, nil
 }
 
 // BlackboardConditionHasKey is a conditional expression that checks for the presence of a key.
 type BlackboardConditionHasKey struct {
-	Key behavior_tree.BlackboardKey
+	Key behavior_tree.BlackboardKey `yaml:"Key"`
 }
 
 func (condition *BlackboardConditionHasKey) valid(blackboard *behavior_tree.Blackboard) bool {
@@ -57,16 +54,17 @@ func (condition *BlackboardConditionHasKey) valid(blackboard *behavior_tree.Blac
 	return true
 }
 
-func (condition *BlackboardConditionHasKey) marshal() string {
-	str := fmt.Sprintln("BlackboardConditionHasKey:")
-	str += behavior_tree.Indent("Key: %v", condition.Key)
-
-	return str
+func (condition *BlackboardConditionHasKey) MarshalYAML() (interface{}, error) {
+	return struct {
+		BlackboardConditionHasKey `yaml:"BlackboardConditionHasKey"`
+	}{
+		BlackboardConditionHasKey: *condition,
+	}, nil
 }
 
 // BlackboardConditionNotHasKey is a conditional expression that checks for the presence of a key.
 type BlackboardConditionNotHasKey struct {
-	Key behavior_tree.BlackboardKey
+	Key behavior_tree.BlackboardKey `yaml:"Key"`
 }
 
 func (condition *BlackboardConditionNotHasKey) valid(blackboard *behavior_tree.Blackboard) bool {
@@ -77,14 +75,14 @@ func (condition *BlackboardConditionNotHasKey) valid(blackboard *behavior_tree.B
 	return true
 }
 
-func (condition *BlackboardConditionNotHasKey) marshal() string {
-	str := fmt.Sprintln("BlackboardConditionNotHasKey:")
-	str += behavior_tree.Indent("Key: %v", condition.Key)
-
-	return str
+func (condition *BlackboardConditionNotHasKey) MarshalYAML() (interface{}, error) {
+	return struct {
+		BlackboardConditionNotHasKey `yaml:"BlackboardConditionNotHasKey"`
+	}{
+		BlackboardConditionNotHasKey: *condition,
+	}, nil
 }
 
 type blackboardCondition interface {
 	valid(blackboard *behavior_tree.Blackboard) bool
-	marshal() string
 }

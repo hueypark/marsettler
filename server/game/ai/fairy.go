@@ -11,7 +11,7 @@ func NewFairy(actor task.Actor) *behavior_tree.BehaviorTree {
 	fairy := behavior_tree.NewBehaviorTree()
 
 	sequence := behavior_tree.NewSequence()
-	hasNotPath := decorator.NewBlackboard(fairy.Blackboard(), &decorator.BlackboardConditionNotHasKey{Key: blackboard_key.Path})
+	hasNotPath := decorator.NewBlackboardCondition(fairy.Blackboard(), &decorator.BlackboardConditionNotHasKey{Key: blackboard_key.Path})
 	hasNotPath.SetChild(task.NewFindPath(fairy.Blackboard(), actor))
 	sequence.AddChild(hasNotPath)
 	sequence.AddChild(task.NewMoveTo(fairy.Blackboard(), actor, 60))

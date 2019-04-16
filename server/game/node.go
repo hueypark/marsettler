@@ -88,7 +88,7 @@ func (node *Node) Render(screen *ebiten.Image) {
 }
 
 // NewActor creates new actor.
-func (node *Node) NewActor(id int64) *Actor {
+func (node *Node) NewActor(id int) *Actor {
 	actorData := data.GetActor(id)
 	if actorData == nil {
 		log.Println("actor data is nil", id)

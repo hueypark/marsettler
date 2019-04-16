@@ -9,11 +9,15 @@ type BlackboardCondition struct {
 	behavior_tree.Decorator
 
 	blackboard *behavior_tree.Blackboard
-	conditions []blackboardCondition
+	conditions BlackboardConditions
 }
 
-// NewBlackboard creates new blackboard.
-func NewBlackboard(blackboard *behavior_tree.Blackboard, conditions ...blackboardCondition) *BlackboardCondition {
+type BlackboardConditions []blackboardCondition
+
+// NewBlackboardCondition creates new blackboard condition.
+func NewBlackboardCondition(
+	blackboard *behavior_tree.Blackboard, conditions ...blackboardCondition,
+) *BlackboardCondition {
 	decorator := &BlackboardCondition{
 		blackboard: blackboard,
 		conditions: conditions,
@@ -34,21 +38,20 @@ func (decorator *BlackboardCondition) Tick() behavior_tree.State {
 }
 
 func (decorator *BlackboardCondition) MarshalYAML() (interface{}, error) {
-	type Blackboard struct {
+	return struct {
+		Name       string                `yaml:"Name"`
 		Conditions []blackboardCondition `yaml:"Conditions"`
 		Child      behavior_tree.INode   `yaml:"Child"`
-	}
-
-	return struct {
-		Blackboard Blackboard `yaml:"BlackboardCondition"`
 	}{
-		Blackboard: Blackboard{decorator.conditions, decorator.Child()},
+		Name:       "BlackboardCondition",
+		Conditions: decorator.conditions,
+		Child:      decorator.Child(),
 	}, nil
 }
 
 // BlackboardConditionHasKey is a conditional expression that checks for the presence of a key.
 type BlackboardConditionHasKey struct {
-	Key behavior_tree.BlackboardKey `yaml:"Key"`
+	Key behavior_tree.BlackboardKey
 }
 
 func (condition *BlackboardConditionHasKey) valid(blackboard *behavior_tree.Blackboard) bool {
@@ -61,15 +64,17 @@ func (condition *BlackboardConditionHasKey) valid(blackboard *behavior_tree.Blac
 
 func (condition *BlackboardConditionHasKey) MarshalYAML() (interface{}, error) {
 	return struct {
-		BlackboardConditionHasKey `yaml:"BlackboardConditionHasKey"`
+		Name string                      `yaml:"Name"`
+		Key  behavior_tree.BlackboardKey `yaml:"Key"`
 	}{
-		BlackboardConditionHasKey: *condition,
+		Name: "HasKey",
+		Key:  condition.Key,
 	}, nil
 }
 
 // BlackboardConditionNotHasKey is a conditional expression that checks for the presence of a key.
 type BlackboardConditionNotHasKey struct {
-	Key behavior_tree.BlackboardKey `yaml:"Key"`
+	Key behavior_tree.BlackboardKey `yaml:"NotHasKey"`
 }
 
 func (condition *BlackboardConditionNotHasKey) valid(blackboard *behavior_tree.Blackboard) bool {
@@ -82,9 +87,11 @@ func (condition *BlackboardConditionNotHasKey) valid(blackboard *behavior_tree.B
 
 func (condition *BlackboardConditionNotHasKey) MarshalYAML() (interface{}, error) {
 	return struct {
-		BlackboardConditionNotHasKey `yaml:"BlackboardConditionNotHasKey"`
+		Name string                      `yaml:"Name"`
+		Key  behavior_tree.BlackboardKey `yaml:"Key"`
 	}{
-		BlackboardConditionNotHasKey: *condition,
+		Name: "NotHasKey",
+		Key:  condition.Key,
 	}, nil
 }
 

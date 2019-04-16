@@ -57,19 +57,15 @@ func (task *MoveTo) Tick() behavior_tree.State {
 }
 
 func (task *MoveTo) MarshalYAML() (interface{}, error) {
-	type MoveTo struct {
+	return struct {
+		Name               string  `yaml:"Name"`
 		Path               []int64 `yaml:"Path"`
 		MoveWaitTime       int     `yaml:"MoveWaitTime"`
 		RemainMoveWaitTime int     `yaml:"RemainMoveWaitTime"`
-	}
-
-	return struct {
-		MoveTo `yaml:"MoveTo"`
 	}{
-		MoveTo: MoveTo{
-			Path:               task.path,
-			MoveWaitTime:       task.moveWaitTime,
-			RemainMoveWaitTime: task.remainMoveWaitTime,
-		},
+		Name:               "MoveTo",
+		Path:               task.path,
+		MoveWaitTime:       task.moveWaitTime,
+		RemainMoveWaitTime: task.remainMoveWaitTime,
 	}, nil
 }

@@ -31,5 +31,9 @@ func (task *FindPath) Tick() behavior_tree.State {
 }
 
 func (task *FindPath) MarshalYAML() (interface{}, error) {
-	return "FindPath", nil
+	return struct {
+		Name string `yaml:"Name"`
+	}{
+		Name: "FindPath",
+	}, nil
 }

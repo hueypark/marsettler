@@ -36,17 +36,13 @@ func (task *Wait) Tick() behavior_tree.State {
 }
 
 func (task *Wait) MarshalYAML() (interface{}, error) {
-	type Wait struct {
-		WaitTick int `yaml:"WaitTick"`
-		Tick     int `yaml:"Tick"`
-	}
-
 	return struct {
-		Wait `yaml:"Wait"`
+		Name     string `yaml:"Name"`
+		WaitTick int    `yaml:"WaitTick"`
+		Tick     int    `yaml:"Tick"`
 	}{
-		Wait: Wait{
-			WaitTick: task.waitTick,
-			Tick:     task.tick,
-		},
+		Name:     "Wait",
+		WaitTick: task.waitTick,
+		Tick:     task.tick,
 	}, nil
 }

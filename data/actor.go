@@ -8,7 +8,7 @@ import (
 	"github.com/hueypark/marsettler/server/game/ai/task"
 )
 
-func GetActor(id int64) *Actor {
+func GetActor(id int) *Actor {
 	return actors[id]
 }
 
@@ -18,7 +18,7 @@ type Actor struct {
 	NewBehaviorTree func(actor task.Actor) *behavior_tree.BehaviorTree
 }
 
-var actors = map[int64]*Actor{
+var actors = map[int]*Actor{
 	1: {
 		"CityHall",
 		asset.CityHall,

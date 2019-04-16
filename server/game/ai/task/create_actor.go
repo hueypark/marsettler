@@ -9,10 +9,10 @@ type CreateActor struct {
 	behavior_tree.Node
 
 	actor   Actor
-	actorID int64
+	actorID int
 }
 
-func NewCreateActor(actor Actor, actorID int64) *CreateActor {
+func NewCreateActor(actor Actor, actorID int) *CreateActor {
 	task := &CreateActor{
 		actor:   actor,
 		actorID: actorID,
@@ -31,15 +31,11 @@ func (task *CreateActor) Tick() behavior_tree.State {
 }
 
 func (task *CreateActor) MarshalYAML() (interface{}, error) {
-	type CreateActor struct {
-		ActorID int64 `yaml:"ActorID"`
-	}
-
 	return struct {
-		CreateActor `yaml:"CreateActor"`
+		Name    string `yaml:"Name"`
+		ActorID int    `yaml:"ActorID"`
 	}{
-		CreateActor: CreateActor{
-			ActorID: task.actorID,
-		},
+		Name:    "CreateActor",
+		ActorID: task.actorID,
 	}, nil
 }

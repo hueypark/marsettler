@@ -56,7 +56,7 @@ func (actor *Actor) Tick() {
 	}
 }
 
-func (actor *Actor) CreateActor(id int64) {
+func (actor *Actor) CreateActor(id int) {
 	actor.node.NewActor(id)
 }
 

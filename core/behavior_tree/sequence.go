@@ -43,13 +43,11 @@ func (s *Sequence) Tick() State {
 }
 
 func (s *Sequence) MarshalYAML() (interface{}, error) {
-	type Sequence struct {
-		Children []INode `yaml:"Children"`
-	}
-
 	return struct {
-		Sequence `yaml:"Sequence"`
+		Name     string  `yaml:"Name"`
+		Children []INode `yaml:"Children"`
 	}{
-		Sequence: Sequence{s.children},
+		Name:     "Sequence",
+		Children: s.children,
 	}, nil
 }

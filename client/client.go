@@ -61,7 +61,7 @@ func tick(screen *ebiten.Image) error {
 
 func tickRenderer(cursorPosition vector.Vector) {
 	_, dy := ebiten.Wheel()
-	renderer.Zoom(dy * 0.1)
+	renderer.Zoom(dy*0.1, cursorPosition)
 
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		renderer.OnScrollStart(cursorPosition)

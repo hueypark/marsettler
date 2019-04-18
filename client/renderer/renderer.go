@@ -54,11 +54,17 @@ func Render(screen *ebiten.Image, img *ebiten.Image, position vector.Vector) {
 }
 
 // Zoom process zoom.
-func Zoom(delta float64) {
+func Zoom(delta float64, cursorPosition vector.Vector) {
+	oldPosition := WorldPosition(cursorPosition)
+
 	zoom += delta
 	if zoom <= minZoom {
 		zoom = minZoom
 	}
+
+	newPosition := WorldPosition(cursorPosition)
+	deltaPosition := newPosition.Sub(oldPosition)
+	cameraPosition = cameraPosition.Add(deltaPosition.Mul(zoom))
 }
 
 // OnScrollStart process scroll start event.

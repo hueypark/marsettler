@@ -8,6 +8,8 @@ import (
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/data"
+	"github.com/hueypark/marsettler/server/game/ai"
 )
 
 // Actor represent actor.
@@ -19,12 +21,14 @@ type Actor struct {
 }
 
 // NewActor creates new actor.
-func NewActor(node *Node, image *ebiten.Image) *Actor {
+func NewActor(node *Node, actorData *data.Actor) *Actor {
 	actor := &Actor{
 		id:    id_generator.Generate(),
 		node:  node,
-		image: image,
+		image: actorData.Image,
 	}
+
+	actor.SetBehaviorTree(ai.NewAI(actor, actorData.BehaviorTree))
 
 	return actor
 }

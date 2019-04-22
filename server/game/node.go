@@ -94,8 +94,7 @@ func (node *Node) NewActor(id int) *Actor {
 		log.Println("actor data is nil", id)
 		return nil
 	}
-	actor := NewActor(node, actorData.Image)
-	actor.SetBehaviorTree(actorData.NewBehaviorTree(actor))
+	actor := NewActor(node, actorData)
 
 	node.actors[actor.ID()] = actor
 

@@ -3,9 +3,6 @@ package data
 import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/client/asset"
-	"github.com/hueypark/marsettler/core/behavior_tree"
-	"github.com/hueypark/marsettler/server/game/ai"
-	"github.com/hueypark/marsettler/server/game/ai/task"
 )
 
 func GetActor(id int) *Actor {
@@ -13,30 +10,66 @@ func GetActor(id int) *Actor {
 }
 
 type Actor struct {
-	Name            string
-	Image           *ebiten.Image
-	NewBehaviorTree func(actor task.Actor) *behavior_tree.BehaviorTree
+	Name         string
+	Image        *ebiten.Image
+	BehaviorTree string
 }
 
 var actors = map[int]*Actor{
 	1: {
 		"CityHall",
 		asset.CityHall,
-		ai.NewCityHall,
+		`Name: Sequence
+Children:
+- Name: Wait
+  WaitTick: 60
+  Tick: 0
+- Name: CreateActor
+  ActorID: 2
+`,
 	},
 	2: {
 		"Worker",
 		asset.Worker,
-		ai.NewWorker,
+		`Name: Sequence
+Children:
+- Name: BlackboardCondition
+  Conditions:
+  - Name: NotHasKey
+    Key: 0
+  Child:
+    Name: FindPath
+- Name: MoveTo
+  Path: []
+  MoveWaitTime: 60
+  RemainMoveWaitTime: 0
+`,
 	},
 	3: {
 		"Blueberry",
 		asset.Blueberry,
-		ai.NewNil,
+		``,
 	},
 	100000: {
 		"Fairy",
 		asset.Fairy,
-		ai.NewFairy,
+		`Name: Sequence
+Children:
+- Name: BlackboardCondition
+  Conditions:
+  - Name: NotHasKey
+    Key: 0
+  Child:
+    Name: FindPath
+- Name: MoveTo
+  Path: []
+  MoveWaitTime: 60
+  RemainMoveWaitTime: 0
+- Name: Wait
+  WaitTick: 60
+  Tick: 0
+- Name: CreateActor
+  ActorID: 3
+`,
 	},
 }

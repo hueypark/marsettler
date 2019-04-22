@@ -20,6 +20,8 @@ var (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	world = game.NewWorld()
 	centerNode := world.GetCenterNode()
 	cursor = ui.NewCursor(centerNode)

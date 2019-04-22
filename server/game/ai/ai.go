@@ -81,6 +81,8 @@ func newNode(actor task.Actor, blackboard *behavior_tree.Blackboard, data map[in
 		taskWait := task.NewWait(waitTick)
 
 		node = taskWait
+	case nil:
+		node = nil
 	default:
 		log.Println(name, data)
 	}

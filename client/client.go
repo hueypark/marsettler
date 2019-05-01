@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
+	"github.com/hueypark/marsettler/client/config"
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
@@ -17,19 +18,18 @@ import (
 var (
 	world  *game.World
 	cursor *ui.Cursor
+	menu   *ui.Menu
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	world = game.NewWorld()
-	centerNode := world.GetCenterNode()
 	cursor = ui.NewCursor()
-	centerNode.NewActor(1)
-	centerNode.NewActor(100000)
+	menu = ui.NewMenu()
 
 	ebiten.SetRunnableInBackground(true)
-	err := ebiten.Run(tick, 800, 600, 1, "Marsettler")
+	err := ebiten.Run(tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -46,6 +46,12 @@ func tick(screen *ebiten.Image) error {
 
 	world.Tick()
 
+	render(screen)
+
+	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
+}
+
+func render(screen *ebiten.Image) {
 	world.ForEachNode(func(node *game.Node) {
 		node.Render(screen)
 	})
@@ -60,7 +66,7 @@ func tick(screen *ebiten.Image) error {
 		cursor.Render(screen)
 	}
 
-	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
+	menu.Render(screen)
 }
 
 func tickRenderer(cursorPosition vector.Vector) {

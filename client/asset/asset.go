@@ -12,18 +12,20 @@ import (
 var (
 	Blueberry *ebiten.Image
 	CityHall  *ebiten.Image
+	Cursor    *ebiten.Image
 	Fairy     *ebiten.Image
 	Grass     *ebiten.Image
-	Cursor    *ebiten.Image
+	Menu      *ebiten.Image
 	Worker    *ebiten.Image
 )
 
 func init() {
 	Blueberry = newImageFromFileBytes(blueberry)
 	CityHall = newImageFromFileBytes(city_hall)
+	Cursor = newImageFromFileBytes(cursor)
 	Fairy = newImageFromFileBytes(fairy)
 	Grass = newImageFromFileBytes(grass)
-	Cursor = newImageFromFileBytes(cursor)
+	Menu = newImageFromFileBytes(menu)
 	Worker = newImageFromFileBytes(worker)
 }
 

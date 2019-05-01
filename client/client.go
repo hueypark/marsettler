@@ -24,7 +24,7 @@ func main() {
 
 	world = game.NewWorld()
 	centerNode := world.GetCenterNode()
-	cursor = ui.NewCursor(centerNode)
+	cursor = ui.NewCursor()
 	centerNode.NewActor(1)
 	centerNode.NewActor(100000)
 
@@ -56,7 +56,9 @@ func tick(screen *ebiten.Image) error {
 		})
 	})
 
-	cursor.Render(screen)
+	if cursor.HasNode() {
+		cursor.Render(screen)
+	}
 
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
 }
@@ -80,6 +82,8 @@ func tickCollision(worldPosition vector.Vector) {
 	if !inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
 		return
 	}
+
+	cursor.SetNode(nil)
 
 	world.ForEachNode(func(node *game.Node) {
 		if collision_check.PointToAABB(worldPosition, node) {

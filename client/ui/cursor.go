@@ -14,8 +14,8 @@ type Cursor struct {
 }
 
 // NewCursor create new cursor.
-func NewCursor(node *game.Node) *Cursor {
-	cursor := &Cursor{node}
+func NewCursor() *Cursor {
+	cursor := &Cursor{}
 
 	return cursor
 }
@@ -33,4 +33,12 @@ func (cursor *Cursor) Position() vector.Vector {
 // SetNode sets node.
 func (cursor *Cursor) SetNode(node *game.Node) {
 	cursor.node = node
+}
+
+func (cursor *Cursor) HasNode() bool {
+	if cursor.node == nil {
+		return false
+	}
+
+	return true
 }

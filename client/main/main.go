@@ -43,7 +43,7 @@ func tick(screen *ebiten.Image) error {
 	worldPosition := renderer.WorldPosition(cursorPosition)
 
 	tickRenderer(cursorPosition)
-	tickCollision(worldPosition)
+	tickCollision(cursorPosition, worldPosition)
 
 	world.Tick()
 
@@ -85,8 +85,12 @@ func tickRenderer(cursorPosition vector.Vector) {
 	renderer.Tick(cursorPosition)
 }
 
-func tickCollision(worldPosition vector.Vector) {
+func tickCollision(cursorPosition, worldPosition vector.Vector) {
 	if !inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+		return
+	}
+
+	if menu.CheckCollision(cursorPosition) {
 		return
 	}
 

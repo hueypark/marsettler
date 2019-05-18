@@ -1,13 +1,18 @@
 package ui
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/text"
+	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics/collision_check"
 )
 
 type Layer struct {
+	name        string
 	image       *ebiten.Image
 	position    vector.Vector
 	onCollision func()
@@ -15,12 +20,17 @@ type Layer struct {
 	children    []*Layer
 }
 
-func NewLayer(image *ebiten.Image, position vector.Vector, onCollision func(), parent *Layer) *Layer {
+func NewLayer(name string, image *ebiten.Image, position vector.Vector, onCollision func(), parent *Layer) *Layer {
 	layer := &Layer{
+		name:        name,
 		image:       image,
 		position:    position,
 		onCollision: onCollision,
 		parent:      parent,
+	}
+
+	if parent != nil {
+		parent.AddChild(layer)
 	}
 
 	return layer
@@ -72,7 +82,11 @@ func (layer *Layer) Top() float64 {
 
 func (layer *Layer) Render(screen *ebiten.Image) {
 	sizeWidth, sizeHeight := layer.image.Size()
-	renderer.RenderUI(screen, layer.image, layer.position.X-float64(sizeWidth/2), layer.position.Y-float64(sizeHeight/2))
+	screenPosition := layer.ScreenPosition()
+	posX, posY := screenPosition.X-float64(sizeWidth/2), screenPosition.Y-float64(sizeHeight/2)
+	renderer.RenderUI(screen, layer.image, posX, posY)
+
+	text.Draw(screen, layer.name, asset.UiFont, int(posX), int(posY), color.White)
 
 	for _, child := range layer.children {
 		child.Render(screen)

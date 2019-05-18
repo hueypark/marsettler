@@ -1,13 +1,12 @@
 package client
 
 import (
-	"log"
-
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/client/config"
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/data"
 )
 
 type Menu struct {
@@ -18,12 +17,19 @@ func NewMenu() *Menu {
 	_, sizeHeight := asset.Menu.Size()
 
 	layer := ui.NewLayer(
+		"",
 		asset.Menu,
 		vector.Vector{X: float64(config.ScreenWidth / 2), Y: float64(config.ScreenHeight - (sizeHeight / 2))},
-		func() {
-			log.Println("I am menu.")
-		},
+		nil,
 		nil)
+
+	buttonCount := len(data.Buttons())
+	space := 50.0
+	halfSpace := space * 0.5
+	left := halfSpace - float64(buttonCount)*halfSpace
+	for i, button := range data.Buttons() {
+		ui.NewLayer(button.Name, button.Image, vector.Vector{X: left + space*float64(i), Y: 0}, button.OnClick, layer)
+	}
 
 	menu := &Menu{layer}
 

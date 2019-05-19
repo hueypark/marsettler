@@ -5,19 +5,21 @@ import (
 	"github.com/hueypark/marsettler/client/asset"
 )
 
-func GetActor(id int) *Actor {
+func Actor(id int) *ActorData {
 	return actors[id]
 }
 
-type Actor struct {
+type ActorData struct {
 	Name         string
+	Abbreviation string
 	Image        *ebiten.Image
 	BehaviorTree string
 }
 
-var actors = map[int]*Actor{
+var actors = map[int]*ActorData{
 	1: {
 		"CityHall",
+		"CH",
 		asset.CityHall,
 		`Name: Sequence
 Children:
@@ -30,6 +32,7 @@ Children:
 	},
 	2: {
 		"Worker",
+		"W",
 		asset.Worker,
 		`Name: Sequence
 Children:
@@ -43,33 +46,6 @@ Children:
   Path: []
   MoveWaitTime: 60
   RemainMoveWaitTime: 0
-`,
-	},
-	3: {
-		"Blueberry",
-		asset.Blueberry,
-		``,
-	},
-	100000: {
-		"Fairy",
-		asset.Fairy,
-		`Name: Sequence
-Children:
-- Name: BlackboardCondition
-  Conditions:
-  - Name: NotHasKey
-    Key: 0
-  Child:
-    Name: FindPath
-- Name: MoveTo
-  Path: []
-  MoveWaitTime: 60
-  RemainMoveWaitTime: 0
-- Name: Wait
-  WaitTick: 60
-  Tick: 0
-- Name: CreateActor
-  ActorID: 3
 `,
 	},
 }

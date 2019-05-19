@@ -19,7 +19,7 @@ type Actor struct {
 }
 
 // NewActor creates new actor.
-func NewActor(actorData *data.Actor) *Actor {
+func NewActor(actorData *data.ActorData) *Actor {
 	actor := &Actor{
 		id:    id_generator.Generate(),
 		image: actorData.Image,

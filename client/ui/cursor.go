@@ -2,20 +2,41 @@ package ui
 
 import (
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hueypark/marsettler/core/math/vector"
 )
 
 // Cursor represent cursor.
 type Cursor struct {
+	onClick func(cursorPosition vector.Vector)
+	render  func(screen *ebiten.Image, cursorPosition vector.Vector)
 }
 
-// NewCursor create new cursor.
-func NewCursor() *Cursor {
-	cursor := &Cursor{}
+func (cursor *Cursor) Clear() {
+	cursor.onClick = nil
+	cursor.render = nil
+}
 
-	return cursor
+func (cursor *Cursor) OnClick(cursorPosition vector.Vector) {
+	if cursor.onClick == nil {
+		return
+	}
+
+	cursor.onClick(cursorPosition)
 }
 
 // Render renders cursor.
-func (cursor *Cursor) Render(screen *ebiten.Image) {
-	//renderer.Render(screen, asset.Cursor, cursor.Position())
+func (cursor *Cursor) Render(screen *ebiten.Image, cursorPosition vector.Vector) {
+	if cursor.render == nil {
+		return
+	}
+
+	cursor.render(screen, cursorPosition)
+}
+
+func (cursor *Cursor) Set(
+	onClick func(cursorPosition vector.Vector),
+	render func(screen *ebiten.Image, cursorPosition vector.Vector)) {
+
+	cursor.onClick = onClick
+	cursor.render = render
 }

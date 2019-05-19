@@ -1,9 +1,13 @@
 package client
 
 import (
+	"log"
+
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/client/config"
+	"github.com/hueypark/marsettler/client/ctx"
+	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/data"
@@ -23,12 +27,27 @@ func NewMenu() *Menu {
 		nil,
 		nil)
 
-	buttonCount := len(data.Buttons())
+	buildingCount := len(data.Buildings())
 	space := 50.0
 	halfSpace := space * 0.5
-	left := halfSpace - float64(buttonCount)*halfSpace
-	for i, button := range data.Buttons() {
-		ui.NewLayer(button.Name, button.Image, vector.Vector{X: left + space*float64(i), Y: 0}, button.OnClick, layer)
+	left := halfSpace - float64(buildingCount)*halfSpace
+	for i, building := range data.Buildings() {
+		actorData := data.Actor(building.ActorID)
+		ui.NewLayer(
+			actorData.Abbreviation,
+			actorData.Image,
+			vector.Vector{X: left + space*float64(i), Y: 0},
+			func() {
+				ctx.Cursor.Set(
+					func(cursorPosition vector.Vector) {
+						log.Println(actorData.Name + " cursor!")
+					},
+					func(screen *ebiten.Image, cursorPosition vector.Vector) {
+						renderer.RenderUI(screen, actorData.Image, cursorPosition.X, cursorPosition.Y)
+					},
+				)
+			},
+			layer)
 	}
 
 	menu := &Menu{layer}

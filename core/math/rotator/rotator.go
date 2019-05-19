@@ -3,7 +3,7 @@ package rotator
 import (
 	"math"
 
-	"gitlab.com/legionary/legionary/core/math/vector"
+	"github.com/hueypark/marsettler/core/math/vector"
 )
 
 // Rotator represent roate ob object.

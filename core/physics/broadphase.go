@@ -5,7 +5,7 @@ import "github.com/hueypark/marsettler/core/math/vector"
 func broadphase(bodies map[int64]Body) (contacts []Contact) {
 	for _, lhs := range bodies {
 		for _, rhs := range bodies {
-			if lhs.Id() <= rhs.Id() {
+			if lhs.ID() <= rhs.ID() {
 				continue
 			}
 

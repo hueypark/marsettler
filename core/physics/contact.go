@@ -48,10 +48,8 @@ func (contact *Contact) solveCollision() {
 		contact.lhs.OnCollision(contact.rhs, contact.normal, contact.penetration)
 		contact.rhs.OnCollision(contact.lhs, contact.normal.Invert(), contact.penetration)
 
-		if contact.lhs.SimulatePhysics() && contact.rhs.SimulatePhysics() {
-			contact.lhs.SetPosition(contact.lhs.Position().Add(contact.normal.Mul(halfPen)))
-			contact.rhs.SetPosition(contact.rhs.Position().Add(contact.normal.Mul(-halfPen)))
-		}
+		contact.lhs.SetPosition(contact.lhs.Position().Add(contact.normal.Mul(halfPen)))
+		contact.rhs.SetPosition(contact.rhs.Position().Add(contact.normal.Mul(-halfPen)))
 	}
 }
 

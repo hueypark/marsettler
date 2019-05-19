@@ -7,24 +7,24 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
-	"github.com/hueypark/marsettler/client"
 	"github.com/hueypark/marsettler/client/config"
 	"github.com/hueypark/marsettler/client/ctx"
 	"github.com/hueypark/marsettler/client/renderer"
+	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/server/game"
 )
 
 var (
 	world *game.World
-	menu  *client.Menu
+	menu  *ui.Menu
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	world = game.NewWorld()
-	menu = client.NewMenu()
+	menu = ui.NewMenu()
 
 	ebiten.SetRunnableInBackground(true)
 	err := ebiten.Run(tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")

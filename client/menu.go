@@ -6,9 +6,9 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/client/config"
+	"github.com/hueypark/marsettler/client/core/ui"
 	"github.com/hueypark/marsettler/client/ctx"
 	"github.com/hueypark/marsettler/client/renderer"
-	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/data"
 )

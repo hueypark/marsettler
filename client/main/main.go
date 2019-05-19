@@ -10,23 +10,19 @@ import (
 	"github.com/hueypark/marsettler/client"
 	"github.com/hueypark/marsettler/client/config"
 	"github.com/hueypark/marsettler/client/renderer"
-	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/core/physics/collision_check"
 	"github.com/hueypark/marsettler/server/game"
 )
 
 var (
-	world  *game.World
-	cursor *ui.Cursor
-	menu   *client.Menu
+	world *game.World
+	menu  *client.Menu
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	world = game.NewWorld()
-	cursor = ui.NewCursor()
 	menu = client.NewMenu()
 
 	ebiten.SetRunnableInBackground(true)
@@ -53,19 +49,19 @@ func tick(screen *ebiten.Image) error {
 }
 
 func render(screen *ebiten.Image) {
-	world.ForEachNode(func(node *game.Node) {
-		node.Render(screen)
-	})
+	//world.ForEachNode(func(node *game.Node) {
+	//	node.Render(screen)
+	//})
+	//
+	//world.ForEachNode(func(node *game.Node) {
+	//	node.ForEachActor(func(actor *game.Actor) {
+	//		actor.Render(screen)
+	//	})
+	//})
 
-	world.ForEachNode(func(node *game.Node) {
-		node.ForEachActor(func(actor *game.Actor) {
-			actor.Render(screen)
-		})
-	})
-
-	if cursor.HasNode() {
-		cursor.Render(screen)
-	}
+	//if cursor.HasNode() {
+	//	cursor.Render(screen)
+	//}
 
 	menu.Render(screen)
 }
@@ -94,11 +90,9 @@ func tickCollision(cursorPosition, worldPosition vector.Vector) {
 		return
 	}
 
-	cursor.SetNode(nil)
-
-	world.ForEachNode(func(node *game.Node) {
-		if collision_check.PointToAABB(worldPosition, node) {
-			cursor.SetNode(node)
-		}
-	})
+	//world.ForEachNode(func(node *game.Node) {
+	//	if collision_check.PointToAABB(worldPosition, node) {
+	//		cursor.SetNode(node)
+	//	}
+	//})
 }

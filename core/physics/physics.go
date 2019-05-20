@@ -13,8 +13,8 @@ func NewWorld() *World {
 	return world
 }
 
-// Update updates world.
-func (world *World) Update(delta float64) {
+// Tick updates world.
+func (world *World) Tick() {
 	contacts := broadphase(world.bodies)
 
 	for _, contact := range contacts {

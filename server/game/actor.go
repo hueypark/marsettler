@@ -6,6 +6,7 @@ import (
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics"
 	"github.com/hueypark/marsettler/data"
 	"github.com/hueypark/marsettler/server/game/ai"
 )
@@ -16,13 +17,16 @@ type Actor struct {
 	behaviorTree *behavior_tree.BehaviorTree
 	image        *ebiten.Image
 	position     vector.Vector
+	radius       float64
 }
 
 // NewActor creates new actor.
-func NewActor(actorData *data.ActorData) *Actor {
+func NewActor(actorData *data.ActorData, position vector.Vector) *Actor {
 	actor := &Actor{
-		id:    id_generator.Generate(),
-		image: actorData.Image,
+		id:       id_generator.Generate(),
+		image:    actorData.Image,
+		position: position,
+		radius:   actorData.Radius,
 	}
 
 	actor.SetBehaviorTree(ai.NewAI(actor, actorData.BehaviorTree))
@@ -30,14 +34,26 @@ func NewActor(actorData *data.ActorData) *Actor {
 	return actor
 }
 
-// SetBehaviorTree sets behavior tree.
-func (actor *Actor) SetBehaviorTree(behaviorTree *behavior_tree.BehaviorTree) {
-	actor.behaviorTree = behaviorTree
+func (actor *Actor) OnCollision(other interface{}, normal vector.Vector, penetration float64) {
+
 }
 
 // Render renders actor in screen.
 func (actor *Actor) Render(screen *ebiten.Image) {
 	renderer.Render(screen, actor.image, actor.Position())
+}
+
+// SetBehaviorTree sets behavior tree.
+func (actor *Actor) SetBehaviorTree(behaviorTree *behavior_tree.BehaviorTree) {
+	actor.behaviorTree = behaviorTree
+}
+
+func (actor *Actor) SetPosition(position vector.Vector) {
+	actor.position = position
+}
+
+func (actor *Actor) Shape() physics.Shape {
+	return physics.Circle
 }
 
 // ID returns id.
@@ -48,6 +64,10 @@ func (actor *Actor) ID() int64 {
 // Position returns position.
 func (actor *Actor) Position() vector.Vector {
 	return actor.position
+}
+
+func (actor *Actor) Radius() float64 {
+	return actor.radius
 }
 
 // Tick ticks actor.

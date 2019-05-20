@@ -12,18 +12,15 @@ import (
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/server/game"
 )
 
 var (
-	world *game.World
-	menu  *ui.Menu
+	menu *ui.Menu
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	world = game.NewWorld()
 	menu = ui.NewMenu()
 
 	ebiten.SetRunnableInBackground(true)
@@ -42,7 +39,7 @@ func tick(screen *ebiten.Image) error {
 	tickRenderer(screen, cursorPosition)
 	tickCollision(cursorPosition, worldPosition)
 
-	world.Tick()
+	ctx.World.Tick()
 
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
 }
@@ -59,11 +56,19 @@ func tickRenderer(screen *ebiten.Image, cursorPosition vector.Vector) {
 		renderer.OnScrollEnd()
 	}
 
-	ctx.Cursor.Render(screen, cursorPosition)
+	renderer.Tick(cursorPosition)
+
+	renderWorld(screen)
 
 	menu.Render(screen)
 
-	renderer.Tick(cursorPosition)
+	ctx.Cursor.Render(screen, cursorPosition)
+}
+
+func renderWorld(screen *ebiten.Image) {
+	for _, actor := range ctx.World.Actors() {
+		actor.Render(screen)
+	}
 }
 
 func tickCollision(cursorPosition, worldPosition vector.Vector) {

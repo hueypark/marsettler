@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"log"
-
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/client/config"
@@ -40,7 +38,9 @@ func NewMenu() *Menu {
 			func() {
 				ctx.Cursor.Set(
 					func(cursorPosition vector.Vector) {
-						log.Println(actorData.Name + " cursor!")
+						ctx.World.NewActor(building.ActorID, renderer.WorldPosition(cursorPosition))
+
+						ctx.Cursor.Clear()
 					},
 					func(screen *ebiten.Image, cursorPosition vector.Vector) {
 						renderer.RenderUI(screen, actorData.Image, cursorPosition.X, cursorPosition.Y)

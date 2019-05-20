@@ -7,6 +7,6 @@ type Body interface {
 	ID() int64
 	Shape() Shape
 	Position() vector.Vector
-	SetPosition(vector.Vector)
+	SetPosition(position vector.Vector)
 	OnCollision(other interface{}, normal vector.Vector, penetration float64)
 }

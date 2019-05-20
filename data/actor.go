@@ -13,6 +13,7 @@ type ActorData struct {
 	Name         string
 	Abbreviation string
 	Image        *ebiten.Image
+	Radius       float64
 	BehaviorTree string
 }
 
@@ -21,6 +22,7 @@ var actors = map[int]*ActorData{
 		"CityHall",
 		"CH",
 		asset.CityHall,
+		10,
 		`Name: Sequence
 Children:
 - Name: Wait
@@ -34,6 +36,7 @@ Children:
 		"Worker",
 		"W",
 		asset.Worker,
+		10,
 		`Name: Sequence
 Children:
 - Name: BlackboardCondition

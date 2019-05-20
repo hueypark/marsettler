@@ -55,7 +55,6 @@ func Render(screen *ebiten.Image, img *ebiten.Image, position vector.Vector) {
 
 func RenderUI(screen *ebiten.Image, img *ebiten.Image, x, y float64) {
 	op.GeoM.Reset()
-	op.GeoM.Scale(zoom, zoom)
 	op.GeoM.Translate(x, y)
 	err := screen.DrawImage(img, &op)
 	if err != nil {

@@ -1,11 +1,12 @@
 package game
 
 import (
+	"encoding/binary"
+	"log"
 	"net"
 	"sync"
 
-	"github.com/hueypark/marsettler/server/game/message"
-	"github.com/hueypark/marsettler/server/game/message/fbs"
+	"github.com/hueypark/marsettler/message"
 )
 
 var (
@@ -15,7 +16,8 @@ var (
 
 // User represents user
 type User struct {
-	conn net.Conn
+	conn   net.Conn
+	buffer []byte
 }
 
 // GetUser returns user.
@@ -28,7 +30,7 @@ func OnAccept(userID int64, conn net.Conn) {
 	mux.Lock()
 	defer mux.Unlock()
 
-	user := &User{conn}
+	user := &User{conn: conn}
 
 	users[userID] = user
 }
@@ -41,11 +43,32 @@ func OnClose(userID int64) {
 	delete(users, userID)
 }
 
-// SendLoginResult sends login result message.
-func (u *User) SendLoginResult(id int64) {
-	loginResult := message.MakeLoginResult(id)
+// Send sends message.
+func (u *User) Send(msg message.Msg) {
+	if u.conn == nil {
+		log.Println("conn is nil")
+		return
+	}
 
-	message.Write(u.conn, fbs.LoginResultID, loginResult)
+	id := msg.MsgID()
+	size, err := msg.MarshalTo(u.buffer)
+	if err != nil {
+		log.Println(err)
+	}
+
+	head := make([]byte, message.HeadSize)
+	binary.LittleEndian.PutUint32(head[0:], uint32(id))
+	binary.LittleEndian.PutUint32(head[4:], uint32(size))
+
+	_, err = u.conn.Write(head)
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = u.conn.Write(u.buffer)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 // ForEachUser executes a function for all users.

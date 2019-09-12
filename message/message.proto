@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package message;
+
+message ActorsPush {
+    repeated Actor actors = 1;
+}
+
+message Actor {
+    int64 id = 1;
+    Vector pos = 2;
+}
+
+message Vector {
+    float x = 1;
+    float y = 2;
+}

@@ -1,12 +1,9 @@
 package game
 
 import (
-	"log"
-
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics"
-	"github.com/hueypark/marsettler/data"
 )
 
 // World represents game world.
@@ -32,13 +29,7 @@ func (world *World) Actors() map[int64]*Actor {
 }
 
 func (world *World) NewActor(id int, position vector.Vector) *Actor {
-	actorData := data.Actor(id)
-	if actorData == nil {
-		log.Println("actor data is nil", id)
-		return nil
-	}
-
-	actor := NewActor(actorData, position)
+	actor := NewActor(position)
 
 	world.actors[actor.ID()] = actor
 	world.physicsWorld.AddBody(actor)
@@ -49,9 +40,4 @@ func (world *World) NewActor(id int, position vector.Vector) *Actor {
 // Tick ticks world.
 func (world *World) Tick() {
 	world.physicsWorld.Tick()
-}
-
-// RandomPath returns random path.
-func (world *World) RandomPath(length int) *[]int64 {
-	return nil
 }

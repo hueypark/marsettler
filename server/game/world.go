@@ -28,7 +28,7 @@ func (world *World) Actors() map[int64]*Actor {
 	return world.actors
 }
 
-func (world *World) NewActor(id int, position vector.Vector) *Actor {
+func (world *World) NewActor(id int64, position vector.Vector) *Actor {
 	actor := NewActor(position)
 
 	world.actors[actor.ID()] = actor
@@ -40,4 +40,7 @@ func (world *World) NewActor(id int, position vector.Vector) *Actor {
 // Tick ticks world.
 func (world *World) Tick() {
 	world.physicsWorld.Tick()
+	for _, actor := range world.actors {
+		actor.Tick()
+	}
 }

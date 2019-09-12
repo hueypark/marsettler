@@ -38,7 +38,7 @@ func NewMenu() *Menu {
 			func() {
 				ctx.Cursor.Set(
 					func(cursorPosition vector.Vector) {
-						ctx.World.NewActor(building.ActorID, renderer.WorldPosition(cursorPosition))
+						//ctx.World.NewActor(id_generator.Generate(), renderer.WorldPosition(cursorPosition))
 
 						ctx.Cursor.Clear()
 					},

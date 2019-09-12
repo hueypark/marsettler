@@ -39,8 +39,6 @@ func tick(screen *ebiten.Image) error {
 	tickRenderer(screen, cursorPosition)
 	tickCollision(cursorPosition, worldPosition)
 
-	ctx.World.Tick()
-
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
 }
 
@@ -66,9 +64,9 @@ func tickRenderer(screen *ebiten.Image, cursorPosition vector.Vector) {
 }
 
 func renderWorld(screen *ebiten.Image) {
-	for _, actor := range ctx.World.Actors() {
-		actor.Render(screen)
-	}
+	//for _, actor := range ctx.World.Actors() {
+	//	actor.Render(screen)
+	//}
 }
 
 func tickCollision(cursorPosition, worldPosition vector.Vector) {

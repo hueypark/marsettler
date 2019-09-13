@@ -9,6 +9,7 @@ server:
 .PHONY: generate
 generate:
 	protoc --gogofaster_out=. message/message.proto
+	go run cmd/generate/main.go
 
 .PHONY: test
 test:

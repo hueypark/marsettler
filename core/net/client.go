@@ -9,20 +9,15 @@ import (
 type Client struct {
 	conn    net.Conn
 	address string
-	handler func(client interface{}) error
+	handler func(conn net.Conn) error
 }
 
 // NewClient create new client
-func NewClient(address string, handler func(client interface{}) error) *Client {
-	conn, err := net.Dial("tcp", address)
-	if err != nil {
-		log.Println(err)
-	}
-
+func NewClient(address string, handler func(conn net.Conn) error) *Client {
 	client := &Client{
-		conn:    conn,
 		address: address,
-		handler: handler}
+		handler: handler,
+	}
 
 	go client.handle()
 
@@ -36,7 +31,18 @@ func (client *Client) Conn() net.Conn {
 
 func (client *Client) handle() {
 	for {
-		err := client.handler(client)
+		if client.conn == nil {
+			conn, err := net.Dial("tcp", client.address)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+
+			client.conn = conn
+			continue
+		}
+
+		err := client.handler(client.conn)
 		if err != nil {
 			log.Println(err)
 		}

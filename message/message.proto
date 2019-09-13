@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package message;
 
-message ActorsPush {
+message Actors {
     repeated Actor actors = 1;
 }
 

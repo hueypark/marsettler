@@ -9,25 +9,25 @@ import (
 	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/client/config"
 	"github.com/hueypark/marsettler/client/ctx"
+	"github.com/hueypark/marsettler/client/game"
+	"github.com/hueypark/marsettler/client/handler"
 	"github.com/hueypark/marsettler/client/renderer"
-	"github.com/hueypark/marsettler/client/ui"
 	"github.com/hueypark/marsettler/core/math/vector"
-)
-
-var (
-	menu *ui.Menu
+	"github.com/hueypark/marsettler/core/net"
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	menu = ui.NewMenu()
+	ctx.Client = net.NewClient("127.0.0.1:8080", handler.Handle)
+	ctx.World = game.NewWorld()
 
 	ebiten.SetRunnableInBackground(true)
 	err := ebiten.Run(tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 }
 
 func tick(screen *ebiten.Image) error {
@@ -58,8 +58,6 @@ func tickRenderer(screen *ebiten.Image, cursorPosition vector.Vector) {
 
 	renderWorld(screen)
 
-	menu.Render(screen)
-
 	ctx.Cursor.Render(screen, cursorPosition)
 }
 
@@ -71,10 +69,6 @@ func renderWorld(screen *ebiten.Image) {
 
 func tickCollision(cursorPosition, worldPosition vector.Vector) {
 	if !inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-		return
-	}
-
-	if menu.CheckCollision(cursorPosition) {
 		return
 	}
 

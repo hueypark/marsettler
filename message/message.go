@@ -3,7 +3,7 @@ package message
 type MsgID uint32
 
 const (
-	MsgActorPush MsgID = iota
+	MsgActors MsgID = iota
 )
 
 // HeadSize represents size of head
@@ -14,6 +14,6 @@ type Msg interface {
 	MarshalTo(dAtA []byte) (int, error)
 }
 
-func (m *ActorsPush) MsgID() MsgID {
-	return MsgActorPush
+func (m *Actors) MsgID() MsgID {
+	return MsgActors
 }

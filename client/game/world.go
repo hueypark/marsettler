@@ -1,6 +1,10 @@
 package game
 
-import "github.com/hueypark/marsettler/message"
+import (
+	"log"
+
+	"github.com/hueypark/marsettler/message"
+)
 
 type World struct {
 	actors map[int64]*Actor
@@ -16,5 +20,5 @@ func NewWorld() *World {
 }
 
 func (world *World) NewActor(msgActor *message.Actor) {
-
+	log.Fatalln(msgActor)
 }

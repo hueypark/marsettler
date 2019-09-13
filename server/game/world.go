@@ -39,6 +39,8 @@ func (world *World) NewActor(id int64, position vector.Vector) *Actor {
 
 // Tick ticks world.
 func (world *World) Tick() {
+	// TODO: Send actor information to all users in this world.
+
 	world.physicsWorld.Tick()
 	for _, actor := range world.actors {
 		actor.Tick()

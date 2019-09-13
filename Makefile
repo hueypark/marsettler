@@ -1,10 +1,10 @@
 .PHONY: client
 client:
-	go run client/client.go
+	go run client/main.go
 
 .PHONY: server
 server:
-	go run server/server.go
+	go run server/main.go
 
 .PHONY: generate
 generate:

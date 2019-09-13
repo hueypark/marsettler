@@ -120,8 +120,8 @@ func (m *Actor) GetPos() *Vector {
 }
 
 type Vector struct {
-	X float32 `protobuf:"fixed32,1,opt,name=x,proto3" json:"x,omitempty"`
-	Y float32 `protobuf:"fixed32,2,opt,name=y,proto3" json:"y,omitempty"`
+	X float64 `protobuf:"fixed64,1,opt,name=x,proto3" json:"x,omitempty"`
+	Y float64 `protobuf:"fixed64,2,opt,name=y,proto3" json:"y,omitempty"`
 }
 
 func (m *Vector) Reset()         { *m = Vector{} }
@@ -157,14 +157,14 @@ func (m *Vector) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Vector proto.InternalMessageInfo
 
-func (m *Vector) GetX() float32 {
+func (m *Vector) GetX() float64 {
 	if m != nil {
 		return m.X
 	}
 	return 0
 }
 
-func (m *Vector) GetY() float32 {
+func (m *Vector) GetY() float64 {
 	if m != nil {
 		return m.Y
 	}
@@ -188,11 +188,11 @@ var fileDescriptor_ebceca9e8703e37f = []byte{
 	0x55, 0xb2, 0xe2, 0x62, 0x05, 0x0b, 0x08, 0xf1, 0x71, 0x31, 0x65, 0xa6, 0x48, 0x30, 0x2a, 0x30,
 	0x6a, 0x30, 0x07, 0x31, 0x65, 0xa6, 0x08, 0x29, 0x72, 0x31, 0x17, 0xe4, 0x17, 0x4b, 0x30, 0x29,
 	0x30, 0x6a, 0x70, 0x1b, 0xf1, 0xc3, 0x75, 0x87, 0xa5, 0x82, 0xb5, 0x83, 0xe4, 0x94, 0x54, 0xb8,
-	0xd8, 0x20, 0x5c, 0x21, 0x1e, 0x2e, 0xc6, 0x0a, 0xb0, 0x5e, 0xa6, 0x20, 0xc6, 0x0a, 0x10, 0xaf,
-	0x12, 0xac, 0x91, 0x29, 0x88, 0xb1, 0xd2, 0x49, 0xe2, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4,
+	0xd8, 0x20, 0x5c, 0x21, 0x1e, 0x2e, 0xc6, 0x0a, 0xb0, 0x5e, 0xc6, 0x20, 0xc6, 0x0a, 0x10, 0xaf,
+	0x12, 0xac, 0x91, 0x31, 0x88, 0xb1, 0xd2, 0x49, 0xe2, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4,
 	0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f,
-	0xe5, 0x18, 0x92, 0xd8, 0xc0, 0xae, 0x37, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x68, 0x76, 0xfa,
-	0xaa, 0xd6, 0x00, 0x00, 0x00,
+	0xe5, 0x18, 0x92, 0xd8, 0xc0, 0xae, 0x37, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x18, 0x72, 0x47,
+	0x5d, 0xd6, 0x00, 0x00, 0x00,
 }
 
 func (m *Actors) Marshal() (dAtA []byte, err error) {
@@ -293,16 +293,16 @@ func (m *Vector) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	if m.Y != 0 {
-		i -= 4
-		encoding_binary.LittleEndian.PutUint32(dAtA[i:], uint32(math.Float32bits(float32(m.Y))))
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Y))))
 		i--
-		dAtA[i] = 0x15
+		dAtA[i] = 0x11
 	}
 	if m.X != 0 {
-		i -= 4
-		encoding_binary.LittleEndian.PutUint32(dAtA[i:], uint32(math.Float32bits(float32(m.X))))
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.X))))
 		i--
-		dAtA[i] = 0xd
+		dAtA[i] = 0x9
 	}
 	return len(dAtA) - i, nil
 }
@@ -356,10 +356,10 @@ func (m *Vector) Size() (n int) {
 	var l int
 	_ = l
 	if m.X != 0 {
-		n += 5
+		n += 9
 	}
 	if m.Y != 0 {
-		n += 5
+		n += 9
 	}
 	return n
 }
@@ -595,27 +595,27 @@ func (m *Vector) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 5 {
+			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field X", wireType)
 			}
-			var v uint32
-			if (iNdEx + 4) > l {
+			var v uint64
+			if (iNdEx + 8) > l {
 				return io.ErrUnexpectedEOF
 			}
-			v = uint32(encoding_binary.LittleEndian.Uint32(dAtA[iNdEx:]))
-			iNdEx += 4
-			m.X = float32(math.Float32frombits(v))
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.X = float64(math.Float64frombits(v))
 		case 2:
-			if wireType != 5 {
+			if wireType != 1 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Y", wireType)
 			}
-			var v uint32
-			if (iNdEx + 4) > l {
+			var v uint64
+			if (iNdEx + 8) > l {
 				return io.ErrUnexpectedEOF
 			}
-			v = uint32(encoding_binary.LittleEndian.Uint32(dAtA[iNdEx:]))
-			iNdEx += 4
-			m.Y = float32(math.Float32frombits(v))
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.Y = float64(math.Float64frombits(v))
 		default:
 			iNdEx = preIndex
 			skippy, err := skipMessage(dAtA[iNdEx:])

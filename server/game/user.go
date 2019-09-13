@@ -6,6 +6,7 @@ import (
 	"net"
 	"sync"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/hueypark/marsettler/message"
 )
 
@@ -16,12 +17,13 @@ var (
 
 // User represents user
 type User struct {
-	conn   net.Conn
-	buffer []byte
+	conn net.Conn
 }
 
 // GetUser returns user.
 func GetUser(userID int64) *User {
+	mux.RLock()
+	defer mux.RUnlock()
 	return users[userID]
 }
 
@@ -30,7 +32,9 @@ func OnAccept(userID int64, conn net.Conn) {
 	mux.Lock()
 	defer mux.Unlock()
 
-	user := &User{conn: conn}
+	user := &User{
+		conn: conn,
+	}
 
 	users[userID] = user
 }
@@ -51,7 +55,8 @@ func (u *User) Send(msg message.Msg) {
 	}
 
 	id := msg.MsgID()
-	size, err := msg.MarshalTo(u.buffer)
+	size := msg.Size()
+	buffer, err := proto.Marshal(msg)
 	if err != nil {
 		log.Println(err)
 	}
@@ -65,7 +70,7 @@ func (u *User) Send(msg message.Msg) {
 		log.Println(err)
 	}
 
-	_, err = u.conn.Write(u.buffer)
+	_, err = u.conn.Write(buffer)
 	if err != nil {
 		log.Println(err)
 	}

@@ -4,6 +4,7 @@ import (
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics"
+	"github.com/hueypark/marsettler/message"
 )
 
 // World represents game world.
@@ -39,10 +40,17 @@ func (world *World) NewActor(id int64, position vector.Vector) *Actor {
 
 // Tick ticks world.
 func (world *World) Tick() {
-	// TODO: Send actor information to all users in this world.
+	msgActors := &message.Actors{}
 
 	world.physicsWorld.Tick()
 	for _, actor := range world.actors {
 		actor.Tick()
+		msgActors.Actors = append(msgActors.Actors, &message.Actor{
+			Id:  actor.ID(),
+			Pos: &message.Vector{X: actor.Position().X, Y: actor.Position().Y}})
 	}
+
+	ForEachUser(func(user *User) {
+		user.Send(msgActors)
+	})
 }

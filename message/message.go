@@ -11,7 +11,10 @@ const HeadSize = 8
 
 type Msg interface {
 	MsgID() MsgID
-	MarshalTo(dAtA []byte) (int, error)
+	Size() (n int)
+	Reset()
+	String() string
+	ProtoMessage()
 }
 
 func (m *Actors) MsgID() MsgID {

@@ -56,15 +56,8 @@ func tickRenderer(screen *ebiten.Image, cursorPosition vector.Vector) {
 
 	renderer.Tick(cursorPosition)
 
-	renderWorld(screen)
-
+	ctx.World.Tick(screen)
 	ctx.Cursor.Render(screen, cursorPosition)
-}
-
-func renderWorld(screen *ebiten.Image) {
-	//for _, actor := range ctx.World.Actors() {
-	//	actor.Render(screen)
-	//}
 }
 
 func tickCollision(cursorPosition, worldPosition vector.Vector) {

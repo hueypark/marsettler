@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/hueypark/marsettler/client/ctx"
 	"github.com/hueypark/marsettler/message"
 )
@@ -33,18 +34,18 @@ func Handle(conn net.Conn) error {
 		return err
 	}
 	if readSize != size {
-		return fmt.Errorf("headsize is not same[expected: %d, got: %d]", size, readSize)
+		return fmt.Errorf("bodySize is not same[expected: %d, got: %d]", size, readSize)
 	}
 
 	switch id {
-	case message.MsgActorsPush:
-		var actorsPush message.ActorsPush
-		err := actorsPush.Unmarshal(body)
+	case message.MsgActors:
+		actors := &message.Actors{}
+		err := proto.Unmarshal(body, actors)
 		if err != nil {
 			return err
 		}
 
-		for _, actor := range actorsPush.Actors {
+		for _, actor := range actors.Actors {
 			ctx.World.NewActor(actor)
 		}
 	default:

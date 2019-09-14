@@ -19,7 +19,10 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	ctx.Client = net.NewClient("127.0.0.1:8080", handler.Handle)
+	hosts := []string{"127.0.0.1:208", "127.0.0.1:209"}
+	for _, host := range hosts {
+		ctx.Clients[host] = net.NewClient(host, handler.Handle)
+	}
 	ctx.World = game.NewWorld()
 
 	ebiten.SetRunnableInBackground(true)

@@ -6,8 +6,12 @@ import (
 	"github.com/hueypark/marsettler/core/net"
 )
 
+func init() {
+	Clients = make(map[string]*net.Client)
+}
+
 var (
-	Client *net.Client
-	Cursor ui.Cursor
-	World  *game.World
+	Clients map[string]*net.Client
+	Cursor  ui.Cursor
+	World   *game.World
 )

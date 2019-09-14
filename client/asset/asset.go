@@ -15,6 +15,7 @@ import (
 var (
 	Blueberry *ebiten.Image
 	Building  *ebiten.Image
+	Circle    *ebiten.Image
 	CityHall  *ebiten.Image
 	Cursor    *ebiten.Image
 	Fairy     *ebiten.Image
@@ -28,6 +29,7 @@ var (
 func init() {
 	Blueberry = newImageFromFileBytes(blueberry)
 	Building = newImageFromFileBytes(building)
+	Circle = newImageFromFileBytes(circle)
 	CityHall = newImageFromFileBytes(city_hall)
 	Cursor = newImageFromFileBytes(cursor)
 	Fairy = newImageFromFileBytes(fairy)

@@ -13,11 +13,13 @@ import (
 )
 
 func main() {
+	id := flag.Int("id", 0, "id")
 	host := flag.String("host", "", "host")
 	port := flag.Int("port", 208, "port")
 	flag.Parse()
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	id_generator.Init(*id)
 
 	world := game.NewWorld()
 	world.NewActor(id_generator.Generate(), vector.Zero())

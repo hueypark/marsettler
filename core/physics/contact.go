@@ -1,8 +1,8 @@
-package contact
+package physics
 
 import (
-	"github.com/hueypark/heavycannon/body"
-	"github.com/hueypark/heavycannon/math/vector"
+	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics/body"
 )
 
 const RESTITUTION = 0.5
@@ -38,7 +38,7 @@ func (c *Contact) Penetration() float64 {
 
 func (c *Contact) addImpulse() {
 	for _, p := range c.points {
-		relativeVelocity := vector.Subtract(c.rhs.Velocity, c.lhs.Velocity)
+		relativeVelocity := vector.Sub(c.rhs.Velocity, c.lhs.Velocity)
 
 		velAlongNormal := vector.Dot(relativeVelocity, c.normal)
 		if velAlongNormal > 0 {
@@ -49,20 +49,20 @@ func (c *Contact) addImpulse() {
 
 		inverseMassSum := c.lhs.InverseMass() + c.rhs.InverseMass()
 
-		impulse := vector.Multiply(c.normal, contactVelocity)
-		impulse.Multiply(1 / inverseMassSum)
+		impulse := vector.Mul(c.normal, contactVelocity)
+		impulse.Mul(1 / inverseMassSum)
 
-		c.lhs.AddImpluse(vector.Multiply(impulse, -1), vector.Subtract(c.lhs.Position(), p))
-		c.rhs.AddImpluse(impulse, vector.Subtract(c.rhs.Position(), p))
+		c.lhs.AddImpluse(vector.Mul(impulse, -1), vector.Sub(c.lhs.Position(), p))
+		c.rhs.AddImpluse(impulse, vector.Sub(c.rhs.Position(), p))
 	}
 }
 
 func (c *Contact) solvePenetration() {
 	if !c.lhs.Static() {
-		c.lhs.SetPosition(vector.Add(c.lhs.Position(), vector.Multiply(c.normal, c.penetration*-0.5)))
+		c.lhs.SetPosition(vector.Add(c.lhs.Position(), vector.Mul(c.normal, c.penetration*-0.5)))
 	}
 
 	if !c.rhs.Static() {
-		c.rhs.SetPosition(vector.Add(c.rhs.Position(), vector.Multiply(c.normal, c.penetration*0.5)))
+		c.rhs.SetPosition(vector.Add(c.rhs.Position(), vector.Mul(c.normal, c.penetration*0.5)))
 	}
 }

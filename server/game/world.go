@@ -33,16 +33,16 @@ func (world *World) NewActor(id int64, position vector.Vector) *Actor {
 	actor := NewActor(position)
 
 	world.actors[actor.ID()] = actor
-	world.physicsWorld.AddBody(actor)
+	world.physicsWorld.Add(actor)
 
 	return actor
 }
 
 // Tick ticks world.
-func (world *World) Tick() {
+func (world *World) Tick(delta float64) {
 	msgActors := &message.Actors{}
 
-	world.physicsWorld.Tick()
+	world.physicsWorld.Tick(delta)
 	for _, actor := range world.actors {
 		actor.Tick()
 		msgActors.Actors = append(msgActors.Actors, &message.Actor{

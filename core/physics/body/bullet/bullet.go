@@ -1,6 +1,8 @@
 package bullet
 
-import "github.com/hueypark/heavycannon/shape"
+import (
+	"github.com/hueypark/marsettler/core/physics/body"
+)
 
 type Bullet struct {
 }
@@ -10,5 +12,5 @@ func New() *Bullet {
 }
 
 func (b *Bullet) Type() int64 {
-	return shape.BULLET
+	return body.Bullet
 }

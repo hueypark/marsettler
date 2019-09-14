@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/hueypark/heavycannon/math/vector"
+	"github.com/hueypark/marsettler/core/physics/math/vector"
 )
 
 // Triangles a, b, and c must be ccw

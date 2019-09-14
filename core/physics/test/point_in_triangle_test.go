@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/hueypark/heavycannon/math/vector"
+	"github.com/hueypark/marsettler/core/physics/math/vector"
 )
 
 func TestPointInTriangle(t *testing.T) {

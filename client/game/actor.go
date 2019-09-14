@@ -15,7 +15,7 @@ type Actor struct {
 
 func NewActor(msgActor *message.Actor) *Actor {
 	actor := &Actor{}
-	actor.SetPosition(vector.Vector{X: msgActor.Pos.X, Y: msgActor.Pos.Y})
+	actor.Init(vector.Vector{X: msgActor.Pos.X, Y: msgActor.Pos.Y})
 
 	return actor
 }

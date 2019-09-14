@@ -17,12 +17,14 @@ func main() {
 	world.NewActor(id_generator.Generate(), vector.Zero())
 
 	go func() {
-		ticker := time.NewTicker(time.Second / 60)
+		delta := time.Second / 60
+		floatDelta := delta.Seconds()
+		ticker := time.NewTicker(delta)
 
 		for {
 			select {
 			case <-ticker.C:
-				world.Tick()
+				world.Tick(floatDelta)
 			}
 		}
 	}()

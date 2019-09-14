@@ -3,9 +3,9 @@ package convex
 import (
 	"math"
 
-	"github.com/hueypark/heavycannon/math/rotator"
-	"github.com/hueypark/heavycannon/math/vector"
-	"github.com/hueypark/heavycannon/shape"
+	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics/body"
+	"github.com/hueypark/marsettler/core/physics/math/rotator"
 )
 
 type Convex struct {
@@ -26,8 +26,8 @@ func New(vertices []vector.Vector) *Convex {
 	return &c
 }
 
-func (c *Convex) Type() int64 {
-	return shape.CONVEX
+func (c *Convex) Type() body.Shape {
+	return body.Convex
 }
 
 // Hull is ccw
@@ -51,7 +51,7 @@ func (c *Convex) Edges() []Edge {
 			}
 			end := hull[nextIndex]
 			r := rotator.Rotator{90}
-			normal := r.RotateVector(vector.Subtract(start, end))
+			normal := r.RotateVector(vector.Sub(start, end))
 			normal.Normalize()
 			c.edges = append(c.edges, Edge{
 				start,
@@ -64,14 +64,14 @@ func (c *Convex) Edges() []Edge {
 }
 
 func MinkowskiDifference(a Convex, posA vector.Vector, rotA rotator.Rotator, b Convex, posB vector.Vector, rotB rotator.Rotator) *Convex {
-	vertices := []vector.Vector{}
+	var vertices []vector.Vector
 
 	for _, vertexA := range a.Hull() {
 		for _, vertexB := range b.Hull() {
 			vertexRotA := rotA.RotateVector(vertexA)
 			vertexRotB := rotB.RotateVector(vertexB)
 			worldA := vector.Add(vertexRotA, posA)
-			worldB := vector.Subtract(vector.Vector{}, vector.Add(vertexRotB, posB))
+			worldB := vector.Sub(vector.Vector{}, vector.Add(vertexRotB, posB))
 			vertices = append(vertices, vector.Add(worldA, worldB))
 		}
 	}
@@ -114,7 +114,7 @@ func (c *Convex) quickHull(points []vector.Vector, start, end vector.Vector) []v
 
 func (c *Convex) InHull(position vector.Vector, rotation rotator.Rotator, point vector.Vector) bool {
 	for _, edge := range c.Edges() {
-		if vector.Subtract(point, vector.Add(position, rotation.RotateVector(edge.Start))).OnTheRight(vector.Subtract(vector.Add(position, rotation.RotateVector(edge.End)), vector.Add(position, rotation.RotateVector(edge.Start)))) == false {
+		if vector.Sub(point, vector.Add(position, rotation.RotateVector(edge.Start))).OnTheRight(vector.Sub(vector.Add(position, rotation.RotateVector(edge.End)), vector.Add(position, rotation.RotateVector(edge.Start)))) == false {
 			return false
 		}
 	}
@@ -153,9 +153,9 @@ func (c *Convex) getLhsPointDistanceIndicatorMap(points []vector.Vector, start, 
 }
 
 func (c *Convex) getDistanceIndicator(point, start, end vector.Vector) float64 {
-	vLine := vector.Subtract(end, start)
+	vLine := vector.Sub(end, start)
 
-	vPoint := vector.Subtract(point, start)
+	vPoint := vector.Sub(point, start)
 
 	return vector.Cross(vLine, vPoint)
 }

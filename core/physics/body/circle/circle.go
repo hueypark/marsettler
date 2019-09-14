@@ -1,6 +1,8 @@
 package circle
 
-import "github.com/hueypark/heavycannon/shape"
+import (
+	"github.com/hueypark/marsettler/core/physics/body"
+)
 
 type Circle struct {
 	Radius float64
@@ -12,6 +14,6 @@ func New(radius float64) *Circle {
 	return &c
 }
 
-func (c *Circle) Type() int64 {
-	return shape.CIRCLE
+func (c *Circle) Type() body.Shape {
+	return body.Circle
 }

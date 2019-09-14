@@ -1,25 +1,24 @@
-package heavycannon
+package physics
 
 import (
 	"sync"
 
-	"github.com/hueypark/heavycannon/body"
-	"github.com/hueypark/heavycannon/contact"
-	"github.com/hueypark/heavycannon/math/vector"
+	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics/body"
 )
 
 type World struct {
 	bodys                 map[int64]*body.Body
 	gravity               vector.Vector
-	contacts              []*contact.Contact
+	contacts              []*Contact
 	reservedDeleteBodyIds []int64
 	mux                   sync.RWMutex
 }
 
-func New() *World {
+func NewWorld() *World {
 	return &World{
 		bodys:   make(map[int64]*body.Body),
-		gravity: vector.Vector{X: 0.0, Y: -100.0}}
+		gravity: vector.Vector{X: 0.0, Y: 9.8}}
 }
 
 func (w *World) Tick(delta float64) {
@@ -35,13 +34,14 @@ func (w *World) Tick(delta float64) {
 	}
 
 	for _, b := range w.bodys {
-		b.AddForce(vector.Multiply(w.gravity, b.Mass()))
+		b.AddForce(vector.Mul(w.gravity, b.Mass()))
 		b.Tick(delta)
 	}
 }
 
-func (w *World) Add(body *body.Body) {
-	w.bodys[body.Id()] = body
+func (w *World) Add(o owner) {
+	b := o.Body()
+	w.bodys[b.ID()] = b
 }
 
 func (w *World) ReservedDelete(id int64) {
@@ -76,20 +76,20 @@ func (w *World) Bodys() map[int64]*body.Body {
 	return w.bodys
 }
 
-func (w *World) Contacts() []*contact.Contact {
+func (w *World) Contacts() []*Contact {
 	return w.contacts
 }
 
-func (w *World) broadPhase() []*contact.Contact {
-	contacts := []*contact.Contact{}
+func (w *World) broadPhase() []*Contact {
+	var contacts []*Contact
 
 	for _, lhs := range w.bodys {
 		for _, rhs := range w.bodys {
-			if lhs.Id() <= rhs.Id() {
+			if lhs.ID() <= rhs.ID() {
 				continue
 			}
 
-			contacts = append(contacts, contact.New(lhs, rhs))
+			contacts = append(contacts, New(lhs, rhs))
 		}
 	}
 

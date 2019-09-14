@@ -4,28 +4,36 @@ import (
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/core/physics"
+	"github.com/hueypark/marsettler/core/physics/body"
+	"github.com/hueypark/marsettler/core/physics/body/circle"
 )
 
 // Actor represent actor.
 type Actor struct {
 	id           int64
 	behaviorTree *behavior_tree.BehaviorTree
-	position     vector.Vector
+	body         *body.Body
 }
 
 // NewActor creates new actor.
 func NewActor(position vector.Vector) *Actor {
 	actor := &Actor{
-		id:       id_generator.Generate(),
-		position: position,
+		id: id_generator.Generate(),
 	}
+
+	actor.Init(position)
 
 	return actor
 }
 
-func (actor *Actor) OnCollision(other interface{}, normal vector.Vector, penetration float64) {
+func (actor *Actor) Init(position vector.Vector) {
+	body := body.New(position)
+	body.SetMass(10)
+	body.SetShape(circle.New(32))
+	actor.body = body
+}
 
+func (actor *Actor) OnCollision(other interface{}, normal vector.Vector, penetration float64) {
 }
 
 // SetBehaviorTree sets behavior tree.
@@ -34,11 +42,11 @@ func (actor *Actor) SetBehaviorTree(behaviorTree *behavior_tree.BehaviorTree) {
 }
 
 func (actor *Actor) SetPosition(position vector.Vector) {
-	actor.position = position
+	actor.body.SetPosition(position)
 }
 
-func (actor *Actor) Shape() physics.Shape {
-	return physics.Circle
+func (actor *Actor) Shape() body.Shape {
+	return body.Circle
 }
 
 // ID returns id.
@@ -48,7 +56,7 @@ func (actor *Actor) ID() int64 {
 
 // Position returns position.
 func (actor *Actor) Position() vector.Vector {
-	return actor.position
+	return actor.body.Position()
 }
 
 func (actor *Actor) Radius() float64 {
@@ -64,4 +72,8 @@ func (actor *Actor) Tick() {
 
 func (actor *Actor) CreateActor(id int) {
 	//actor.node.NewActor(id)
+}
+
+func (actor *Actor) Body() *body.Body {
+	return actor.body
 }

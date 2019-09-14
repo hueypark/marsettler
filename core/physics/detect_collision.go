@@ -1,15 +1,14 @@
-package contact
+package physics
 
 import (
 	"math"
 
-	"github.com/hueypark/heavycannon/body"
-	"github.com/hueypark/heavycannon/closest_point"
-	"github.com/hueypark/heavycannon/math/rotator"
-	"github.com/hueypark/heavycannon/math/vector"
-	"github.com/hueypark/heavycannon/shape"
-	"github.com/hueypark/heavycannon/shape/circle"
-	"github.com/hueypark/heavycannon/shape/convex"
+	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics/body"
+	"github.com/hueypark/marsettler/core/physics/body/circle"
+	"github.com/hueypark/marsettler/core/physics/body/convex"
+	"github.com/hueypark/marsettler/core/physics/closest_point"
+	"github.com/hueypark/marsettler/core/physics/math/rotator"
 )
 
 func (c *Contact) DetectCollision() {
@@ -17,42 +16,42 @@ func (c *Contact) DetectCollision() {
 	rhsType := c.rhs.Shape.Type()
 
 	switch lhsType {
-	case shape.BULLET:
+	case body.Bullet:
 		switch rhsType {
-		case shape.BULLET:
+		case body.Bullet:
 			break
-		case shape.CIRCLE:
+		case body.Circle:
 			c.normal, c.penetration, c.points = bulletToCircle(c.lhs, c.rhs)
 			break
-		case shape.CONVEX:
+		case body.Convex:
 			c.normal, c.penetration, c.points = bulletToConvex(c.lhs, c.rhs)
 			break
 		}
 		break
-	case shape.CIRCLE:
+	case body.Circle:
 		switch rhsType {
-		case shape.BULLET:
+		case body.Bullet:
 			c.swap()
 			c.normal, c.penetration, c.points = bulletToCircle(c.lhs, c.rhs)
 			break
-		case shape.CIRCLE:
+		case body.Circle:
 			c.normal, c.penetration, c.points = circleToCircle(c.lhs, c.rhs)
 			break
-		case shape.CONVEX:
+		case body.Convex:
 			c.normal, c.penetration, c.points = circleToConvex(c.lhs, c.rhs)
 			break
 		}
 		break
-	case shape.CONVEX:
+	case body.Convex:
 		switch rhsType {
-		case shape.BULLET:
+		case body.Bullet:
 			c.swap()
 			c.normal, c.penetration, c.points = bulletToConvex(c.lhs, c.rhs)
-		case shape.CIRCLE:
+		case body.Circle:
 			c.swap()
 			c.normal, c.penetration, c.points = circleToConvex(c.lhs, c.rhs)
 			break
-		case shape.CONVEX:
+		case body.Convex:
 			c.normal, c.penetration, c.points = convexToConvex(c.lhs, c.rhs)
 			break
 		}
@@ -67,9 +66,9 @@ func (c *Contact) swap() {
 func bulletToCircle(lhs, rhs *body.Body) (normal vector.Vector, penetration float64, points []vector.Vector) {
 	rhsCircle := rhs.Shape.(*circle.Circle)
 
-	normal = vector.Subtract(rhs.Position(), lhs.Position())
+	normal = vector.Sub(rhs.Position(), lhs.Position())
 
-	distanceSquared := normal.SizeSquared()
+	distanceSquared := normal.SizeSquare()
 
 	if distanceSquared >= rhsCircle.Radius*rhsCircle.Radius {
 		return
@@ -81,7 +80,7 @@ func bulletToCircle(lhs, rhs *body.Body) (normal vector.Vector, penetration floa
 	penetration = rhsCircle.Radius - distance
 	points = append(points, vector.Add(
 		lhs.Position(),
-		vector.Multiply(normal, -0.5*penetration)))
+		vector.Mul(normal, -0.5*penetration)))
 
 	return normal, penetration, points
 }
@@ -96,8 +95,8 @@ func bulletToConvex(lhs, rhs *body.Body) (normal vector.Vector, penetration floa
 		worldStart.Add(rhs.Position())
 		worldEnd := rhs.Rotation().RotateVector(edge.End)
 		worldEnd.Add(rhs.Position())
-		edgeVector := vector.Subtract(worldEnd, worldStart)
-		pointVector := vector.Subtract(lhs.Position(), worldStart)
+		edgeVector := vector.Sub(worldEnd, worldStart)
+		pointVector := vector.Sub(lhs.Position(), worldStart)
 
 		if !pointVector.OnTheRight(edgeVector) {
 			normal = vector.Vector{}
@@ -108,9 +107,9 @@ func bulletToConvex(lhs, rhs *body.Body) (normal vector.Vector, penetration floa
 		perpendicular := vector.Vector{X: -edgeVector.Y, Y: edgeVector.X}
 		perpendicular.Normalize()
 
-		lhsVector := vector.Subtract(lhs.Position(), worldStart)
+		lhsVector := vector.Sub(lhs.Position(), worldStart)
 
-		proj := vector.Multiply(perpendicular, vector.Dot(lhsVector, perpendicular))
+		proj := vector.Mul(perpendicular, vector.Dot(lhsVector, perpendicular))
 
 		if proj.Size() < penetration {
 			normal = perpendicular
@@ -120,7 +119,7 @@ func bulletToConvex(lhs, rhs *body.Body) (normal vector.Vector, penetration floa
 
 	points = append(points, vector.Add(
 		lhs.Position(),
-		vector.Multiply(normal, -0.5*penetration)))
+		vector.Mul(normal, -0.5*penetration)))
 
 	return normal, penetration, points
 }
@@ -129,9 +128,9 @@ func circleToCircle(lhs, rhs *body.Body) (normal vector.Vector, penetration floa
 	lhsCircle := lhs.Shape.(*circle.Circle)
 	rhsCircle := rhs.Shape.(*circle.Circle)
 
-	normal = vector.Subtract(rhs.Position(), lhs.Position())
+	normal = vector.Sub(rhs.Position(), lhs.Position())
 
-	distanceSquared := normal.SizeSquared()
+	distanceSquared := normal.SizeSquare()
 	radius := lhsCircle.Radius + rhsCircle.Radius
 
 	if distanceSquared >= radius*radius {
@@ -144,7 +143,7 @@ func circleToCircle(lhs, rhs *body.Body) (normal vector.Vector, penetration floa
 	penetration = radius - distance
 	points = append(points, vector.Add(
 		lhs.Position(),
-		vector.Add(vector.Multiply(normal, lhsCircle.Radius), vector.Multiply(normal, -0.5*penetration))))
+		vector.Add(vector.Mul(normal, lhsCircle.Radius), vector.Mul(normal, -0.5*penetration))))
 
 	return normal, penetration, points
 }
@@ -159,10 +158,10 @@ func circleToConvex(l, r *body.Body) (normal vector.Vector, penetration float64,
 		edgeNormal := r.Rotation().RotateVector(edge.Normal)
 		edgeStart := r.Rotation().RotateVector(edge.Start)
 
-		pen := -vector.Dot(edgeNormal, vector.Subtract(l.Position(), vector.Add(r.Position(), edgeStart)))
+		pen := -vector.Dot(edgeNormal, vector.Sub(l.Position(), vector.Add(r.Position(), edgeStart)))
 
 		if pen < -lCircle.Radius {
-			return vector.ZERO(), 0, nil
+			return vector.Zero(), 0, nil
 		}
 
 		if pen < minPenetration {
@@ -176,21 +175,21 @@ func circleToConvex(l, r *body.Body) (normal vector.Vector, penetration float64,
 	edgeNormal := r.Rotation().RotateVector(minPenEdge.Normal)
 
 	p := closest_point.LineSegmentToPoint(l.Position(), edgeStart, edgeEnd)
-	if 0 < vector.Dot(edgeNormal, vector.Subtract(p, l.Position())) {
-		normal = vector.Subtract(l.Position(), p)
+	if 0 < vector.Dot(edgeNormal, vector.Sub(p, l.Position())) {
+		normal = vector.Sub(l.Position(), p)
 
-		penetration = lCircle.Radius + vector.Subtract(l.Position(), p).Size()
+		penetration = lCircle.Radius + vector.Sub(l.Position(), p).Size()
 	} else {
-		normal = vector.Subtract(p, l.Position())
+		normal = vector.Sub(p, l.Position())
 		if lCircle.Radius < normal.Size() {
-			return vector.ZERO(), 0, nil
+			return vector.Zero(), 0, nil
 		}
 
-		penetration = lCircle.Radius - vector.Subtract(p, l.Position()).Size()
+		penetration = lCircle.Radius - vector.Sub(p, l.Position()).Size()
 	}
 
 	normal.Normalize()
-	points = append(points, vector.Add(p, vector.Multiply(normal, 0.5*penetration)))
+	points = append(points, vector.Add(p, vector.Mul(normal, 0.5*penetration)))
 
 	return normal, penetration, points
 }
@@ -230,14 +229,14 @@ func findAxisLeastPenetration(l, r *convex.Convex, lPos, rPos vector.Vector, lRo
 		s := r.Support(vector.Invert(normal), rRot)
 
 		v := vector.Add(lRot.RotateVector(edge.Start), lPos)
-		v.Subtract(rPos)
+		v.Sub(rPos)
 
-		penetration := -vector.Dot(normal, vector.Subtract(s, v))
+		penetration := -vector.Dot(normal, vector.Sub(s, v))
 
 		if penetration < minPenetration {
 			bestNormal = normal
 			minPenetration = penetration
-			bestPoint = vector.Add(vector.Add(s, rPos), vector.Multiply(bestNormal, penetration*0.5))
+			bestPoint = vector.Add(vector.Add(s, rPos), vector.Mul(bestNormal, penetration*0.5))
 		}
 	}
 

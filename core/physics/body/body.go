@@ -1,9 +1,9 @@
 package body
 
 import (
-	"github.com/hueypark/heavycannon/ctx"
-	"github.com/hueypark/heavycannon/math/rotator"
-	"github.com/hueypark/heavycannon/math/vector"
+	"github.com/hueypark/marsettler/core/id_generator"
+	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics/math/rotator"
 )
 
 type Body struct {
@@ -20,17 +20,19 @@ type Body struct {
 }
 
 type shape interface {
-	Type() int64
+	Type() Shape
 }
 
-func New() *Body {
-	r := Body{}
-	r.id = ctx.IdGenerator.Generate()
+func New(position vector.Vector) *Body {
+	r := Body{
+		position: position,
+	}
+	r.id = id_generator.Generate()
 
 	return &r
 }
 
-func (r *Body) Id() int64 {
+func (r *Body) ID() int64 {
 	return r.id
 }
 
@@ -59,12 +61,12 @@ func (r *Body) Tick(delta float64) {
 		return
 	}
 
-	r.position.AddScaledVector(r.Velocity, delta)
+	r.position = r.position.AddScaledVector(r.Velocity, delta)
 
-	acceleration := vector.Vector{}
-	acceleration.AddScaledVector(r.forceSum, r.inverseMass)
+	var acceleration = vector.Zero()
+	acceleration = acceleration.AddScaledVector(r.forceSum, r.inverseMass)
 
-	r.Velocity.AddScaledVector(acceleration, delta)
+	r.Velocity = r.Velocity.AddScaledVector(acceleration, delta)
 
 	r.forceSum.Clear()
 
@@ -102,10 +104,10 @@ func (r *Body) SetShape(s shape) {
 }
 
 func (r *Body) AddForce(force vector.Vector) {
-	r.forceSum.Add(force)
+	r.forceSum = r.forceSum.Add(force)
 }
 
 func (r *Body) AddImpluse(impulse, contact vector.Vector) {
-	r.Velocity.AddScaledVector(impulse, r.inverseMass)
+	r.Velocity = r.Velocity.AddScaledVector(impulse, r.inverseMass)
 	r.angularVelocity -= vector.Cross(contact, impulse) * r.inverseInertia * 0.01
 }

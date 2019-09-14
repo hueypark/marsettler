@@ -1,7 +1,7 @@
 package matrix
 
 import (
-	"github.com/hueypark/heavycannon/math/vector"
+	"github.com/hueypark/marsettler/core/math/vector"
 )
 
 type Matrix struct {

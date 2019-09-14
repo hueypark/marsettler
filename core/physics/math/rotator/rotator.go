@@ -3,9 +3,9 @@ package rotator
 import (
 	"math"
 
-	"github.com/hueypark/heavycannon/math/matrix"
-	"github.com/hueypark/heavycannon/math/util"
-	"github.com/hueypark/heavycannon/math/vector"
+	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics/math/matrix"
+	"github.com/hueypark/marsettler/core/physics/math/util"
 )
 
 type Rotator struct {

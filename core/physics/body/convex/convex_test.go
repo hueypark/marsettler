@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/hueypark/heavycannon/math/rotator"
-	"github.com/hueypark/heavycannon/math/vector"
+	"github.com/hueypark/marsettler/core/physics/math/rotator"
+	"github.com/hueypark/marsettler/core/physics/math/vector"
 )
 
 func TestNewConvex(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 	"github.com/hueypark/marsettler/client/asset"
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/core/physics/collision_check"
+	//	"github.com/hueypark/marsettler/core/physics/collision_check"
 )
 
 type Layer struct {
@@ -47,13 +47,14 @@ func (layer *Layer) CheckCollision(cursorPosition vector.Vector) bool {
 		}
 	}
 
-	result := collision_check.PointToAABB(cursorPosition, layer)
-
-	if result && layer.onCollision != nil {
-		layer.onCollision()
-	}
-
-	return result
+	return false
+	//result := collision_check.PointToAABB(cursorPosition, layer)
+	//
+	//if result && layer.onCollision != nil {
+	//	layer.onCollision()
+	//}
+	//
+	//return result
 }
 
 func (layer *Layer) Left() float64 {

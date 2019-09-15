@@ -13,6 +13,7 @@ type World struct {
 	contacts              []*Contact
 	reservedDeleteBodyIds []int64
 	mux                   sync.RWMutex
+	areaOfEffect          AreaOfEffect
 }
 
 func NewWorld() *World {

@@ -15,6 +15,8 @@ type Actor struct {
 	body         *body.Body
 }
 
+const radius float64 = 16.0
+
 // NewActor creates new actor.
 func NewActor(position vector.Vector) *Actor {
 	actor := &Actor{
@@ -27,10 +29,10 @@ func NewActor(position vector.Vector) *Actor {
 }
 
 func (actor *Actor) Init(position vector.Vector) {
-	body := body.New(position)
-	body.SetMass(10)
-	body.SetShape(circle.New(32))
-	actor.body = body
+	b := body.New(position)
+	b.SetMass(10)
+	b.SetShape(circle.New(radius))
+	actor.body = b
 }
 
 func (actor *Actor) OnCollision(other interface{}, normal vector.Vector, penetration float64) {
@@ -60,7 +62,7 @@ func (actor *Actor) Position() vector.Vector {
 }
 
 func (actor *Actor) Radius() float64 {
-	return 32.0
+	return radius
 }
 
 // Tick ticks actor.

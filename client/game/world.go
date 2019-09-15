@@ -14,7 +14,7 @@ import (
 type World struct {
 	actors map[int64]*Actor
 	aoes   []*physics.AreaOfEffect
-	mux    sync.Mutex
+	mux    sync.RWMutex
 }
 
 // NewWorld creates new world.
@@ -27,6 +27,9 @@ func NewWorld() *World {
 }
 
 func (world *World) Tick(screen *ebiten.Image) {
+	world.mux.RLock()
+	defer world.mux.RUnlock()
+
 	for _, actor := range world.actors {
 		actor.Render(screen)
 	}

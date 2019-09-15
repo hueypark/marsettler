@@ -2,14 +2,19 @@ syntax = "proto3";
 
 package message;
 
-message Actors {
-    repeated Actor actors = 1;
-}
-
 message Actor {
     int64 id = 1;
     Vector pos = 2;
 }
+
+message ActorCreate {
+    Vector pos = 1;
+}
+
+message Actors {
+    repeated Actor actors = 1;
+}
+
 
 message Vector {
     double x = 1;

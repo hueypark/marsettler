@@ -76,7 +76,7 @@ func bulletToCircle(lhs, rhs *body.Body) (normal vector.Vector, penetration floa
 
 	distance := math.Sqrt(distanceSquared)
 
-	normal.Normalize()
+	normal = normal.Normalize()
 	penetration = rhsCircle.Radius - distance
 	points = append(points, vector.Add(
 		lhs.Position(),
@@ -105,7 +105,7 @@ func bulletToConvex(lhs, rhs *body.Body) (normal vector.Vector, penetration floa
 		}
 
 		perpendicular := vector.Vector{X: -edgeVector.Y, Y: edgeVector.X}
-		perpendicular.Normalize()
+		perpendicular = perpendicular.Normalize()
 
 		lhsVector := vector.Sub(lhs.Position(), worldStart)
 
@@ -139,7 +139,7 @@ func circleToCircle(lhs, rhs *body.Body) (normal vector.Vector, penetration floa
 
 	distance := math.Sqrt(distanceSquared)
 
-	normal.Normalize()
+	normal = normal.Normalize()
 	penetration = radius - distance
 	points = append(points, vector.Add(
 		lhs.Position(),
@@ -188,7 +188,7 @@ func circleToConvex(l, r *body.Body) (normal vector.Vector, penetration float64,
 		penetration = lCircle.Radius - vector.Sub(p, l.Position()).Size()
 	}
 
-	normal.Normalize()
+	normal = normal.Normalize()
 	points = append(points, vector.Add(p, vector.Mul(normal, 0.5*penetration)))
 
 	return normal, penetration, points

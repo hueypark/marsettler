@@ -30,7 +30,7 @@ func (world *World) Actors() map[int64]*Actor {
 	return world.actors
 }
 
-func (world *World) NewActor(id int64, position vector.Vector) *Actor {
+func (world *World) NewActor(position vector.Vector) *Actor {
 	actor := NewActor(position)
 
 	world.actors[actor.ID()] = actor

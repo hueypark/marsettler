@@ -3,7 +3,8 @@ package message
 type MsgID uint32
 
 const (
-	MsgActors MsgID = iota
+	MsgActorCreate MsgID = iota
+	MsgActors
 	MsgWorld
 )
 
@@ -16,6 +17,10 @@ type Msg interface {
 	Reset()
 	String() string
 	ProtoMessage()
+}
+
+func (m *ActorCreate) MsgID() MsgID {
+	return MsgActorCreate
 }
 
 func (m *Actors) MsgID() MsgID {

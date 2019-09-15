@@ -52,7 +52,7 @@ func (c *Convex) Edges() []Edge {
 			end := hull[nextIndex]
 			r := rotator.Rotator{90}
 			normal := r.RotateVector(vector.Sub(start, end))
-			normal.Normalize()
+			normal = normal.Normalize()
 			c.edges = append(c.edges, Edge{
 				start,
 				end,

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/hueypark/marsettler/message"
 	"github.com/hueypark/marsettler/server/user"
 )
@@ -38,9 +39,14 @@ func Handle(userID int64, conn net.Conn) error {
 	}
 
 	switch id {
+	case message.MsgActorCreate:
+		actorCreate := &message.ActorCreate{}
+		err := proto.Unmarshal(body, actorCreate)
+		if err != nil {
+			return err
+		}
+		return handleActorCreate(actorCreate)
 	default:
 		return fmt.Errorf("unhandled message id: %d", id)
 	}
-
-	return nil
 }

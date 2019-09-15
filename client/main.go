@@ -14,6 +14,7 @@ import (
 	"github.com/hueypark/marsettler/client/renderer"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/net"
+	"github.com/hueypark/marsettler/message"
 )
 
 func main() {
@@ -64,15 +65,20 @@ func tickRenderer(screen *ebiten.Image, cursorPosition vector.Vector) {
 }
 
 func tickCollision(cursorPosition, worldPosition vector.Vector) {
-	if !inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonRight) {
+		actorCreate := &message.ActorCreate{
+			Pos: &message.Vector{X: worldPosition.X, Y: worldPosition.Y},
+		}
+
+		for _, client := range ctx.Clients {
+			client.Send(actorCreate)
+		}
+
+		log.Println(worldPosition)
 		return
 	}
 
-	ctx.Cursor.OnClick(cursorPosition)
-
-	//world.ForEachNode(func(node *game.Node) {
-	//	if collision_check.PointToAABB(worldPosition, node) {
-	//		cursor.SetNode(node)
-	//	}
-	//})
+	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+		ctx.Cursor.OnClick(cursorPosition)
+	}
 }

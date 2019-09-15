@@ -6,13 +6,13 @@ import (
 	"net"
 
 	"github.com/hueypark/marsettler/message"
-	"github.com/hueypark/marsettler/server/game"
+	"github.com/hueypark/marsettler/server/user"
 )
 
 // Handle handle message
 func Handle(userID int64, conn net.Conn) error {
-	user := game.GetUser(userID)
-	if user == nil {
+	u := user.GetUser(userID)
+	if u == nil {
 		return fmt.Errorf("user is nil id: %d", userID)
 	}
 

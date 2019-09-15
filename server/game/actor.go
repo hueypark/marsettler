@@ -60,7 +60,7 @@ func (actor *Actor) Position() vector.Vector {
 }
 
 func (actor *Actor) Radius() float64 {
-	return 16.0
+	return 32.0
 }
 
 // Tick ticks actor.

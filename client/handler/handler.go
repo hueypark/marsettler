@@ -6,7 +6,6 @@ import (
 	"net"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/hueypark/marsettler/client/ctx"
 	"github.com/hueypark/marsettler/message"
 )
 
@@ -44,13 +43,15 @@ func Handle(conn net.Conn) error {
 		if err != nil {
 			return err
 		}
-
-		for _, actor := range actors.Actors {
-			ctx.World.NewActor(actor)
+		return handleActors(actors)
+	case message.MsgWorld:
+		world := &message.World{}
+		err := proto.Unmarshal(body, world)
+		if err != nil {
+			return err
 		}
+		return handleWorld(world)
 	default:
 		return fmt.Errorf("unhandled message id: %d", id)
 	}
-
-	return nil
 }

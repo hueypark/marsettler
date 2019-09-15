@@ -1,10 +1,13 @@
 package renderer
 
 import (
+	"image/color"
 	"log"
 
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics"
 )
 
 const (
@@ -51,6 +54,18 @@ func Render(screen *ebiten.Image, img *ebiten.Image, position vector.Vector) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func RenderAOE(screen *ebiten.Image, aoe *physics.AreaOfEffect) {
+	left := (aoe.Left * zoom) + (cameraPosition.X + scroll.X)
+	right := (aoe.Right * zoom) + (cameraPosition.X + scroll.X)
+	bottom := (aoe.Bottom * zoom) + (cameraPosition.Y + scroll.Y)
+	top := (aoe.Top * zoom) + (cameraPosition.Y + scroll.Y)
+
+	ebitenutil.DrawLine(screen, left, top, right, top, color.White)
+	ebitenutil.DrawLine(screen, right, top, right, bottom, color.White)
+	ebitenutil.DrawLine(screen, right, bottom, left, bottom, color.White)
+	ebitenutil.DrawLine(screen, left, bottom, left, top, color.White)
 }
 
 func RenderUI(screen *ebiten.Image, img *ebiten.Image, x, y float64) {

@@ -12,13 +12,14 @@ type World struct {
 	id           int64
 	physicsWorld *physics.World
 	actors       map[int64]*Actor
+	listeners    []listener
 }
 
 // NewWorld create new world.
-func NewWorld() *World {
+func NewWorld(aoe *physics.AreaOfEffect) *World {
 	world := &World{
 		id:           id_generator.Generate(),
-		physicsWorld: physics.NewWorld(),
+		physicsWorld: physics.NewWorld(aoe),
 		actors:       make(map[int64]*Actor),
 	}
 
@@ -38,6 +39,19 @@ func (world *World) NewActor(id int64, position vector.Vector) *Actor {
 	return actor
 }
 
+func (world *World) AddListener(l listener) {
+	msgWorld := &message.World{}
+	aoe := world.physicsWorld.AOE()
+	msgWorld.Left = aoe.Left
+	msgWorld.Right = aoe.Right
+	msgWorld.Bottom = aoe.Bottom
+	msgWorld.Top = aoe.Top
+
+	l.Send(msgWorld)
+
+	world.listeners = append(world.listeners, l)
+}
+
 // Tick ticks world.
 func (world *World) Tick(delta float64) {
 	msgActors := &message.Actors{}
@@ -50,7 +64,11 @@ func (world *World) Tick(delta float64) {
 			Pos: &message.Vector{X: actor.Position().X, Y: actor.Position().Y}})
 	}
 
-	ForEachUser(func(user *User) {
-		user.Send(msgActors)
-	})
+	for _, l := range world.listeners {
+		l.Send(msgActors)
+	}
+}
+
+type listener interface {
+	Send(msg message.Msg)
 }

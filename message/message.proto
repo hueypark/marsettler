@@ -15,3 +15,10 @@ message Vector {
     double x = 1;
     double y = 2;
 }
+
+message World {
+    double left = 1;
+    double right = 2;
+    double bottom = 3;
+    double top = 4;
+}

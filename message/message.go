@@ -4,6 +4,7 @@ type MsgID uint32
 
 const (
 	MsgActors MsgID = iota
+	MsgWorld
 )
 
 // HeadSize represents size of head
@@ -19,4 +20,8 @@ type Msg interface {
 
 func (m *Actors) MsgID() MsgID {
 	return MsgActors
+}
+
+func (m *World) MsgID() MsgID {
+	return MsgWorld
 }

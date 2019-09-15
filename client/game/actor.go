@@ -21,5 +21,10 @@ func NewActor(msgActor *message.Actor) *Actor {
 }
 
 func (actor *Actor) Render(screen *ebiten.Image) {
-	renderer.Render(screen, asset.Cursor, actor.Position())
+	pos := actor.Position()
+	radiusHalf := actor.Radius() * 0.5
+	pos.X -= radiusHalf
+	pos.Y -= radiusHalf
+
+	renderer.Render(screen, asset.Circle, pos)
 }

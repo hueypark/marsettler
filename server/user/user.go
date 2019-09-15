@@ -1,4 +1,4 @@
-package game
+package user
 
 import (
 	"encoding/binary"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/hueypark/marsettler/message"
+	"github.com/hueypark/marsettler/server/ctx"
 )
 
 var (
@@ -37,6 +38,8 @@ func OnAccept(userID int64, conn net.Conn) {
 	}
 
 	users[userID] = user
+
+	ctx.World.AddListener(user)
 }
 
 // OnClose handles net.Conn's close event.

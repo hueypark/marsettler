@@ -78,12 +78,3 @@ func (u *User) Send(msg message.Msg) {
 		log.Println(err)
 	}
 }
-
-// ForEachUser executes a function for all users.
-func ForEachUser(f func(user *User)) {
-	mux.RLock()
-	defer mux.RUnlock()
-	for _, user := range users {
-		f(user)
-	}
-}

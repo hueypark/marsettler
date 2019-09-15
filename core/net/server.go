@@ -3,7 +3,6 @@ package net
 import (
 	"log"
 	"net"
-	"strconv"
 
 	"github.com/hueypark/marsettler/core/id_generator"
 )
@@ -35,8 +34,7 @@ func NewServer(
 }
 
 // Listen open port and listen to connections
-func (server Server) Listen(host string, port int) {
-	address := host + ":" + strconv.Itoa(port)
+func (server Server) Listen(address string) {
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalln(err)

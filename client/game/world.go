@@ -3,11 +3,9 @@ package game
 import (
 	"sync"
 
-	"github.com/hueypark/marsettler/client/renderer"
-
-	"github.com/hueypark/marsettler/core/physics"
-
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hueypark/marsettler/client/renderer"
+	"github.com/hueypark/marsettler/core/physics"
 	"github.com/hueypark/marsettler/message"
 )
 

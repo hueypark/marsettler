@@ -1,7 +1,6 @@
 package body
 
 import (
-	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics/math/rotator"
 )
@@ -23,12 +22,11 @@ type shape interface {
 	Type() Shape
 }
 
-func New(position vector.Vector) *Body {
+func New(id int64, position vector.Vector) *Body {
 	r := Body{
+		id:       id,
 		position: position,
 	}
-	r.id = id_generator.Generate()
-
 	return &r
 }
 
@@ -42,6 +40,10 @@ func (r *Body) Position() vector.Vector {
 
 func (r *Body) SetPosition(position vector.Vector) {
 	r.position = position
+}
+
+func (r *Body) SetVelocity(velovity vector.Vector) {
+	r.Velocity = velovity
 }
 
 func (r *Body) Rotation() rotator.Rotator {

@@ -3,7 +3,6 @@ package node_handler
 import (
 	"encoding/binary"
 	"fmt"
-	"log"
 	"net"
 
 	"github.com/gogo/protobuf/proto"
@@ -44,10 +43,10 @@ func Handle(conn net.Conn) error {
 		if err != nil {
 			return err
 		}
-		log.Println(actors)
+		return handleActors(actors)
+	case message.MsgWorld:
+		return nil
 	default:
 		return fmt.Errorf("unhandled message id: %d", id)
 	}
-
-	return nil
 }

@@ -78,6 +78,7 @@ func (client *Client) handle() {
 		err := client.handler(client.conn)
 		if err != nil {
 			log.Println(err)
+			client.conn = nil
 		}
 	}
 }

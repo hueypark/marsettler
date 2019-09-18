@@ -46,8 +46,7 @@ func (w *World) Tick(delta float64) {
 	}
 }
 
-func (w *World) Add(o owner) {
-	b := o.Body()
+func (w *World) Add(b *body.Body) {
 	w.bodys[b.ID()] = b
 }
 

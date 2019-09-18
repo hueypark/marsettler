@@ -4,7 +4,9 @@ package message;
 
 message Actor {
     int64 id = 1;
-    Vector pos = 2;
+    int32 serverId = 2;
+    Vector position = 3;
+    Vector velocity = 4;
 }
 
 message ActorCreate {

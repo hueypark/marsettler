@@ -10,6 +10,7 @@ import (
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/net"
 	"github.com/hueypark/marsettler/core/physics"
+	"github.com/hueypark/marsettler/server/config"
 	"github.com/hueypark/marsettler/server/ctx"
 	"github.com/hueypark/marsettler/server/game"
 	"github.com/hueypark/marsettler/server/game/handler"
@@ -26,6 +27,7 @@ func main() {
 	flag.Parse()
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	config.ServerID = int32(*id)
 	id_generator.Init(*id)
 
 	ctx.World = game.NewWorld(physics.NewAreaOfEffect(*aoe))

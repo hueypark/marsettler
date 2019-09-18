@@ -15,7 +15,11 @@ type Actor struct {
 
 func NewActor(msgActor *message.Actor) *Actor {
 	actor := &Actor{}
-	actor.Init(vector.Vector{X: msgActor.Pos.X, Y: msgActor.Pos.Y})
+	actor.Init(
+		msgActor.Id,
+		msgActor.ServerId,
+		vector.Vector{X: msgActor.Position.X, Y: msgActor.Position.Y},
+		vector.Vector{X: msgActor.Velocity.X, Y: msgActor.Velocity.Y})
 
 	return actor
 }

@@ -8,7 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/hueypark/marsettler/message"
-	"github.com/hueypark/marsettler/server/ctx"
+	"github.com/hueypark/marsettler/pkg/ctx"
 )
 
 var (

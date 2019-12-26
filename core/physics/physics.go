@@ -9,18 +9,14 @@ import (
 
 type World struct {
 	bodys                 map[int64]*body.Body
-	gravity               vector.Vector
 	contacts              []*Contact
 	reservedDeleteBodyIds []int64
 	mux                   sync.RWMutex
-	aoe                   *AreaOfEffect
 }
 
-func NewWorld(aoe *AreaOfEffect) *World {
+func NewWorld() *World {
 	return &World{
-		bodys:   make(map[int64]*body.Body),
-		gravity: vector.Vector{X: 0.0, Y: 9.8},
-		aoe:     aoe,
+		bodys: make(map[int64]*body.Body),
 	}
 }
 
@@ -37,11 +33,6 @@ func (w *World) Tick(delta float64) {
 	}
 
 	for _, b := range w.bodys {
-		if !w.aoe.InArea(b.Position()) {
-			continue
-		}
-
-		b.AddForce(vector.Mul(w.gravity, b.Mass()))
 		b.Tick(delta)
 	}
 }
@@ -52,10 +43,6 @@ func (w *World) Add(b *body.Body) {
 
 func (w *World) ReservedDelete(id int64) {
 	w.reservedDeleteBodyIds = append(w.reservedDeleteBodyIds, id)
-}
-
-func (w *World) SetGravity(gravity vector.Vector) {
-	w.gravity = gravity
 }
 
 func (w *World) SetBodyPosition(id int64, pos vector.Vector) {
@@ -86,20 +73,12 @@ func (w *World) Contacts() []*Contact {
 	return w.contacts
 }
 
-func (w *World) AOE() *AreaOfEffect {
-	return w.aoe
-}
-
 func (w *World) broadPhase() []*Contact {
 	var contacts []*Contact
 
 	for _, lhs := range w.bodys {
 		for _, rhs := range w.bodys {
 			if lhs.ID() <= rhs.ID() {
-				continue
-			}
-
-			if !w.aoe.InArea(lhs.Position()) {
 				continue
 			}
 

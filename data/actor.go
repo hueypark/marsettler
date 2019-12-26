@@ -2,7 +2,7 @@ package data
 
 import (
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hueypark/marsettler/client/asset"
+	"github.com/hueypark/marsettler/pkg/asset"
 )
 
 func Actor(id int) *ActorData {

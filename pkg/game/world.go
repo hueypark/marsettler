@@ -7,6 +7,7 @@ import (
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics"
+	"github.com/hueypark/marsettler/data"
 	"github.com/hueypark/marsettler/message"
 )
 
@@ -31,11 +32,11 @@ func NewWorld() *World {
 	return world
 }
 
-func (world *World) NewActor(id int64, position, velocity vector.Vector) *Actor {
+func (world *World) NewActor(data *data.ActorData, position, velocity vector.Vector) *Actor {
 	world.mux.Lock()
 	defer world.mux.Unlock()
 
-	actor := NewActor(id, position, velocity)
+	actor := NewActor(position, velocity)
 
 	world.actors[actor.ID()] = actor
 	world.physicsWorld.Add(actor.Body())

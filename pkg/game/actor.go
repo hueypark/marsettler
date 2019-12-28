@@ -3,6 +3,7 @@ package game
 import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/core/behavior_tree"
+	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics/body"
 	"github.com/hueypark/marsettler/core/physics/body/circle"
@@ -19,10 +20,10 @@ type Actor struct {
 const radius float64 = 16.0
 
 // NewActor creates new actor.
-func NewActor(id int64, position, velocity vector.Vector) *Actor {
+func NewActor(position, velocity vector.Vector) *Actor {
 	actor := &Actor{}
 
-	actor.Init(id, position, velocity)
+	actor.Init(id_generator.Generate(), position, velocity)
 
 	return actor
 }

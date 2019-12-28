@@ -51,3 +51,12 @@ func Tick(n INode) State {
 
 	return state
 }
+
+// Wireframe returns wireframe as string.
+func (bt *BehaviorTree) Wireframe() string {
+	if bt.root == nil {
+		return ""
+	}
+
+	return bt.root.Wireframe()
+}

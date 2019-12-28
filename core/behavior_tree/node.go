@@ -31,4 +31,5 @@ type INode interface {
 	SetState(state State)
 	State() State
 	MarshalYAML() (interface{}, error)
+	Wireframe() string
 }

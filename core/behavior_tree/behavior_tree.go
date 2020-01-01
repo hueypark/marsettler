@@ -9,6 +9,7 @@ type BehaviorTree struct {
 // NewBehaviorTree creates new BehaviorTree.
 func NewBehaviorTree() *BehaviorTree {
 	behaviorTree := &BehaviorTree{
+		root:       &root{},
 		blackboard: NewBlackboard(),
 	}
 
@@ -20,9 +21,8 @@ func (bt *BehaviorTree) Blackboard() *Blackboard {
 	return bt.blackboard
 }
 
-// SetRoot sets root INode.
-func (bt *BehaviorTree) SetRoot(root INode) {
-	bt.root = root
+func (bt *BehaviorTree) Root() INode {
+	return bt.root
 }
 
 // Tick ticks behavior tree.

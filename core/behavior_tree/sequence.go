@@ -1,5 +1,10 @@
 package behavior_tree
 
+import (
+	"fmt"
+	"strings"
+)
+
 // Sequence Execute their children from left to right.
 // Stop when one of their children fails.
 // If a child fails, then the sequence fails.
@@ -42,12 +47,15 @@ func (s *Sequence) Tick() State {
 	}
 }
 
-func (s *Sequence) MarshalYAML() (interface{}, error) {
-	return struct {
-		Name     string  `yaml:"Name"`
-		Children []INode `yaml:"Children"`
-	}{
-		Name:     "Sequence",
-		Children: s.children,
-	}, nil
+func (s *Sequence) Wireframe() string {
+	str := fmt.Sprintln("Sequence")
+
+	for _, child := range s.children {
+		wfs := strings.Split(child.Wireframe(), "\n")
+		for _, wf := range wfs {
+			str += fmt.Sprintln("\t" + wf)
+		}
+	}
+
+	return str
 }

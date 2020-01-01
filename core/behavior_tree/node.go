@@ -27,9 +27,14 @@ func (node *Node) State() State {
 // INode represents the interface of the node.
 type INode interface {
 	Init()
-	Tick() State
 	SetState(state State)
 	State() State
-	MarshalYAML() (interface{}, error)
+	Tick() State
 	Wireframe() string
+}
+
+type IAddChildNode interface {
+	INode
+
+	AddChild(INode)
 }

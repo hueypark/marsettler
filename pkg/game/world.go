@@ -32,11 +32,11 @@ func NewWorld() *World {
 	return world
 }
 
-func (world *World) NewActor(data *data.ActorData, position, velocity vector.Vector) *Actor {
+func (world *World) NewActor(actorID data.ActorID, position, velocity vector.Vector) *Actor {
 	world.mux.Lock()
 	defer world.mux.Unlock()
 
-	actor := NewActor(position, velocity)
+	actor := NewActor(actorID, position, velocity)
 
 	world.actors[actor.ID()] = actor
 	world.physicsWorld.Add(actor.Body())

@@ -9,6 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/data"
 	"github.com/hueypark/marsettler/pkg/config"
 	"github.com/hueypark/marsettler/pkg/ctx"
 	"github.com/hueypark/marsettler/pkg/game"
@@ -63,6 +64,6 @@ func tickCollision(cursorPosition, worldPosition vector.Vector) {
 	}
 
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-		ctx.World.NewActor(nil, worldPosition, vector.Zero())
+		ctx.World.NewActor(data.Legionary, worldPosition, vector.Zero())
 	}
 }

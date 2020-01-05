@@ -1,12 +1,16 @@
 package game
 
 import (
+	"log"
+
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics/body"
 	"github.com/hueypark/marsettler/core/physics/body/circle"
+	"github.com/hueypark/marsettler/data"
+	"github.com/hueypark/marsettler/pkg/ai"
 	"github.com/hueypark/marsettler/pkg/asset"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )
@@ -20,10 +24,17 @@ type Actor struct {
 const radius float64 = 16.0
 
 // NewActor creates new actor.
-func NewActor(position, velocity vector.Vector) *Actor {
+func NewActor(actorID data.ActorID, position, velocity vector.Vector) *Actor {
 	actor := &Actor{}
 
 	actor.Init(id_generator.Generate(), position, velocity)
+	if actorData := data.Actor(actorID); actorData != nil {
+		if bt, err := ai.NewBehaviorTree(actorData.BehaviorTree); err == nil {
+			actor.SetBehaviorTree(bt)
+		} else {
+			log.Println(err)
+		}
+	}
 
 	return actor
 }

@@ -22,28 +22,32 @@ func NewSequence() *Sequence {
 // Init inits sqeuence.
 func (s *Sequence) Init() {
 	s.index = 0
+
+	for _, child := range s.children {
+		child.Init()
+	}
 }
 
 // Tick ticks sequnce.
-func (s *Sequence) Tick() State {
-	s.Composite.Tick()
-
-	if len(s.Children()) == 0 {
-		return Success
+func (s *Sequence) Tick(delta float64) State {
+	childrenLen := len(s.children)
+	if childrenLen == 0 {
+		return s.SetState(Success)
 	}
 
 	for {
-		node := s.Children()[s.index]
+		node := s.children[s.index]
 
-		state := Tick(node)
+		state := node.Tick(delta)
 		if state != Success {
-			return state
+			return s.SetState(state)
+		}
+
+		if childrenLen == s.index+1 {
+			return s.SetState(Success)
 		}
 
 		s.index++
-		if s.index == len(s.Children()) {
-			return Success
-		}
 	}
 }
 

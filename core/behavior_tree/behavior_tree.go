@@ -26,30 +26,20 @@ func (bt *BehaviorTree) Root() INode {
 }
 
 // Tick ticks behavior tree.
-func (bt *BehaviorTree) Tick() {
+func (bt *BehaviorTree) Tick(delta float64) {
 	if bt.root == nil {
 		return
 	}
 
-	Tick(bt.root)
+	if bt.root.State() != Running {
+		bt.root.Init()
+	}
+
+	bt.root.Tick(delta)
 }
 
 func (bt *BehaviorTree) MarshalYAML() (interface{}, error) {
 	return &bt.root, nil
-}
-
-// Update updates INode.
-func Tick(n INode) State {
-	if n.State() != Running {
-		n.Init()
-		n.SetState(Running)
-	}
-
-	state := n.Tick()
-
-	n.SetState(state)
-
-	return state
 }
 
 // Wireframe returns wireframe as string.

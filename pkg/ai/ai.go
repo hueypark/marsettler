@@ -16,7 +16,7 @@ func (n *nodeData) depth() int {
 	return strings.Count(n.str, "\t")
 }
 
-func NewBehaviorTree(str string) (*behavior_tree.BehaviorTree, error) {
+func NewBehaviorTree(actor actor, str string) (*behavior_tree.BehaviorTree, error) {
 	bt := behavior_tree.NewBehaviorTree()
 
 	nodeData, err := parse(str)
@@ -24,7 +24,7 @@ func NewBehaviorTree(str string) (*behavior_tree.BehaviorTree, error) {
 		return nil, err
 	}
 
-	err = addNode(bt.Root(), nodeData)
+	err = addNode(actor, bt.Root(), nodeData, bt.Blackboard())
 	if err != nil {
 		return bt, err
 	}
@@ -32,8 +32,8 @@ func NewBehaviorTree(str string) (*behavior_tree.BehaviorTree, error) {
 	return bt, nil
 }
 
-func addNode(parent behavior_tree.INode, nodeData nodeData) error {
-	newNode, err := newNode(nodeData.str)
+func addNode(actor actor, parent behavior_tree.INode, nodeData nodeData, blackboard *behavior_tree.Blackboard) error {
+	newNode, err := newNode(actor, nodeData.str, blackboard)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func addNode(parent behavior_tree.INode, nodeData nodeData) error {
 	addChildNode.AddChild(newNode)
 
 	for _, child := range nodeData.children {
-		err := addNode(newNode, child)
+		err := addNode(actor, newNode, child, blackboard)
 		if err != nil {
 			return err
 		}
@@ -55,7 +55,7 @@ func addNode(parent behavior_tree.INode, nodeData nodeData) error {
 	return nil
 }
 
-func newNode(str string) (behavior_tree.INode, error) {
+func newNode(actor actor, str string, blackboard *behavior_tree.Blackboard) (behavior_tree.INode, error) {
 	str = strings.ReplaceAll(str, "\t", "")
 	strs := strings.SplitN(str, ":", 2)
 
@@ -69,9 +69,9 @@ func newNode(str string) (behavior_tree.INode, error) {
 	case "Sequence":
 		return behavior_tree.NewSequence(), nil
 	case "FindRandomPosition":
-		return NewFindRandomPosition(params), nil
+		return NewFindRandomPosition(actor, blackboard, params), nil
 	case "MoveTo":
-		return NewMoveTo(params), nil
+		return NewMoveTo(actor, blackboard, params), nil
 	case "Wait":
 		return NewWait(params), nil
 	default:

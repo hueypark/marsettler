@@ -2,6 +2,7 @@ package game
 
 import (
 	"log"
+	"math/rand"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/core/behavior_tree"
@@ -29,7 +30,7 @@ func NewActor(actorID data.ActorID, position, velocity vector.Vector) *Actor {
 
 	actor.Init(id_generator.Generate(), position, velocity)
 	if actorData := data.Actor(actorID); actorData != nil {
-		if bt, err := ai.NewBehaviorTree(actorData.BehaviorTree); err == nil {
+		if bt, err := ai.NewBehaviorTree(actor, actorData.BehaviorTree); err == nil {
 			actor.SetBehaviorTree(bt)
 		} else {
 			log.Println(err)
@@ -45,6 +46,25 @@ func (actor *Actor) Init(id int64, position, velocity vector.Vector) {
 	b.SetMass(10)
 	b.SetShape(circle.New(radius))
 	actor.body = b
+}
+
+func (actor *Actor) FindRandomPosition() vector.Vector {
+	return vector.Vector{X: rand.Float64() * 500, Y: rand.Float64() * 500}
+}
+
+func (actor *Actor) MoveTo(position vector.Vector) (arrvie bool) {
+	speed := 10.0
+	newPosition := actor.Position().Add(position.Sub(actor.Position()).Normalize().Mul(speed))
+
+	oldPosition := actor.Position()
+
+	actor.SetPosition(newPosition)
+
+	if newPosition.Sub(oldPosition).Size() < 10 {
+		return true
+	}
+
+	return false
 }
 
 func (actor *Actor) OnCollision(other interface{}, normal vector.Vector, penetration float64) {
@@ -95,9 +115,9 @@ func (actor *Actor) Radius() float64 {
 }
 
 // Tick ticks actor.
-func (actor *Actor) Tick() {
+func (actor *Actor) Tick(delta float64) {
 	if actor.behaviorTree != nil {
-		actor.behaviorTree.Tick()
+		actor.behaviorTree.Tick(delta)
 	}
 }
 

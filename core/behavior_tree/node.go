@@ -5,18 +5,11 @@ type Node struct {
 	state State
 }
 
-// Init initializes INode.
-func (node *Node) Init() {
-}
-
-// Tick ticks nodes.
-func (node *Node) Tick() State {
-	return Invalid
-}
-
 // SetState sets state.
-func (node *Node) SetState(state State) {
+func (node *Node) SetState(state State) State {
 	node.state = state
+
+	return state
 }
 
 // State returns state.
@@ -27,9 +20,9 @@ func (node *Node) State() State {
 // INode represents the interface of the node.
 type INode interface {
 	Init()
-	SetState(state State)
+	SetState(state State) State
 	State() State
-	Tick() State
+	Tick(delta float64) State
 	Wireframe() string
 }
 

@@ -12,7 +12,8 @@ import (
 type Wait struct {
 	behavior_tree.Node
 
-	duration float64
+	duration        float64
+	currentDuration float64
 }
 
 func NewWait(params string) *Wait {
@@ -22,6 +23,19 @@ func NewWait(params string) *Wait {
 	}
 
 	return &Wait{duration: duration}
+}
+
+func (node *Wait) Init() {
+	node.currentDuration = 0
+}
+
+func (node *Wait) Tick(delta float64) behavior_tree.State {
+	node.currentDuration += delta
+	if node.duration <= node.currentDuration {
+		return node.SetState(behavior_tree.Success)
+	}
+
+	return node.SetState(behavior_tree.Running)
 }
 
 func (node *Wait) Wireframe() string {

@@ -75,7 +75,7 @@ func (world *World) Tick(delta float64) {
 
 	world.physicsWorld.Tick(delta)
 	for _, actor := range world.actors {
-		actor.Tick()
+		actor.Tick(delta)
 	}
 
 	for _, l := range world.listeners {

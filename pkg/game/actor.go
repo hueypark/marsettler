@@ -2,6 +2,7 @@ package game
 
 import (
 	"log"
+	"math"
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten"
@@ -52,19 +53,46 @@ func (actor *Actor) FindRandomPosition() vector.Vector {
 	return vector.Vector{X: rand.Float64() * 500, Y: rand.Float64() * 500}
 }
 
-func (actor *Actor) MoveTo(position vector.Vector) (arrvie bool) {
-	speed := 10.0
-	newPosition := actor.Position().Add(position.Sub(actor.Position()).Normalize().Mul(speed))
+func (actor *Actor) MoveTo(dest vector.Vector) (arrvie bool) {
+	maxSpeed := 500.0
+	acc := 500.0
+	dec := 700.0
+	lateralDec := 100.0
+	arriveDistance := 10.0
+	arriveSpeed := 10.0
 
-	oldPosition := actor.Position()
+	diff := dest.Sub(actor.Position())
 
-	actor.SetPosition(newPosition)
-
-	if newPosition.Sub(oldPosition).Size() < 10 {
-		return true
+	right := diff.Right().Normalize()
+	rightSpeed := actor.body.Velocity.Dot(right)
+	lateralDec = math.Min(math.Abs(rightSpeed), lateralDec)
+	if 0 <= rightSpeed {
+		actor.body.AddForce(right.Invert().Mul(lateralDec * actor.body.Mass()))
+	} else {
+		actor.body.AddForce(right.Mul(lateralDec * actor.body.Mass()))
 	}
 
-	return false
+	remainingDistance := diff.Size()
+	dir := diff.Normalize()
+	curSpeed := math.Abs(actor.body.Velocity.Dot(dir))
+	breakingDistance := curSpeed * curSpeed / dec
+	if remainingDistance <= breakingDistance {
+		actor.body.AddForce(actor.body.Velocity.Normalize().Invert().Mul(dec * actor.body.Mass()))
+	} else if curSpeed <= maxSpeed {
+		actor.body.AddForce(dir.Mul(acc * actor.body.Mass()))
+	}
+
+	if arriveDistance < remainingDistance {
+		return false
+	}
+
+	if arriveSpeed < curSpeed {
+		actor.body.AddForce(actor.body.Velocity.Normalize().Invert().Mul(dec * actor.body.Mass()))
+		return false
+	}
+
+	actor.body.Clear()
+	return true
 }
 
 func (actor *Actor) OnCollision(other interface{}, normal vector.Vector, penetration float64) {

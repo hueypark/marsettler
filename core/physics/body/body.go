@@ -30,6 +30,11 @@ func New(id int64, position vector.Vector) *Body {
 	return &r
 }
 
+func (r *Body) Clear() {
+	r.forceSum.Clear()
+	r.Velocity.Clear()
+}
+
 func (r *Body) ID() int64 {
 	return r.id
 }

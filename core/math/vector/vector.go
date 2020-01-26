@@ -82,6 +82,10 @@ func Cross(lhs, rhs Vector) float64 {
 	return (lhs.X * rhs.Y) - (lhs.Y * rhs.X)
 }
 
+func (v Vector) Right() Vector {
+	return Vector{v.Y, -v.X}
+}
+
 // Size returns size.
 func (v Vector) Size() float64 {
 	return math.Sqrt((v.X * v.X) + (v.Y * v.Y))

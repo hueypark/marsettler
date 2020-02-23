@@ -8,7 +8,8 @@ import (
 type ActorID int
 
 const (
-	Legionary ActorID = iota
+	Leader ActorID = iota
+	Legionary
 )
 
 func Actor(id ActorID) *ActorData {
@@ -23,6 +24,14 @@ type ActorData struct {
 }
 
 var actors = map[ActorID]*ActorData{
+	Leader: {
+		Name:   "Leader",
+		Image:  asset.Circle,
+		Radius: 10,
+		BehaviorTree: `Sequence
+	MoveTo: position
+`,
+	},
 	Legionary: {
 		Name:   "Legionary",
 		Image:  asset.Circle,

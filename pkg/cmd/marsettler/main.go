@@ -9,7 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/data"
 	"github.com/hueypark/marsettler/pkg/config"
 	"github.com/hueypark/marsettler/pkg/ctx"
 	"github.com/hueypark/marsettler/pkg/game"
@@ -20,6 +19,7 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	ctx.World = game.NewWorld()
+	ctx.User = game.NewUser(ctx.World)
 
 	ebiten.SetRunnableInBackground(true)
 	err := ebiten.Run(tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")
@@ -35,9 +35,10 @@ func tick(screen *ebiten.Image) error {
 
 	worldPosition := renderer.WorldPosition(cursorPosition)
 
-	ctx.World.Tick((time.Second / 60).Seconds())
+	sec := (time.Second / 60).Seconds()
+	ctx.User.Tick(sec, worldPosition)
+	ctx.World.Tick(sec)
 	tickRenderer(screen, cursorPosition)
-	tickCollision(cursorPosition, worldPosition)
 
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
 }
@@ -57,13 +58,4 @@ func tickRenderer(screen *ebiten.Image, cursorPosition vector.Vector) {
 	renderer.Tick(cursorPosition)
 
 	ctx.World.Render(screen)
-}
-
-func tickCollision(cursorPosition, worldPosition vector.Vector) {
-	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonRight) {
-	}
-
-	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-		ctx.World.NewActor(data.Legionary, worldPosition, vector.Zero())
-	}
 }

@@ -37,6 +37,10 @@ func (node *MoveTo) Tick(delta float64) behavior_tree.State {
 		return node.SetState(behavior_tree.Failure)
 	}
 
+	if position == nil {
+		return node.SetState(behavior_tree.Failure)
+	}
+
 	if !node.actor.MoveTo(*position) {
 		return node.SetState(behavior_tree.Running)
 	}
@@ -49,10 +53,15 @@ func (node *MoveTo) Wireframe() string {
 }
 
 func (node *MoveTo) getPosition() (*vector.Vector, error) {
-	position := node.blackboard.Get(node.positionKey).(*vector.Vector)
+	position := node.blackboard.Get(node.positionKey)
 	if position == nil {
+		return nil, nil
+	}
+
+	positionVec := position.(*vector.Vector)
+	if positionVec == nil {
 		return nil, fmt.Errorf("position is nil")
 	}
 
-	return position, nil
+	return positionVec, nil
 }

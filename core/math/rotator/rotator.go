@@ -3,25 +3,54 @@ package rotator
 import (
 	"math"
 
+	"github.com/hueypark/marsettler/core/math/matrix"
 	"github.com/hueypark/marsettler/core/math/vector"
 )
 
-// Rotator represent roate ob object.
 type Rotator struct {
-	Radian float64
+	radian float64
 }
 
-// Dir returns forward direction.
-func (r Rotator) Dir() vector.Vector {
-	return vector.Vector{X: math.Cos(r.Radian), Y: math.Sin(r.Radian)}
+func NewRotator(radian float64) *Rotator {
+	return &Rotator{radian}
 }
 
-// Degree returns degree.
-func (r Rotator) Degree() float64 {
-	return r.Radian / math.Pi * 180.0
+func ZERO() Rotator {
+	return Rotator{0}
 }
 
-// Add adds radian.
 func (r *Rotator) Add(radian float64) {
-	r.Radian += radian
+	r.radian += radian
+}
+
+func (r *Rotator) AddScaled(radian, scale float64) {
+	r.radian += radian * scale
+}
+
+func (r *Rotator) Degree() float64 {
+	return r.radian / math.Pi * 180.0
+}
+
+func (r *Rotator) Dir() vector.Vector {
+	return vector.Vector{X: math.Cos(r.radian), Y: math.Sin(r.radian)}
+}
+
+func (r *Rotator) Radian() float64 {
+	return r.radian
+}
+
+func (r Rotator) RotateVector(v vector.Vector) vector.Vector {
+	return r.RotationMatrix().TransformVector(v)
+}
+
+func (r Rotator) RotationMatrix() (m matrix.Matrix) {
+	c := math.Cos(r.radian)
+	s := math.Sin(r.radian)
+
+	m.M[0][0] = c
+	m.M[0][1] = -s
+	m.M[1][0] = s
+	m.M[1][1] = c
+
+	return m
 }

@@ -1,14 +1,14 @@
 package body
 
 import (
+	rotator2 "github.com/hueypark/marsettler/core/math/rotator"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/core/physics/math/rotator"
 )
 
 type Body struct {
 	id              int64
 	position        vector.Vector
-	rotation        rotator.Rotator
+	rotation        rotator2.Rotator
 	Velocity        vector.Vector
 	angularVelocity float64
 	Shape           shape
@@ -51,11 +51,11 @@ func (r *Body) SetVelocity(velovity vector.Vector) {
 	r.Velocity = velovity
 }
 
-func (r *Body) Rotation() rotator.Rotator {
+func (r *Body) Rotation() rotator2.Rotator {
 	return r.rotation
 }
 
-func (r *Body) SetRotation(rotation rotator.Rotator) {
+func (r *Body) SetRotation(rotation rotator2.Rotator) {
 	r.rotation = rotation
 }
 

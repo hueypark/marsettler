@@ -3,9 +3,9 @@ package convex
 import (
 	"math"
 
+	rotator2 "github.com/hueypark/marsettler/core/math/rotator"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics/body"
-	"github.com/hueypark/marsettler/core/physics/math/rotator"
 )
 
 type Convex struct {
@@ -50,7 +50,7 @@ func (c *Convex) Edges() []Edge {
 				nextIndex = 0
 			}
 			end := hull[nextIndex]
-			r := rotator.Rotator{90}
+			r := rotator2.NewRotator(math.Pi * 0.5)
 			normal := r.RotateVector(vector.Sub(start, end))
 			normal = normal.Normalize()
 			c.edges = append(c.edges, Edge{
@@ -63,7 +63,14 @@ func (c *Convex) Edges() []Edge {
 	return c.edges
 }
 
-func MinkowskiDifference(a Convex, posA vector.Vector, rotA rotator.Rotator, b Convex, posB vector.Vector, rotB rotator.Rotator) *Convex {
+func MinkowskiDifference(
+	a Convex,
+	posA vector.Vector,
+	rotA rotator2.Rotator,
+	b Convex,
+	posB vector.Vector,
+	rotB rotator2.Rotator,
+) *Convex {
 	var vertices []vector.Vector
 
 	for _, vertexA := range a.Hull() {
@@ -79,7 +86,7 @@ func MinkowskiDifference(a Convex, posA vector.Vector, rotA rotator.Rotator, b C
 	return New(vertices)
 }
 
-func (c *Convex) Support(dir vector.Vector, rot rotator.Rotator) (bestVertex vector.Vector) {
+func (c *Convex) Support(dir vector.Vector, rot rotator2.Rotator) (bestVertex vector.Vector) {
 	bestProjection := -math.MaxFloat64
 
 	for _, vertex := range c.Hull() {
@@ -112,7 +119,9 @@ func (c *Convex) quickHull(points []vector.Vector, start, end vector.Vector) []v
 		c.quickHull(newPoints, start, farthestPoint)...)
 }
 
-func (c *Convex) InHull(position vector.Vector, rotation rotator.Rotator, point vector.Vector) bool {
+func (c *Convex) InHull(
+	position vector.Vector, rotation rotator2.Rotator, point vector.Vector,
+) bool {
 	for _, edge := range c.Edges() {
 		if vector.Sub(point, vector.Add(position, rotation.RotateVector(edge.Start))).OnTheRight(vector.Sub(vector.Add(position, rotation.RotateVector(edge.End)), vector.Add(position, rotation.RotateVector(edge.Start)))) == false {
 			return false
@@ -139,7 +148,9 @@ func (c *Convex) getExtremePoints() (minX, maxX vector.Vector) {
 	return minX, maxX
 }
 
-func (c *Convex) getLhsPointDistanceIndicatorMap(points []vector.Vector, start, end vector.Vector) map[vector.Vector]float64 {
+func (c *Convex) getLhsPointDistanceIndicatorMap(
+	points []vector.Vector, start, end vector.Vector,
+) map[vector.Vector]float64 {
 	pointDistanceIndicatorMap := make(map[vector.Vector]float64)
 
 	for _, point := range points {
@@ -160,7 +171,9 @@ func (c *Convex) getDistanceIndicator(point, start, end vector.Vector) float64 {
 	return vector.Cross(vLine, vPoint)
 }
 
-func (c *Convex) getFarthestPoint(pointDistanceIndicatorMap map[vector.Vector]float64) (farthestPoint vector.Vector) {
+func (c *Convex) getFarthestPoint(
+	pointDistanceIndicatorMap map[vector.Vector]float64,
+) (farthestPoint vector.Vector) {
 	maxDistanceIndicator := -math.MaxFloat64
 	for point, distanceIndicator := range pointDistanceIndicatorMap {
 		if maxDistanceIndicator < distanceIndicator {

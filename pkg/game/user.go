@@ -19,7 +19,7 @@ func NewUser(world *World) *User {
 	return user
 }
 
-func (u *User) Tick(delta float64, position vector.Vector) {
+func (u *User) Tick(position vector.Vector) {
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
 		u.actor.behaviorTree.Blackboard().Set(-1, &position)
 	}

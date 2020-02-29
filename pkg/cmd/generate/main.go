@@ -32,7 +32,7 @@ func generateFlatbuffers() {
 }
 
 func generateAsset() {
-	files, err := filepath.Glob("./client/asset/*.png")
+	files, err := filepath.Glob("./pkg/asset/*.png")
 	if err != nil {
 		log.Fatalln(err)
 	}

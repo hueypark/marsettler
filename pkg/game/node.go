@@ -8,6 +8,15 @@ import (
 )
 
 type Node struct {
+	image *ebiten.Image
+}
+
+// NewNode creates node.
+func NewNode() *Node {
+	n := &Node{}
+	n.image = asset.Image("grassland")
+
+	return n
 }
 
 func (n *Node) ID() int64 {
@@ -19,5 +28,5 @@ func (n *Node) Position() vector.Vector {
 }
 
 func (n *Node) Render(screen *ebiten.Image) {
-	renderer.Render(screen, asset.Circle, n.Position())
+	renderer.Render(screen, n.image, n.Position())
 }

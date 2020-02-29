@@ -21,6 +21,7 @@ import (
 type Actor struct {
 	behaviorTree *behavior_tree.BehaviorTree
 	body         *body.Body
+	image        *ebiten.Image
 }
 
 const radius float64 = 16.0
@@ -36,6 +37,8 @@ func NewActor(actorID data.ActorID, position, velocity vector.Vector) *Actor {
 		} else {
 			log.Println(err)
 		}
+
+		actor.image = asset.Image(actorData.Image)
 	}
 
 	return actor
@@ -131,7 +134,7 @@ func (actor *Actor) Render(screen *ebiten.Image) {
 	pos.X -= radiusHalf
 	pos.Y -= radiusHalf
 
-	renderer.Render(screen, asset.Circle, pos)
+	renderer.Render(screen, actor.image, pos)
 }
 
 func (actor *Actor) Velocity() vector.Vector {

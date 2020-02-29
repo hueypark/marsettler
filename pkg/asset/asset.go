@@ -13,29 +13,30 @@ import (
 )
 
 var (
-	Blueberry *ebiten.Image
-	Building  *ebiten.Image
-	Circle    *ebiten.Image
-	CityHall  *ebiten.Image
-	Cursor    *ebiten.Image
-	Fairy     *ebiten.Image
-	Grass     *ebiten.Image
-	Menu      *ebiten.Image
-	Worker    *ebiten.Image
+	images      map[string]*ebiten.Image
+	fallbackImg *ebiten.Image
 
 	UiFont font.Face
 )
 
+// Image returns image. If not exists it returns a fallback image.
+func Image(str string) *ebiten.Image {
+	if img, ok := images[str]; ok {
+		return img
+	}
+
+	return fallbackImg
+}
+
+// Set image sets image.
+func SetImage(str string, img *ebiten.Image) {
+	images[str] = img
+}
+
 func init() {
-	Blueberry = newImageFromFileBytes(blueberry)
-	Building = newImageFromFileBytes(building)
-	Circle = newImageFromFileBytes(circle)
-	CityHall = newImageFromFileBytes(city_hall)
-	Cursor = newImageFromFileBytes(cursor)
-	Fairy = newImageFromFileBytes(fairy)
-	Grass = newImageFromFileBytes(grass)
-	Menu = newImageFromFileBytes(menu)
-	Worker = newImageFromFileBytes(worker)
+	images = make(map[string]*ebiten.Image)
+
+	fallbackImg = newImageFromFileBytes(fallback)
 
 	initFont()
 }

@@ -1,10 +1,5 @@
 package data
 
-import (
-	"github.com/hajimehoshi/ebiten"
-	"github.com/hueypark/marsettler/pkg/asset"
-)
-
 type ActorID int
 
 const (
@@ -18,7 +13,7 @@ func Actor(id ActorID) *ActorData {
 
 type ActorData struct {
 	Name         string
-	Image        *ebiten.Image
+	Image        string
 	Radius       float64
 	BehaviorTree string
 }
@@ -26,7 +21,7 @@ type ActorData struct {
 var actors = map[ActorID]*ActorData{
 	Leader: {
 		Name:   "Leader",
-		Image:  asset.Circle,
+		Image:  "node/leader",
 		Radius: 10,
 		BehaviorTree: `Sequence
 	MoveTo: position
@@ -34,7 +29,7 @@ var actors = map[ActorID]*ActorData{
 	},
 	Legionary: {
 		Name:   "Legionary",
-		Image:  asset.Circle,
+		Image:  "node/legionary",
 		Radius: 10,
 		BehaviorTree: `Sequence
 	FindRandomPosition: patrolPosition

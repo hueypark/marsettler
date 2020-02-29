@@ -6,6 +6,7 @@ import (
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hueypark/marsettler/core/asset"
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
@@ -13,7 +14,6 @@ import (
 	"github.com/hueypark/marsettler/core/physics/body/circle"
 	"github.com/hueypark/marsettler/data"
 	"github.com/hueypark/marsettler/pkg/ai"
-	"github.com/hueypark/marsettler/pkg/asset"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )
 

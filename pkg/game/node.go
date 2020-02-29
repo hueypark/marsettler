@@ -2,8 +2,8 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hueypark/marsettler/core/asset"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/pkg/asset"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )
 

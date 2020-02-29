@@ -5,8 +5,8 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/text"
+	"github.com/hueypark/marsettler/core/asset"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/pkg/asset"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )
 
@@ -19,7 +19,9 @@ type Layer struct {
 	children    []*Layer
 }
 
-func NewLayer(name string, image *ebiten.Image, position vector.Vector, onCollision func(), parent *Layer) *Layer {
+func NewLayer(
+	name string, image *ebiten.Image, position vector.Vector, onCollision func(), parent *Layer,
+) *Layer {
 	layer := &Layer{
 		name:        name,
 		image:       image,

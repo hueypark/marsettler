@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/pkg/config"
+	"github.com/hueypark/marsettler/pkg/consts"
 	"github.com/hueypark/marsettler/pkg/ctx"
 	"github.com/hueypark/marsettler/pkg/game"
 	"github.com/hueypark/marsettler/pkg/renderer"
@@ -22,6 +22,7 @@ func main() {
 	ctx.User = game.NewUser(ctx.World)
 
 	ebiten.SetRunnableInBackground(true)
+	ebiten.SetMaxTPS(consts.TPS)
 	err := ebiten.Run(tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")
 	if err != nil {
 		log.Fatalln(err)
@@ -30,14 +31,14 @@ func main() {
 }
 
 func tick(screen *ebiten.Image) error {
+	ebiten.CurrentFPS()
 	x, y := ebiten.CursorPosition()
 	cursorPosition := vector.Vector{X: float64(x), Y: float64(y)}
 
 	worldPosition := renderer.WorldPosition(cursorPosition)
 
-	sec := (time.Second / 60).Seconds()
-	ctx.User.Tick(sec, worldPosition)
-	ctx.World.Tick(sec)
+	ctx.User.Tick(worldPosition)
+	ctx.World.Tick()
 	tickRenderer(screen, cursorPosition)
 
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))

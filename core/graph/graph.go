@@ -82,8 +82,8 @@ func (graph Graph) Path(fromNodeID, toNodeID int64) (path Path, err error) {
 			neighbor := graph.nodes[neighborID]
 			openNode := graph.nodes[openScore.ID]
 
-			g := neighbor.Distance(openNode) + openScore.G
-			h := toNode.Distance(neighbor)
+			g := neighbor.Position().Sub(openNode.Position()).Size() + openScore.G
+			h := toNode.Position().Sub(neighbor.Position()).Size()
 
 			openList.Push(&astar.Score{
 				ID:       neighbor.ID(),

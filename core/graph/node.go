@@ -6,5 +6,4 @@ import "github.com/hueypark/marsettler/core/math/vector"
 type Node interface {
 	ID() int64
 	Position() vector.Vector
-	Distance(node Node) float64
 }

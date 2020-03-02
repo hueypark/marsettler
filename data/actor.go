@@ -21,7 +21,7 @@ type ActorData struct {
 var actors = map[ActorID]*ActorData{
 	Leader: {
 		Name:   "Leader",
-		Image:  "node/leader",
+		Image:  "/asset/tiles_grassland_dense_clear_green/0.png",
 		Radius: 10,
 		BehaviorTree: `Sequence
 	MoveTo: position

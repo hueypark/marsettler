@@ -29,8 +29,8 @@ func Image(str string) *ebiten.Image {
 }
 
 // Set image sets image.
-func SetImage(str string, img *ebiten.Image) {
-	images[str] = img
+func SetImage(str string, src []byte) {
+	images[str] = newImageFromFileBytes(src)
 }
 
 func init() {

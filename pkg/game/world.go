@@ -7,7 +7,6 @@ import (
 	g "github.com/hueypark/marsettler/core/graph"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/data"
-	"github.com/hueypark/marsettler/message"
 )
 
 // World represents game world.
@@ -41,15 +40,6 @@ func (w *World) Actor(id int64) *Actor {
 	return nil
 }
 
-func (w *World) UpsertActor(msgActor *message.Actor) {
-}
-
-func (w *World) AddListener(l listener) {
-	msgWorld := &message.World{}
-
-	l.Send(msgWorld)
-}
-
 // Tick ticks world.
 func (w *World) Tick() {
 }
@@ -67,8 +57,4 @@ func (w *World) Render(screen *ebiten.Image) {
 
 		node.Render(screen)
 	}
-}
-
-type listener interface {
-	Send(msg message.Msg)
 }

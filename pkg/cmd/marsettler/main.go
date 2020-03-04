@@ -20,7 +20,7 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	ctx.World = game.NewWorld()
-	ctx.User = game.NewUser(ctx.World)
+	//ctx.User = game.NewUser(ctx.World)
 
 	ebiten.SetRunnableInBackground(true)
 	ebiten.SetMaxTPS(consts.TPS)
@@ -36,9 +36,9 @@ func tick(screen *ebiten.Image) error {
 	x, y := ebiten.CursorPosition()
 	cursorPosition := vector.Vector{X: float64(x), Y: float64(y)}
 
-	worldPosition := renderer.WorldPosition(cursorPosition)
-
-	ctx.User.Tick(worldPosition)
+	//worldPosition := renderer.WorldPosition(cursorPosition)
+	//
+	//ctx.User.Tick(worldPosition)
 	ctx.World.Tick()
 	tickRenderer(screen, cursorPosition)
 

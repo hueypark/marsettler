@@ -130,7 +130,8 @@ func (actor *Actor) Position() vector.Vector {
 
 func (actor *Actor) Render(screen *ebiten.Image) {
 	pos := actor.Position()
-	radiusHalf := actor.Radius() * 0.5
+	x, _ := actor.image.Size()
+	radiusHalf := float64(x) * 0.5
 	pos.X -= radiusHalf
 	pos.Y -= radiusHalf
 

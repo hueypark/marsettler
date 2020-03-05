@@ -3,7 +3,7 @@ package data
 type ActorID int
 
 const (
-	Leader ActorID = iota
+	Hero ActorID = iota
 	Legionary
 )
 
@@ -19,9 +19,9 @@ type ActorData struct {
 }
 
 var actors = map[ActorID]*ActorData{
-	Leader: {
-		Name:   "Leader",
-		Image:  "/asset/tiles_grassland_dense_clear_green/0.png",
+	Hero: {
+		Name:   "Hero",
+		Image:  "/asset/figures/hero.png",
 		Radius: 10,
 		BehaviorTree: `Sequence
 	MoveTo: position

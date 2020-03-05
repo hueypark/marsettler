@@ -38,7 +38,13 @@ func (n *Node) Position() vector.Vector {
 }
 
 func (n *Node) Render(screen *ebiten.Image) {
-	renderer.Render(screen, n.image, n.pos)
+	pos := n.Position()
+	x, _ := n.image.Size()
+	radiusHalf := float64(x) * 0.5
+	pos.X -= radiusHalf
+	pos.Y -= radiusHalf
+
+	renderer.Render(screen, n.image, pos)
 }
 
 func (n *Node) GetNeighborNodePositions() [6]vector.Vector {

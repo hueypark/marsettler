@@ -8,8 +8,11 @@ const (
 	Delta int = 1000 / TPS
 
 	// Node size.
-	NodeSize = 160
+	NodeSize = 165
 
-	// Node size squared.
-	NodeSizeSq = NodeSize * NodeSize
+	// Half of node size.
+	NodeSizeHalf = NodeSize / 2
+
+	// Half of node size squared.
+	NodeSizeHalfSq = NodeSizeHalf * NodeSizeHalf
 )

@@ -59,7 +59,7 @@ func (w *World) NearestNode(pos vector.Vector) *Node {
 	if nearestNode == nil {
 		return nil
 	}
-	if consts.NodeSizeSq < nearestNode.Position().Sub(pos).SizeSquare()+10 {
+	if consts.NodeSizeHalfSq < minDistanceSQ {
 		return nil
 	}
 
@@ -71,10 +71,6 @@ func (w *World) Tick() {
 }
 
 func (w *World) Render(screen *ebiten.Image) {
-	for _, actor := range w.actors {
-		actor.Render(screen)
-	}
-
 	for _, iter := range w.g.Nodes() {
 		node, ok := iter.(*Node)
 		if !ok {
@@ -82,6 +78,10 @@ func (w *World) Render(screen *ebiten.Image) {
 		}
 
 		node.Render(screen)
+	}
+
+	for _, actor := range w.actors {
+		actor.Render(screen)
 	}
 }
 

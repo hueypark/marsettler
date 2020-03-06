@@ -5,17 +5,18 @@ import (
 	"strings"
 
 	"github.com/hueypark/marsettler/core/behavior_tree"
+	"github.com/hueypark/marsettler/pkg/game"
 )
 
 type FindRandomPosition struct {
 	behavior_tree.Node
 
-	actor       actor
+	actor       *game.Actor
 	blackboard  *behavior_tree.Blackboard
 	positionKey behavior_tree.BlackboardKey
 }
 
-func NewFindRandomPosition(actor actor, blackboard *behavior_tree.Blackboard, params string) *FindRandomPosition {
+func NewFindRandomPosition(actor *game.Actor, blackboard *behavior_tree.Blackboard, params string) *FindRandomPosition {
 	positionKey := strings.ReplaceAll(params, " ", "")
 
 	return &FindRandomPosition{

@@ -5,7 +5,12 @@ import (
 	"strings"
 
 	"github.com/hueypark/marsettler/core/behavior_tree"
+	"github.com/hueypark/marsettler/pkg/game"
 )
+
+func init() {
+	game.NewBehaviorTree = NewBehaviorTree
+}
 
 type nodeData struct {
 	str      string
@@ -16,7 +21,7 @@ func (n *nodeData) depth() int {
 	return strings.Count(n.str, "\t")
 }
 
-func NewBehaviorTree(actor actor, str string) (*behavior_tree.BehaviorTree, error) {
+func NewBehaviorTree(actor *game.Actor, str string) (*behavior_tree.BehaviorTree, error) {
 	bt := behavior_tree.NewBehaviorTree()
 
 	nodeData, err := parse(str)
@@ -32,7 +37,7 @@ func NewBehaviorTree(actor actor, str string) (*behavior_tree.BehaviorTree, erro
 	return bt, nil
 }
 
-func addNode(actor actor, parent behavior_tree.INode, nodeData nodeData, blackboard *behavior_tree.Blackboard) error {
+func addNode(actor *game.Actor, parent behavior_tree.INode, nodeData nodeData, blackboard *behavior_tree.Blackboard) error {
 	newNode, err := newNode(actor, nodeData.str, blackboard)
 	if err != nil {
 		return err
@@ -55,7 +60,7 @@ func addNode(actor actor, parent behavior_tree.INode, nodeData nodeData, blackbo
 	return nil
 }
 
-func newNode(actor actor, str string, blackboard *behavior_tree.Blackboard) (behavior_tree.INode, error) {
+func newNode(actor *game.Actor, str string, blackboard *behavior_tree.Blackboard) (behavior_tree.INode, error) {
 	str = strings.ReplaceAll(str, "\t", "")
 	strs := strings.SplitN(str, ":", 2)
 

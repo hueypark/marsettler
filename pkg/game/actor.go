@@ -13,7 +13,6 @@ import (
 	"github.com/hueypark/marsettler/core/physics/body"
 	"github.com/hueypark/marsettler/core/physics/body/circle"
 	"github.com/hueypark/marsettler/data"
-	"github.com/hueypark/marsettler/pkg/ai"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )
 
@@ -24,6 +23,9 @@ type Actor struct {
 	image        *ebiten.Image
 }
 
+// NewBehaviorTree creates new bahavior tree.
+var NewBehaviorTree func(actor *Actor, str string) (*behavior_tree.BehaviorTree, error)
+
 const radius float64 = 16.0
 
 // NewActor creates new actor.
@@ -32,10 +34,12 @@ func NewActor(actorID data.ActorID, position, velocity vector.Vector) *Actor {
 
 	actor.Init(id_generator.Generate(), position, velocity)
 	if actorData := data.Actor(actorID); actorData != nil {
-		if bt, err := ai.NewBehaviorTree(actor, actorData.BehaviorTree); err == nil {
-			actor.SetBehaviorTree(bt)
-		} else {
-			log.Println(err)
+		if NewBehaviorTree != nil {
+			if bt, err := NewBehaviorTree(actor, actorData.BehaviorTree); err == nil {
+				actor.SetBehaviorTree(bt)
+			} else {
+				log.Println(err)
+			}
 		}
 
 		actor.image = asset.Image(actorData.Image)

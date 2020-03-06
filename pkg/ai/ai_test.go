@@ -12,7 +12,7 @@ func TestNewBehaviorTree(t *testing.T) {
 	Wait: 1
 `
 
-	bt, err := NewBehaviorTree(origin)
+	bt, err := NewBehaviorTree(nil, origin)
 	if err != nil {
 		t.Error(err)
 	}

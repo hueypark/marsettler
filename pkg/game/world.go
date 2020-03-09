@@ -28,8 +28,8 @@ func NewWorld() *World {
 	return world
 }
 
-func (w *World) NewActor(actorID data.ActorID, position, velocity vector.Vector) *Actor {
-	actor := NewActor(actorID, position, velocity)
+func (w *World) NewActor(actorID data.ActorID) *Actor {
+	actor := NewActor(actorID)
 
 	w.actors[actor.ID()] = actor
 

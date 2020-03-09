@@ -7,17 +7,18 @@ import (
 
 	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/pkg/game"
 )
 
 type MoveTo struct {
 	behavior_tree.Node
 
-	actor       actor
+	actor       *game.Actor
 	blackboard  *behavior_tree.Blackboard
 	positionKey behavior_tree.BlackboardKey
 }
 
-func NewMoveTo(actor actor, blackboard *behavior_tree.Blackboard, params string) *MoveTo {
+func NewMoveTo(actor *game.Actor, blackboard *behavior_tree.Blackboard, params string) *MoveTo {
 	positionKey := strings.ReplaceAll(params, " ", "")
 
 	return &MoveTo{

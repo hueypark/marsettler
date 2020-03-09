@@ -18,7 +18,7 @@ type User struct {
 
 func NewUser(world *World) *User {
 	user := &User{
-		actor:       world.NewActor(data.Hero, vector.Zero(), vector.Zero()),
+		actor:       world.NewActor(data.Hero),
 		world:       world,
 		clickedImg:  asset.Image("/asset/tiles/clicked.png"),
 		clickedNode: nil,

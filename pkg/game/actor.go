@@ -2,7 +2,6 @@ package game
 
 import (
 	"log"
-	"math"
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten"
@@ -11,15 +10,14 @@ import (
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics/body"
-	"github.com/hueypark/marsettler/core/physics/body/circle"
 	"github.com/hueypark/marsettler/data"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )
 
 // Actor represent actor.
 type Actor struct {
+	id           int64
 	behaviorTree *behavior_tree.BehaviorTree
-	body         *body.Body
 	image        *ebiten.Image
 }
 
@@ -29,10 +27,11 @@ var NewBehaviorTree func(actor *Actor, str string) (*behavior_tree.BehaviorTree,
 const radius float64 = 16.0
 
 // NewActor creates new actor.
-func NewActor(actorID data.ActorID, position, velocity vector.Vector) *Actor {
-	actor := &Actor{}
+func NewActor(actorID data.ActorID) *Actor {
+	actor := &Actor{
+		id: id_generator.Generate(),
+	}
 
-	actor.Init(id_generator.Generate(), position, velocity)
 	if actorData := data.Actor(actorID); actorData != nil {
 		if NewBehaviorTree != nil {
 			if bt, err := NewBehaviorTree(actor, actorData.BehaviorTree); err == nil {
@@ -48,57 +47,11 @@ func NewActor(actorID data.ActorID, position, velocity vector.Vector) *Actor {
 	return actor
 }
 
-func (actor *Actor) Init(id int64, position, velocity vector.Vector) {
-	b := body.New(id, position)
-	b.Velocity = velocity
-	b.SetMass(10)
-	b.SetShape(circle.New(radius))
-	actor.body = b
-}
-
 func (actor *Actor) FindRandomPosition() vector.Vector {
 	return vector.Vector{X: rand.Float64() * 500, Y: rand.Float64() * 500}
 }
 
 func (actor *Actor) MoveTo(dest vector.Vector) (arrvie bool) {
-	maxSpeed := 500.0
-	acc := 500.0
-	dec := 700.0
-	lateralDec := 100.0
-	arriveDistance := 10.0
-	arriveSpeed := 10.0
-
-	diff := dest.Sub(actor.Position())
-
-	right := diff.Right().Normalize()
-	rightSpeed := actor.body.Velocity.Dot(right)
-	lateralDec = math.Min(math.Abs(rightSpeed), lateralDec)
-	if 0 <= rightSpeed {
-		actor.body.AddForce(right.Invert().Mul(lateralDec * actor.body.Mass()))
-	} else {
-		actor.body.AddForce(right.Mul(lateralDec * actor.body.Mass()))
-	}
-
-	remainingDistance := diff.Size()
-	dir := diff.Normalize()
-	curSpeed := math.Abs(actor.body.Velocity.Dot(dir))
-	breakingDistance := curSpeed * curSpeed / dec
-	if remainingDistance <= breakingDistance {
-		actor.body.AddForce(actor.body.Velocity.Normalize().Invert().Mul(dec * actor.body.Mass()))
-	} else if curSpeed <= maxSpeed {
-		actor.body.AddForce(dir.Mul(acc * actor.body.Mass()))
-	}
-
-	if arriveDistance < remainingDistance {
-		return false
-	}
-
-	if arriveSpeed < curSpeed {
-		actor.body.AddForce(actor.body.Velocity.Normalize().Invert().Mul(dec * actor.body.Mass()))
-		return false
-	}
-
-	actor.body.Clear()
 	return true
 }
 
@@ -110,26 +63,18 @@ func (actor *Actor) SetBehaviorTree(behaviorTree *behavior_tree.BehaviorTree) {
 	actor.behaviorTree = behaviorTree
 }
 
-func (actor *Actor) SetPosition(position vector.Vector) {
-	actor.body.SetPosition(position)
-}
-
-func (actor *Actor) SetVelocity(velocity vector.Vector) {
-	actor.body.SetVelocity(velocity)
-}
-
 func (actor *Actor) Shape() body.Shape {
 	return body.Circle
 }
 
 // ID returns id.
 func (actor *Actor) ID() int64 {
-	return actor.body.ID()
+	return actor.id
 }
 
 // Position returns position.
 func (actor *Actor) Position() vector.Vector {
-	return actor.body.Position()
+	return vector.Zero()
 }
 
 func (actor *Actor) Render(screen *ebiten.Image) {
@@ -140,10 +85,6 @@ func (actor *Actor) Render(screen *ebiten.Image) {
 	pos.Y -= radiusHalf
 
 	renderer.Render(screen, actor.image, pos)
-}
-
-func (actor *Actor) Velocity() vector.Vector {
-	return actor.body.Velocity
 }
 
 func (actor *Actor) Radius() float64 {
@@ -159,8 +100,4 @@ func (actor *Actor) Tick(delta float64) {
 
 func (actor *Actor) CreateActor(id int) {
 	//actor.node.NewActor(id)
-}
-
-func (actor *Actor) Body() *body.Body {
-	return actor.body
 }

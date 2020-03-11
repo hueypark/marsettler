@@ -165,7 +165,12 @@ func (w *World) newGraph() {
 
 	for _, lhs := range w.g.Nodes() {
 		for _, rhs := range w.g.Nodes() {
-			if lhs.Position().Sub(rhs.Position()).SizeSquare() <= consts.NodeSizeSq {
+			if lhs.ID() == rhs.ID() {
+				continue
+			}
+
+			const buffer float64 = 10
+			if lhs.Position().Sub(rhs.Position()).SizeSquare() <= consts.NodeSizeSq+buffer {
 				w.g.AddEdge(lhs.ID(), rhs.ID())
 			}
 		}

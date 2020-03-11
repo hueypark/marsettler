@@ -10,6 +10,9 @@ const (
 	// Node size.
 	NodeSize = 165
 
+	// Node size squared.
+	NodeSizeSq = NodeSize * NodeSize
+
 	// Half of node size.
 	NodeSizeHalf = NodeSize / 2
 

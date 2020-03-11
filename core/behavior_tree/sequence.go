@@ -29,7 +29,7 @@ func (s *Sequence) Init() {
 }
 
 // Tick ticks sequnce.
-func (s *Sequence) Tick(delta float64) State {
+func (s *Sequence) Tick() State {
 	childrenLen := len(s.children)
 	if childrenLen == 0 {
 		return s.SetState(Success)
@@ -38,7 +38,7 @@ func (s *Sequence) Tick(delta float64) State {
 	for {
 		node := s.children[s.index]
 
-		state := node.Tick(delta)
+		state := node.Tick()
 		if state != Success {
 			return s.SetState(state)
 		}

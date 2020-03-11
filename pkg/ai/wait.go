@@ -7,30 +7,31 @@ import (
 	"strings"
 
 	"github.com/hueypark/marsettler/core/behavior_tree"
+	"github.com/hueypark/marsettler/pkg/consts"
 )
 
 type Wait struct {
 	behavior_tree.Node
 
-	duration        float64
-	currentDuration float64
+	duration        int
+	currentDuration int
 }
 
 func NewWait(params string) *Wait {
-	duration, err := strconv.ParseFloat(strings.ReplaceAll(params, " ", ""), 64)
+	duration, err := strconv.ParseInt(strings.ReplaceAll(params, " ", ""), 10, 64)
 	if err != nil {
 		log.Println(err)
 	}
 
-	return &Wait{duration: duration}
+	return &Wait{duration: int(duration)}
 }
 
 func (node *Wait) Init() {
 	node.currentDuration = 0
 }
 
-func (node *Wait) Tick(delta float64) behavior_tree.State {
-	node.currentDuration += delta
+func (node *Wait) Tick() behavior_tree.State {
+	node.currentDuration += consts.Delta
 	if node.duration <= node.currentDuration {
 		return node.SetState(behavior_tree.Success)
 	}

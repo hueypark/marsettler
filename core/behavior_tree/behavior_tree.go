@@ -26,7 +26,7 @@ func (bt *BehaviorTree) Root() INode {
 }
 
 // Tick ticks behavior tree.
-func (bt *BehaviorTree) Tick(delta float64) {
+func (bt *BehaviorTree) Tick() {
 	if bt.root == nil {
 		return
 	}
@@ -35,7 +35,7 @@ func (bt *BehaviorTree) Tick(delta float64) {
 		bt.root.Init()
 	}
 
-	bt.root.Tick(delta)
+	bt.root.Tick()
 }
 
 func (bt *BehaviorTree) MarshalYAML() (interface{}, error) {

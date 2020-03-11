@@ -8,33 +8,55 @@ import (
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/rotator"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/data"
 	"github.com/hueypark/marsettler/pkg/consts"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )
 
 type Node struct {
-	id    int64
-	image *ebiten.Image
-	pos   vector.Vector
+	id     int64
+	image  *ebiten.Image
+	pos    vector.Vector
+	actors map[int64]*Actor
 }
 
 // NewNode creates node.
 func NewNode(pos vector.Vector) *Node {
 	n := &Node{
-		id:    id_generator.Generate(),
-		image: asset.Image("/asset/tiles_grassland_dense_clear_green/0.png"),
-		pos:   pos,
+		id:     id_generator.Generate(),
+		image:  asset.Image("/asset/tiles_grassland_dense_clear_green/0.png"),
+		pos:    pos,
+		actors: make(map[int64]*Actor),
 	}
 
 	return n
+}
+
+// AddActor adds actor to node.
+func (n *Node) AddActor(actor *Actor) {
+	n.actors[actor.ID()] = actor
 }
 
 func (n *Node) ID() int64 {
 	return n.id
 }
 
+// NewActor creates new actor.
+func (n *Node) NewActor(actorID data.ActorID, world *World) *Actor {
+	actor := newActor(actorID, world, n)
+
+	n.actors[actor.ID()] = actor
+
+	return actor
+}
+
 func (n *Node) Position() vector.Vector {
 	return n.pos
+}
+
+// DeleteActor deletes actor from node.
+func (n *Node) DeleteActor(id int64) {
+	delete(n.actors, id)
 }
 
 func (n *Node) Render(screen *ebiten.Image) {

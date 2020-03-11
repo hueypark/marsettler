@@ -22,7 +22,7 @@ type INode interface {
 	Init()
 	SetState(state State) State
 	State() State
-	Tick(delta float64) State
+	Tick() State
 	Wireframe() string
 }
 

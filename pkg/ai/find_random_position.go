@@ -16,20 +16,22 @@ type FindRandomPosition struct {
 	positionKey behavior_tree.BlackboardKey
 }
 
-func NewFindRandomPosition(actor *game.Actor, blackboard *behavior_tree.Blackboard, params string) *FindRandomPosition {
+func NewFindRandomPosition(
+	actor *game.Actor, blackboard *behavior_tree.Blackboard, params string,
+) *FindRandomPosition {
 	positionKey := strings.ReplaceAll(params, " ", "")
 
 	return &FindRandomPosition{
 		actor:       actor,
 		blackboard:  blackboard,
-		positionKey: Key(positionKey),
+		positionKey: behavior_tree.Key(positionKey),
 	}
 }
 
 func (node *FindRandomPosition) Init() {
 }
 
-func (node *FindRandomPosition) Tick(delta float64) behavior_tree.State {
+func (node *FindRandomPosition) Tick() behavior_tree.State {
 	position := node.actor.FindRandomPosition()
 	node.blackboard.Set(node.positionKey, &position)
 
@@ -37,5 +39,5 @@ func (node *FindRandomPosition) Tick(delta float64) behavior_tree.State {
 }
 
 func (node *FindRandomPosition) Wireframe() string {
-	return fmt.Sprintf("FindRandomPosition: %v", String(node.positionKey))
+	return fmt.Sprintf("FindRandomPosition: %v", behavior_tree.StringKey(node.positionKey))
 }

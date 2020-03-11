@@ -3,9 +3,8 @@ package game
 import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/inpututil"
-	"github.com/hueypark/marsettler/core/asset"
+	"github.com/hueypark/marsettler/core/behavior_tree"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/data"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )
 
@@ -14,17 +13,6 @@ type User struct {
 	world       *World
 	clickedImg  *ebiten.Image
 	clickedNode *Node
-}
-
-func NewUser(world *World) *User {
-	user := &User{
-		actor:       world.NewActor(data.Hero),
-		world:       world,
-		clickedImg:  asset.Image("/asset/tiles/clicked.png"),
-		clickedNode: nil,
-	}
-
-	return user
 }
 
 func (u *User) Render(screen *ebiten.Image) {
@@ -46,5 +34,11 @@ func (u *User) Tick(pos vector.Vector) {
 		return
 	}
 
+	node := u.world.NearestNode(pos)
+	if node == nil {
+		return
+	}
+
 	u.clickedNode = u.world.NearestNode(pos)
+	u.actor.behaviorTree.Blackboard().SetInt64(behavior_tree.Key("node"), u.clickedNode.ID())
 }

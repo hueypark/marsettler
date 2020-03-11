@@ -9,18 +9,23 @@ import (
 	"github.com/hajimehoshi/ebiten/inpututil"
 	_ "github.com/hueypark/asset"
 	"github.com/hueypark/marsettler/core/math/vector"
+	_ "github.com/hueypark/marsettler/pkg/ai"
 	"github.com/hueypark/marsettler/pkg/config"
 	"github.com/hueypark/marsettler/pkg/consts"
-	"github.com/hueypark/marsettler/pkg/ctx"
 	"github.com/hueypark/marsettler/pkg/game"
 	"github.com/hueypark/marsettler/pkg/renderer"
+)
+
+var (
+	world *game.World
+	user  *game.User
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	ctx.World = game.NewWorld()
-	ctx.User = game.NewUser(ctx.World)
+	world = game.NewWorld()
+	user = world.NewUser(world.StartNodeID())
 
 	ebiten.SetRunnableInBackground(true)
 	ebiten.SetMaxTPS(consts.TPS)
@@ -38,8 +43,8 @@ func tick(screen *ebiten.Image) error {
 
 	worldPosition := renderer.WorldPosition(cursorPosition)
 
-	ctx.User.Tick(worldPosition)
-	ctx.World.Tick()
+	user.Tick(worldPosition)
+	world.Tick()
 	tickRenderer(screen, cursorPosition)
 
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
@@ -59,6 +64,6 @@ func tickRenderer(screen *ebiten.Image, cursorPosition vector.Vector) {
 
 	renderer.Tick(cursorPosition)
 
-	ctx.World.Render(screen)
-	ctx.User.Render(screen)
+	world.Render(screen)
+	user.Render(screen)
 }

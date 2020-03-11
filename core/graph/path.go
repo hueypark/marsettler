@@ -5,8 +5,13 @@ type Path struct {
 	ids []int64
 }
 
+// Clear clears path.
+func (path *Path) Clear() {
+	path.ids = nil
+}
+
 // Empty returns true if the path is empty.
-func (path Path) Empty() bool {
+func (path *Path) Empty() bool {
 	return len(path.ids) == 0
 }
 

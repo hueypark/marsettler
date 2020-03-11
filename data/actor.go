@@ -16,6 +16,9 @@ type ActorData struct {
 	Image        string
 	Radius       float64
 	BehaviorTree string
+
+	// MoveWaitTime represents the wait time for the move(millie seconds).
+	MoveWaitTime int
 }
 
 var actors = map[ActorID]*ActorData{
@@ -24,8 +27,9 @@ var actors = map[ActorID]*ActorData{
 		Image:  "/asset/figures/hero.png",
 		Radius: 10,
 		BehaviorTree: `Sequence
-	MoveTo: position
+	MoveTo: node
 `,
+		MoveWaitTime: 300,
 	},
 	Legionary: {
 		Name:   "Legionary",

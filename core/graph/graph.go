@@ -27,8 +27,13 @@ func (graph *Graph) AddNode(node Node) {
 }
 
 // Nodes returns nodes.
-func (graph Graph) Nodes() map[int64]Node {
+func (graph *Graph) Nodes() map[int64]Node {
 	return graph.nodes
+}
+
+// Node returns node.
+func (graph *Graph) Node(id int64) Node {
+	return graph.nodes[id]
 }
 
 // AddEdge adds edge.
@@ -41,7 +46,7 @@ func (graph *Graph) AddEdge(from, to int64) {
 }
 
 // Edges returns edges.
-func (graph Graph) Edges() (edges []Edge) {
+func (graph *Graph) Edges() (edges []Edge) {
 	for _, val := range graph.edges {
 		for _, edge := range val {
 			edges = append(edges, edge)
@@ -52,7 +57,7 @@ func (graph Graph) Edges() (edges []Edge) {
 }
 
 // Path returns path between nodes.
-func (graph Graph) Path(fromNodeID, toNodeID int64) (path Path, err error) {
+func (graph *Graph) Path(fromNodeID, toNodeID int64) (path Path, err error) {
 	openList := astar.NewOpenList()
 	closedList := astar.NewClosedList()
 

@@ -14,13 +14,13 @@ func (r *root) Init() {
 
 }
 
-// Update updates INode.
-func (r *root) Tick(delta float64) State {
+// Tick ticks root.
+func (r *root) Tick() State {
 	if r.child.State() != Running {
 		r.child.Init()
 	}
 
-	return r.SetState(r.child.Tick(delta))
+	return r.SetState(r.child.Tick())
 }
 
 func (r *root) Wireframe() string {

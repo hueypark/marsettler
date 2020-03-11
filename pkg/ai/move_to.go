@@ -52,6 +52,10 @@ func (n *MoveTo) Tick() behavior_tree.State {
 			return n.SetState(behavior_tree.Failure)
 		}
 
+		if n.actor.NodeID() == *nodeID {
+			return n.SetState(behavior_tree.Success)
+		}
+
 		path, err := n.actor.FindPath(*nodeID)
 		if err != nil {
 			log.Println(err)

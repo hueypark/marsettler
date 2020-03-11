@@ -58,6 +58,11 @@ func (a *Actor) Move(nodeID int64) error {
 	return nil
 }
 
+// NodeID returns node id.
+func (a *Actor) NodeID() int64 {
+	return a.node.ID()
+}
+
 // SetBehaviorTree sets behavior tree.
 func (a *Actor) SetBehaviorTree(behaviorTree *behavior_tree.BehaviorTree) {
 	a.behaviorTree = behaviorTree

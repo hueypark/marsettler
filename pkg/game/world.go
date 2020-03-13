@@ -32,13 +32,13 @@ func NewWorld() *World {
 }
 
 // NewActor creates new actor.
-func (w *World) NewActor(nodeID int64, actorID data.ActorID) *Actor {
+func (w *World) NewActor(kingdomID, nodeID int64, actorID data.ActorID) *Actor {
 	node := w.Node(nodeID)
 	if node == nil {
 		return nil
 	}
 
-	actor := node.NewActor(actorID, w)
+	actor := node.NewActor(kingdomID, actorID, w)
 
 	w.actors[actor.ID()] = actor
 
@@ -46,8 +46,8 @@ func (w *World) NewActor(nodeID int64, actorID data.ActorID) *Actor {
 }
 
 // NewUser creates new user.
-func (w *World) NewUser(nodeID int64) *User {
-	actor := w.NewActor(nodeID, data.Hero)
+func (w *World) NewUser(kingdomID, nodeID int64) *User {
+	actor := w.NewActor(kingdomID, nodeID, data.Hero)
 	if actor == nil {
 		return nil
 	}

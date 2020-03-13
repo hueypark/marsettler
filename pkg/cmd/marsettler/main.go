@@ -25,7 +25,8 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	world = game.NewWorld()
-	user = world.NewUser(world.StartNodeID())
+	kingdom := game.NewKingdom()
+	user = world.NewUser(kingdom.ID(), world.StartNodeID())
 
 	ebiten.SetRunnableInBackground(true)
 	ebiten.SetMaxTPS(consts.TPS)

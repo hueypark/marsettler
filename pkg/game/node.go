@@ -42,8 +42,8 @@ func (n *Node) ID() int64 {
 }
 
 // NewActor creates new actor.
-func (n *Node) NewActor(actorID data.ActorID, world *World) *Actor {
-	actor := newActor(actorID, world, n)
+func (n *Node) NewActor(kingdomID int64, actorID data.ActorID, world *World) *Actor {
+	actor := newActor(kingdomID, actorID, world, n)
 
 	n.actors[actor.ID()] = actor
 

@@ -19,6 +19,7 @@ import (
 // Actor represent actor.
 type Actor struct {
 	id           int64
+	kingdomID    int64
 	data         *data.ActorData
 	behaviorTree *behavior_tree.BehaviorTree
 	image        *ebiten.Image
@@ -109,11 +110,12 @@ func (a *Actor) Tick() {
 }
 
 // newActor creates new actor.
-func newActor(actorID data.ActorID, world *World, node *Node) *Actor {
+func newActor(kingdomID int64, actorID data.ActorID, world *World, node *Node) *Actor {
 	actor := &Actor{
-		id:    id_generator.Generate(),
-		world: world,
-		node:  node,
+		id:        id_generator.Generate(),
+		kingdomID: kingdomID,
+		world:     world,
+		node:      node,
 	}
 
 	if actorData := data.Actor(actorID); actorData != nil {

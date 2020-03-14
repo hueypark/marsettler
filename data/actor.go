@@ -27,7 +27,9 @@ var actors = map[ActorID]*ActorData{
 		Image:  "/asset/figures/hero.png",
 		Radius: 10,
 		BehaviorTree: `Sequence
-	MoveTo: node
+	Parallel
+		MoveTo: node
+		OccupyNode
 `,
 		MoveWaitTime: 300,
 	},

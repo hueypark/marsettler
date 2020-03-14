@@ -1,6 +1,7 @@
 package renderer
 
 import (
+	"image/color"
 	"log"
 
 	"github.com/hajimehoshi/ebiten"
@@ -38,6 +39,11 @@ func Tick(position vector.Vector) {
 
 // Render renders object.
 func Render(screen *ebiten.Image, img *ebiten.Image, position vector.Vector) {
+	RenderWithColor(screen, img, position, nil)
+}
+
+// Render renders object with color.
+func RenderWithColor(screen *ebiten.Image, img *ebiten.Image, position vector.Vector, color *color.RGBA) {
 	position.X *= zoom
 	position.Y *= zoom
 
@@ -47,6 +53,15 @@ func Render(screen *ebiten.Image, img *ebiten.Image, position vector.Vector) {
 	op.GeoM.Reset()
 	op.GeoM.Scale(zoom, zoom)
 	op.GeoM.Translate(position.X, position.Y)
+	op.ColorM.Reset()
+
+	if color != nil {
+		op.ColorM.Translate(
+			float64(color.R)/0xff,
+			float64(color.G)/0xff,
+			float64(color.B)/0xff,
+			0)
+	}
 	err := screen.DrawImage(img, &op)
 	if err != nil {
 		log.Println(err)

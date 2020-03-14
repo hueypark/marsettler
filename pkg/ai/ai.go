@@ -14,7 +14,7 @@ func init() {
 
 type nodeData struct {
 	str      string
-	children []nodeData
+	children []*nodeData
 }
 
 func (n *nodeData) depth() int {
@@ -37,7 +37,12 @@ func NewBehaviorTree(actor *game.Actor, str string) (*behavior_tree.BehaviorTree
 	return bt, nil
 }
 
-func addNode(actor *game.Actor, parent behavior_tree.INode, nodeData nodeData, blackboard *behavior_tree.Blackboard) error {
+func addNode(
+	actor *game.Actor,
+	parent behavior_tree.INode,
+	nodeData *nodeData,
+	blackboard *behavior_tree.Blackboard,
+) error {
 	newNode, err := newNode(actor, nodeData.str, blackboard)
 	if err != nil {
 		return err
@@ -60,7 +65,9 @@ func addNode(actor *game.Actor, parent behavior_tree.INode, nodeData nodeData, b
 	return nil
 }
 
-func newNode(actor *game.Actor, str string, blackboard *behavior_tree.Blackboard) (behavior_tree.INode, error) {
+func newNode(
+	actor *game.Actor, str string, blackboard *behavior_tree.Blackboard,
+) (behavior_tree.INode, error) {
 	str = strings.ReplaceAll(str, "\t", "")
 	strs := strings.SplitN(str, ":", 2)
 
@@ -77,6 +84,10 @@ func newNode(actor *game.Actor, str string, blackboard *behavior_tree.Blackboard
 		return NewFindRandomPosition(actor, blackboard, params), nil
 	case "MoveTo":
 		return NewMoveTo(actor, blackboard, params), nil
+	case "OccupyNode":
+		return NewOccupyNode(actor), nil
+	case "Parallel":
+		return behavior_tree.NewParallel(), nil
 	case "Wait":
 		return NewWait(params), nil
 	default:
@@ -84,7 +95,7 @@ func newNode(actor *game.Actor, str string, blackboard *behavior_tree.Blackboard
 	}
 }
 
-func parse(str string) (nodeData, error) {
+func parse(str string) (*nodeData, error) {
 	nodeStrs := strings.Split(str, "\n")
 
 	var root *nodeData
@@ -94,7 +105,7 @@ func parse(str string) (nodeData, error) {
 			continue
 		}
 
-		n := nodeData{
+		n := &nodeData{
 			str:      nodeStr,
 			children: nil,
 		}
@@ -104,27 +115,27 @@ func parse(str string) (nodeData, error) {
 			if 1 <= len(parents) {
 				parent = parents[len(parents)-1]
 			} else {
-				root = &n
+				root = n
+				parents = append(parents, root)
 				break
 			}
 
 			diffDepth := parent.depth() - n.depth()
-			if 0 < diffDepth {
+			if 0 <= diffDepth {
 				parents = parents[:len(parents)-1]
 			} else if diffDepth == -1 {
 				parent.children = append(parent.children, n)
+				parents = append(parents, n)
 				break
 			} else {
-				return nodeData{}, fmt.Errorf("depth is invalid. [str: %v, nodeData: %v]", str, n)
+				return nil, fmt.Errorf("depth is invalid. [str: %v, nodeData: %v]", str, n)
 			}
 		}
-
-		parents = append(parents, root)
 	}
 
 	if root == nil {
-		return nodeData{}, fmt.Errorf("nodeData is empty. [str: %v]", str)
+		return nil, fmt.Errorf("nodeData is empty. [str: %v]", str)
 	}
 
-	return *root, nil
+	return root, nil
 }

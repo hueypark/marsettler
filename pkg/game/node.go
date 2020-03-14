@@ -14,19 +14,21 @@ import (
 )
 
 type Node struct {
-	id     int64
-	image  *ebiten.Image
-	pos    vector.Vector
-	actors map[int64]*Actor
+	id        int64
+	kingdomID int64
+	image     *ebiten.Image
+	pos       vector.Vector
+	actors    map[int64]*Actor
 }
 
 // NewNode creates node.
 func NewNode(pos vector.Vector) *Node {
 	n := &Node{
-		id:     id_generator.Generate(),
-		image:  asset.Image("/asset/tiles_grassland_dense_clear_green/0.png"),
-		pos:    pos,
-		actors: make(map[int64]*Actor),
+		id:        id_generator.Generate(),
+		kingdomID: 0,
+		image:     asset.Image("/asset/tiles_grassland_dense_clear_green/0.png"),
+		pos:       pos,
+		actors:    make(map[int64]*Actor),
 	}
 
 	return n
@@ -66,7 +68,12 @@ func (n *Node) Render(screen *ebiten.Image) {
 	pos.X -= radiusHalf
 	pos.Y -= radiusHalf
 
-	renderer.Render(screen, n.image, pos)
+	kingdom, ok := Kingdoms[n.kingdomID]
+	if ok {
+		renderer.RenderWithColor(screen, n.image, pos, &kingdom.color)
+	} else {
+		renderer.Render(screen, n.image, pos)
+	}
 }
 
 func (n *Node) GetNeighborNodePositions() [6]vector.Vector {
@@ -87,4 +94,9 @@ func (n *Node) GetNeighborNodePositions() [6]vector.Vector {
 	positions[5] = n.pos.Add(vec)
 
 	return positions
+}
+
+// SetKingdomID sets kingdom id.
+func (n *Node) SetKingdomID(id int64) {
+	n.kingdomID = id
 }

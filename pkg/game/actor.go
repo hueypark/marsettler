@@ -64,6 +64,11 @@ func (a *Actor) NodeID() int64 {
 	return a.node.ID()
 }
 
+// OccupyNode occupies node.
+func (a *Actor) OccupyNode() {
+	a.node.SetKingdomID(a.kingdomID)
+}
+
 // SetBehaviorTree sets behavior tree.
 func (a *Actor) SetBehaviorTree(behaviorTree *behavior_tree.BehaviorTree) {
 	a.behaviorTree = behaviorTree

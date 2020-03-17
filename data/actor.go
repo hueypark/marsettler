@@ -1,11 +1,26 @@
 package data
 
+import "github.com/hueypark/marsettler/data/ai"
+
 type ActorID int
 
 const (
 	Hero ActorID = iota
-	Legionary
 )
+
+var actors map[ActorID]*ActorData
+
+func init() {
+	actors = map[ActorID]*ActorData{
+		Hero: newActor(
+			"Hero",
+			"/asset/figures/hero.png",
+			ai.Hero,
+			300,
+		),
+	}
+
+}
 
 func Actor(id ActorID) *ActorData {
 	return actors[id]
@@ -14,33 +29,19 @@ func Actor(id ActorID) *ActorData {
 type ActorData struct {
 	Name         string
 	Image        string
-	Radius       float64
 	BehaviorTree string
 
 	// MoveWaitTime represents the wait time for the move(millie seconds).
 	MoveWaitTime int
 }
 
-var actors = map[ActorID]*ActorData{
-	Hero: {
-		Name:   "Hero",
-		Image:  "/asset/figures/hero.png",
-		Radius: 10,
-		BehaviorTree: `Sequence
-	Parallel
-		MoveTo: node
-		OccupyNode
-`,
-		MoveWaitTime: 300,
-	},
-	Legionary: {
-		Name:   "Legionary",
-		Image:  "node/legionary",
-		Radius: 10,
-		BehaviorTree: `Sequence
-	FindRandomPosition: patrolPosition
-	MoveTo: patrolPosition
-	Wait: 1
-`,
-	},
+func newActor(name string, image string, bt string, moveWaitTime int) *ActorData {
+	data := &ActorData{
+		Name:         name,
+		Image:        image,
+		BehaviorTree: bt,
+		MoveWaitTime: moveWaitTime,
+	}
+
+	return data
 }

@@ -26,11 +26,15 @@ func main() {
 
 	world = game.NewWorld()
 	kingdom := game.NewKingdom()
-	user = world.NewUser(kingdom.ID(), world.StartNodeID())
+	startNodeID, err := world.StartNodeID()
+	if err != nil {
+		panic(err)
+	}
+	user = world.NewUser(kingdom.ID(), startNodeID)
 
 	ebiten.SetRunnableInBackground(true)
 	ebiten.SetMaxTPS(consts.TPS)
-	err := ebiten.Run(tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")
+	err = ebiten.Run(tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")
 	if err != nil {
 		log.Fatalln(err)
 	}

@@ -15,9 +15,9 @@ import (
 
 // World represents game world.
 type World struct {
-	actors      map[int64]*Actor
-	g           *graph.Graph
-	startNodeID int64
+	actors       map[int64]*Actor
+	g            *graph.Graph
+	startNodeIDs []int64
 }
 
 // NewWorld create new world.
@@ -120,8 +120,17 @@ func (w *World) NearestNode(pos vector.Vector) *Node {
 	return nearestNode.(*Node)
 }
 
-func (w *World) StartNodeID() int64 {
-	return w.startNodeID
+// StartNodeID returns start node id.
+// If there is no remain start node returns an error.
+func (w *World) StartNodeID() (int64, error) {
+	if len(w.startNodeIDs) == 0 {
+		return 0, fmt.Errorf("there is no remain start node")
+	}
+
+	var startNodeID int64
+	startNodeID, w.startNodeIDs = w.startNodeIDs[len(w.startNodeIDs)-1], w.startNodeIDs[:len(w.startNodeIDs)-1]
+
+	return startNodeID, nil
 }
 
 // Tick ticks world.
@@ -149,7 +158,6 @@ func (w *World) Render(screen *ebiten.Image) {
 func (w *World) newGraph() {
 	w.g = graph.NewGraph()
 	node := NewNode(vector.Zero())
-	w.startNodeID = node.ID()
 	w.g.AddNode(node)
 
 	var nodes, newNodes []*Node
@@ -174,6 +182,16 @@ func (w *World) newGraph() {
 				w.g.AddEdge(lhs.ID(), rhs.ID())
 			}
 		}
+	}
+
+	counter := 0
+	for nodeID := range w.g.Nodes() {
+		if counter%10 == 0 {
+			w.startNodeIDs = append(w.startNodeIDs, nodeID)
+
+		}
+
+		counter++
 	}
 }
 

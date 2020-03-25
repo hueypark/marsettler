@@ -1,3 +1,11 @@
+.PHONY: benchmark
+benchmark:
+	go test -bench . -benchmem ./... | gobenchdata --json docs/benchmarks.json
+
+.PHONY: benchmark-web
+benchmark-web:
+	gobenchdata-web --title "Marsettler benchmarks" --out docs
+
 .PHONY: client
 client:
 	go run client/main.go

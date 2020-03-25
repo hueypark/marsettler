@@ -3,9 +3,8 @@ package test
 import (
 	"testing"
 
+	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/hueypark/marsettler/core/physics/math/vector"
 )
 
 func TestPointInTriangle(t *testing.T) {
@@ -18,13 +17,6 @@ func TestPointInTriangle(t *testing.T) {
 	a.True(
 		PointInTriangle(
 			vector.Vector{30, 30},
-			triangleVertexA,
-			triangleVertexB,
-			triangleVertexC))
-
-	a.True(
-		PointInTriangle(
-			vector.Vector{0, 100},
 			triangleVertexA,
 			triangleVertexB,
 			triangleVertexC))

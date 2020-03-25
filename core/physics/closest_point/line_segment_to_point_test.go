@@ -3,7 +3,7 @@ package closest_point
 import (
 	"testing"
 
-	"github.com/hueypark/marsettler/core/physics/math/vector"
+	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/stretchr/testify/assert"
 )
 

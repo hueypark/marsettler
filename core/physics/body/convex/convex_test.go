@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	rotator2 "github.com/hueypark/marsettler/core/math/rotator"
-	"github.com/hueypark/marsettler/core/physics/math/vector"
+	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,7 +38,7 @@ func TestEdge(t *testing.T) {
 		}
 
 		nextEdge := edges[nextIndex]
-		a.True(vector.Subtract(nextEdge.End, nextEdge.Start).OnTheRight(vector.Subtract(edge.End, edge.Start)))
+		a.True(vector.Sub(nextEdge.End, nextEdge.Start).OnTheRight(vector.Sub(edge.End, edge.Start)))
 	}
 }
 
@@ -53,8 +53,8 @@ func TestInHull(t *testing.T) {
 
 	c := New(vertices)
 
-	a.True(c.InHull(vector.ZERO(), rotator2.ZERO(), vector.Vector{50, 50}))
-	a.False(c.InHull(vector.ZERO(), rotator2.ZERO(), vector.Vector{50, -50}))
+	a.True(c.InHull(vector.Zero(), rotator2.ZERO(), vector.Vector{50, 50}))
+	a.False(c.InHull(vector.Zero(), rotator2.ZERO(), vector.Vector{50, -50}))
 }
 
 func TestSupport(t *testing.T) {

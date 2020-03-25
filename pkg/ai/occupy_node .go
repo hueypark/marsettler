@@ -34,5 +34,5 @@ func (n *OccupyNode) Tick() behavior_tree.State {
 
 // Wireframe implements behavior_tree.INode interface.
 func (n *OccupyNode) Wireframe() string {
-	return fmt.Sprintf("OccupyNode: %v")
+	return fmt.Sprintf("OccupyNode")
 }

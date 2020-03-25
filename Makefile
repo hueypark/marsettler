@@ -1,6 +1,6 @@
 .PHONY: benchmark
 benchmark:
-	go test -bench . -benchmem ./... | gobenchdata --json docs/benchmarks.json
+	go test -bench . -benchmem ./... | gobenchdata --append --flat --json docs/benchmarks.json
 
 .PHONY: benchmark-web
 benchmark-web:

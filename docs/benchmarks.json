@@ -1,23 +1,4 @@
 [
-  {
-    "Date": 1585143247,
-    "Suites": [
-      {
-        "Goos": "linux",
-        "Goarch": "amd64",
-        "Pkg": "github.com/hueypark/marsettler/core/graph",
-        "Benchmarks": [
-          {
-            "Name": "BenchmarkPath-16",
-            "Runs": 1000000000,
-            "NsPerOp": 0,
-            "Mem": {
-              "BytesPerOp": 0,
-              "AllocsPerOp": 0
-            }
-          }
-        ]
-      }
-    ]
-  }
+  {"Date":1585144341,"Suites":[{"Goos":"linux","Goarch":"amd64","Pkg":"github.com/hueypark/marsettler/core/graph","Benchmarks":[{"Name":"BenchmarkPath-16","Runs":1369594,"NsPerOp":843,"Mem":{"BytesPerOp":384,"AllocsPerOp":9}}]}]},
+  {"Date":1585143247,"Suites":[{"Goos":"linux","Goarch":"amd64","Pkg":"github.com/hueypark/marsettler/core/graph","Benchmarks":[{"Name":"BenchmarkPath-16","Runs":1000000000,"NsPerOp":0,"Mem":{"BytesPerOp":0,"AllocsPerOp":0}}]}]}
 ]

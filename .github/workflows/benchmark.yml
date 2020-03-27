@@ -14,6 +14,7 @@ jobs:
     - uses: actions/setup-go@v1
       with:
          go-version: '1.13'
+    - run: go version
     - name: Install dependencies
       run: sudo apt update && sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev libasound2-dev
     - name: Run banchmark

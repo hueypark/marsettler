@@ -17,5 +17,6 @@ jobs:
     - run: go version
     - name: Install dependencies
       run: sudo apt update && sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev libasound2-dev
+    - run: go get -u go.bobheadxi.dev/gobenchdata
     - name: Run banchmark
       run: make benchmark

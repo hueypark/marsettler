@@ -20,7 +20,12 @@ jobs:
       run: sudo apt update && sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev libasound2-dev
     - run: go get -u go.bobheadxi.dev/gobenchdata
     - run: go test -bench . -benchmem ./... | /home/runner/go/bin/gobenchdata --append --flat --json docs/benchmarks.json
-    - name: Deploy
+    - name: Commit
+    - run: |
+        git config --local user.email "jaewan.huey.park@gmail.com"
+        git config --local user.name "Jaewan Park"
+        git commit -m "Update benchmark" -a
+    - name: Push
       uses: ad-m/github-push-action@v0.5.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,3 +1,5 @@
+// +build private
+
 package main
 
 import (

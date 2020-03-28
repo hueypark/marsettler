@@ -1,5 +1,3 @@
-// +build display
-
 package main
 
 import (

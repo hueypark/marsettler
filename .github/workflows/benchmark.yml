@@ -20,3 +20,9 @@ jobs:
       run: sudo apt update && sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev libasound2-dev
     - run: go get -u go.bobheadxi.dev/gobenchdata
     - run: go test -bench . -benchmem ./... | /home/runner/go/bin/gobenchdata --append --flat --json docs/benchmarks.json
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: master
+        FOLDER: docs

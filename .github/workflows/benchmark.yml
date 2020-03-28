@@ -21,7 +21,7 @@ jobs:
     - run: go get -u go.bobheadxi.dev/gobenchdata
     - run: go test -bench . -benchmem ./... | /home/runner/go/bin/gobenchdata --append --flat --json docs/benchmarks.json
     - name: Commit
-    - run: |
+      run: |
         git config --local user.email "jaewan.huey.park@gmail.com"
         git config --local user.name "Jaewan Park"
         git commit -m "Update benchmark" -a

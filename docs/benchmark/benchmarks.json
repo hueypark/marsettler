@@ -1,0 +1,3 @@
+[
+  {"Version":"3296bc96e40dbaca3deb664f024fa44e710b56ca","Date":1585405462,"Tags":["ref=refs/heads/master"],"Suites":[{"Goos":"linux","Goarch":"amd64","Pkg":"github.com/hueypark/marsettler/core/graph","Benchmarks":[{"Name":"BenchmarkPath-2","Runs":1000000,"NsPerOp":1043,"Mem":{"BytesPerOp":384,"AllocsPerOp":9}}]},{"Goos":"linux","Goarch":"amd64","Pkg":"github.com/hueypark/marsettler/core/math/rotator","Benchmarks":[{"Name":"BenchmarkRotateVector-2","Runs":23771248,"NsPerOp":43.8,"Mem":{"BytesPerOp":0,"AllocsPerOp":0}}]}]}
+]

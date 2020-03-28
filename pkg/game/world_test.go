@@ -1,3 +1,5 @@
+// +build display
+
 package game
 
 import (

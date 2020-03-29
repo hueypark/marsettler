@@ -14,7 +14,7 @@ jobs:
     - name: Set environments
       run: |
         GOPRIVATE="github.com/hueypark/asset"
-        git config --global url."https://hueypark:${{ secrets.GITHUB_TOKEN }}@github.com".insteadOf "https://github.com"
+        git config --global url."https://hueypark:${{ secrets.GIT_TOKEN }}@github.com".insteadOf "https://github.com"
     - name: Install dependencies
       run: |
         sudo add-apt-repository ppa:longsleep/golang-backports

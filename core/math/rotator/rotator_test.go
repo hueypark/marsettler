@@ -19,6 +19,15 @@ func TestRotateVector(t *testing.T) {
 	//a.InEpsilon(rv.Y, -1, 0.1)
 }
 
+func BenchmarkDir(b *testing.B) {
+	r := Rotator{math.Pi}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		r.Dir()
+	}
+}
+
 func BenchmarkRotateVector(b *testing.B) {
 	v := vector.Vector{X: 0, Y: 1}
 	r := Rotator{math.Pi}

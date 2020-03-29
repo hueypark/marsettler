@@ -11,3 +11,12 @@ func BenchmarkCross(b *testing.B) {
 		l.Cross(r)
 	}
 }
+
+func BenchmarkSize(b *testing.B) {
+	v := Vector{0, 0}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v.Size()
+	}
+}

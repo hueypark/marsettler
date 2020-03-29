@@ -19,7 +19,9 @@ jobs:
         sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev libasound2-dev
         go get -u go.bobheadxi.dev/gobenchdata
     - name: Set environments
-      run: GOPRIVATE="github.com/hueypark/asset"
+      run: |
+        GOPRIVATE="github.com/hueypark/asset"
+        git config --global url."https://hueypark:${secrets.PERSONAL_ACCESS_TOKEN}@github.com".insteadOf "https://github.com"
     - name: Benchmark
       run: |
         go test -bench . -benchmem ./... > docs/benchmark/benchmarks.log

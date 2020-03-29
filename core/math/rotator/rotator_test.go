@@ -37,3 +37,12 @@ func BenchmarkRotateVector(b *testing.B) {
 		r.RotateVector(v)
 	}
 }
+
+func BenchmarkRotationMatrix(b *testing.B) {
+	r := Rotator{math.Pi}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		r.RotationMatrix()
+	}
+}

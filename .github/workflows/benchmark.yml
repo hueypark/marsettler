@@ -26,13 +26,10 @@ jobs:
       run: |
         go test -bench . -benchmem ./... > docs/benchmark/benchmarks.log
         cat docs/benchmark/benchmarks.log | /home/runner/go/bin/gobenchdata --append --flat --json docs/benchmark/benchmarks.json -v "${GITHUB_SHA}" -t "ref=${GITHUB_REF}"
-    - name: Commit
+    - name: Deploy
       run: |
         git config --local user.email "jaewan.huey.park@gmail.com"
         git config --local user.name "Jaewan Park"
         git add docs/benchmark/benchmarks.json
         git commit -m "Update benchmark"
-    - name: Push
-      uses: ad-m/github-push-action@v0.5.0
-      with:
-        github_token: ${{secrets.GITHUB_TOKEN}}
+        git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" master

@@ -17,17 +17,11 @@ jobs:
         git config --global url."https://${GITHUB_ACTOR}:${{secrets.GITHUB_PRIVATE_TOKEN}}@github.com".insteadOf "https://github.com"
     - name: Install dependencies
       run: |
-        sudo add-apt-repository ppa:longsleep/golang-backports
         sudo apt update
-        sudo apt install golang-go
         sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev libasound2-dev
-    - name: Set go environments
-      run: PATH=$PATH:$GOROOT
-    - run: go env
-    - run: |
-        echo $GOROOT
-        echo $GOPATH
-        echo $PATH
+    - uses: actions/setup-go@v1
+      with:
+        go-version: '1.14.1'
     - run: go get go.bobheadxi.dev/gobenchdata
     - name: Benchmark
       run: |

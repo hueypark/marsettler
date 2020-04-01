@@ -25,7 +25,7 @@ jobs:
     - run: go get go.bobheadxi.dev/gobenchdata
     - name: Benchmark
       run: |
-        go test -bench . -benchmem ./... | tee docs/benchmark/benchmarks.log
+        go test -bench . -benchmem ./... 2>&1 | tee docs/benchmark/benchmarks.log
         cat docs/benchmark/benchmarks.log | /home/runner/go/bin/gobenchdata --append --flat --json docs/benchmark/benchmarks.json -v "${GITHUB_SHA}" -t "ref=${GITHUB_REF}"
     - name: Deploy
       run: |

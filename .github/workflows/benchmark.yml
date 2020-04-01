@@ -28,6 +28,7 @@ jobs:
       run: |
         Xvfb :99 &
         export DISPLAY=:99
+        sleep 3 # Give xvfb some time to start.
         go test -bench . -benchmem ./... | tee docs/benchmark/benchmarks.log
         cat docs/benchmark/benchmarks.log | /home/runner/go/bin/gobenchdata --append --flat --json docs/benchmark/benchmarks.json -v "${GITHUB_SHA}" -t "ref=${GITHUB_REF}"
     - name: Deploy

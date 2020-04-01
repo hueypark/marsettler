@@ -19,16 +19,17 @@ jobs:
       run: |
         sudo apt update
         sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev libasound2-dev
+        sudo apt install xvfb
     - uses: actions/setup-go@v1
       with:
         go-version: '1.14.1'
     - run: go get go.bobheadxi.dev/gobenchdata
     - name: Benchmark
-      uses: GabrielBB/xvfb-action@v1.0
-      with:
-        run: |
-          go test -bench . -benchmem ./... | tee docs/benchmark/benchmarks.log
-          cat docs/benchmark/benchmarks.log | /home/runner/go/bin/gobenchdata --append --flat --json docs/benchmark/benchmarks.json -v "${GITHUB_SHA}" -t "ref=${GITHUB_REF}"
+      run: |
+        sudo Xvfb :99 &
+        export DISPLAY=:99
+        go test -bench . -benchmem ./... | tee docs/benchmark/benchmarks.log
+        cat docs/benchmark/benchmarks.log | /home/runner/go/bin/gobenchdata --append --flat --json docs/benchmark/benchmarks.json -v "${GITHUB_SHA}" -t "ref=${GITHUB_REF}"
     - name: Deploy
       run: |
         git config --local user.email "jaewan.huey.park@gmail.com"

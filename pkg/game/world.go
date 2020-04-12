@@ -27,6 +27,7 @@ func NewWorld() *World {
 	}
 
 	world.newGraph()
+	world.generateEnvironments()
 
 	return world
 }
@@ -152,6 +153,21 @@ func (w *World) Render(screen *ebiten.Image) {
 
 	for _, actor := range w.actors {
 		actor.Render(screen)
+	}
+}
+
+func (w *World) generateEnvironments() {
+	// Plant some trees.
+	const maxTreeCount = 5
+	curTreeCount := 0
+	for nodeID := range w.g.Nodes() {
+		curTreeCount++
+
+		w.NewActor(NeutralKingdomID, nodeID, data.Tree)
+
+		if maxTreeCount <= curTreeCount {
+			break
+		}
 	}
 }
 

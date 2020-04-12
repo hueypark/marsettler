@@ -6,6 +6,7 @@ type ActorID int
 
 const (
 	Hero ActorID = iota
+	Tree
 )
 
 var actors map[ActorID]*ActorData
@@ -18,6 +19,11 @@ func init() {
 			ai.Hero,
 			300,
 		),
+		Tree: newActor(
+			"Tree",
+			"/asset/tiles_forest_conifer_dense_clear_green/0.png",
+			ai.Tree,
+			0),
 	}
 
 }

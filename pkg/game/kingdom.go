@@ -14,6 +14,9 @@ func init() {
 	Kingdoms = make(map[int64]*Kingdom)
 }
 
+// NeutralKingdomID represents neutral kingdom id.
+const NeutralKingdomID = 0
+
 // Kingdom represents the kingdom.
 type Kingdom struct {
 	// id is kingdom unique id.

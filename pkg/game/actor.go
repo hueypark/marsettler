@@ -54,7 +54,7 @@ func (a *Actor) Move(nodeID int64) error {
 		return err
 	}
 
-	a.moveWaitTime += a.data.MoveWaitTime
+	a.moveWaitTime += 1000
 
 	return nil
 }

@@ -17,13 +17,12 @@ func init() {
 			"Hero",
 			"/asset/figures/hero.png",
 			ai.Hero,
-			300,
 		),
 		Tree: newActor(
 			"Tree",
 			"/asset/tiles_forest_conifer_dense_clear_green/0.png",
 			ai.Tree,
-			0),
+		),
 	}
 
 }
@@ -36,17 +35,13 @@ type ActorData struct {
 	Name         string
 	Image        string
 	BehaviorTree string
-
-	// MoveWaitTime represents the wait time for the move(millie seconds).
-	MoveWaitTime int
 }
 
-func newActor(name string, image string, bt string, moveWaitTime int) *ActorData {
+func newActor(name string, image string, bt string) *ActorData {
 	data := &ActorData{
 		Name:         name,
 		Image:        image,
 		BehaviorTree: bt,
-		MoveWaitTime: moveWaitTime,
 	}
 
 	return data

@@ -75,6 +75,14 @@ func (n *MoveTo) Tick() behavior_tree.State {
 			return n.SetState(behavior_tree.Failure)
 		}
 
+		if *nextNodeID == n.actor.NodeID() {
+			nextNodeID = n.path.Pop()
+		}
+		if nextNodeID == nil {
+			log.Println("Next node id is nil")
+			return n.SetState(behavior_tree.Failure)
+		}
+
 		err := n.actor.Move(*nextNodeID)
 		if err != nil {
 			return n.SetState(behavior_tree.Failure)

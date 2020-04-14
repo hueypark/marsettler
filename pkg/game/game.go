@@ -11,38 +11,56 @@ import (
 	"github.com/hueypark/marsettler/pkg/config"
 	"github.com/hueypark/marsettler/pkg/consts"
 	"github.com/hueypark/marsettler/pkg/renderer"
+	"github.com/hueypark/marsettler/pkg/ui"
 )
 
 // Game is a game. Entrypoint of all system.
 type Game struct {
 	world *World
 	user  *User
+	ui    ui.Layer
 }
 
 // New create new game.
 func New() *Game {
-	return &Game{}
+	world := NewWorld()
+	kingdom := NewKingdom()
+	startNodeID, err := world.StartNodeID()
+	if err != nil {
+		panic(err)
+	}
+
+	game := &Game{
+		world: world,
+		user:  world.NewUser(kingdom.ID(), startNodeID),
+		ui: ui.NewButton(
+			"/asset/ui/button.png",
+			vector.Vector{X: 120, Y: float64(config.ScreenHeight - 70)},
+			func() {
+				log.Println("Button clicked.")
+			}),
+	}
+
+	return game
 }
 
 // Run runs game.
 func (g *Game) Run() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	g.world = NewWorld()
-	kingdom := NewKingdom()
-	startNodeID, err := g.world.StartNodeID()
-	if err != nil {
-		panic(err)
-	}
-	g.user = g.world.NewUser(kingdom.ID(), startNodeID)
-
 	ebiten.SetRunnableInBackground(true)
 	ebiten.SetMaxTPS(consts.TPS)
-	err = ebiten.Run(g.tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")
+	err := ebiten.Run(g.tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")
 	if err != nil {
 		log.Fatalln(err)
 	}
 
+}
+
+func (g *Game) onClick(cursorPosition vector.Vector) {
+	if g.ui != nil {
+		g.ui.OnClick(cursorPosition)
+	}
 }
 
 func (g *Game) tick(screen *ebiten.Image) error {
@@ -55,6 +73,10 @@ func (g *Game) tick(screen *ebiten.Image) error {
 	g.user.Tick(worldPosition)
 	g.world.Tick()
 	g.tickRenderer(screen, cursorPosition)
+
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		g.onClick(cursorPosition)
+	}
 
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
 }
@@ -75,4 +97,8 @@ func (g *Game) tickRenderer(screen *ebiten.Image, cursorPosition vector.Vector) 
 
 	g.world.Render(screen)
 	g.user.Render(screen)
+
+	if g.ui != nil {
+		g.ui.Render(screen, nil)
+	}
 }

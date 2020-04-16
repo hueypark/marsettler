@@ -4,21 +4,34 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/core/asset"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/core/physics/test"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )
 
 type Button struct {
 	image    *ebiten.Image
 	position vector.Vector
+	left     float64
+	right    float64
+	bottom   float64
+	top      float64
 	onClick  func()
 	children []*Button
 }
 
-func NewButton(image string, position vector.Vector, onCollision func()) *Button {
-	_ = asset.Image(image)
+func NewButton(imgStr string, position vector.Vector, onCollision func()) *Button {
+	img := asset.Image(imgStr)
+	imgWidth, imgHeight := img.Size()
+	imgWidthHalf := float64(imgWidth) * 0.5
+	imgHeightHalf := float64(imgHeight) * 0.5
+
 	layer := &Button{
-		image:    asset.Image(image),
+		image:    img,
 		position: position,
+		left:     position.X - imgWidthHalf,
+		right:    position.X + imgWidthHalf,
+		bottom:   position.Y - imgHeightHalf,
+		top:      position.Y + imgHeightHalf,
 		onClick:  onCollision,
 	}
 
@@ -29,22 +42,20 @@ func (b *Button) AddChild(child *Button) {
 	b.children = append(b.children, child)
 }
 
-// TODO(hueypark): Implement below.
-func (b *Button) OnClick(cursorPosition vector.Vector) {
-	//for _, child := range b.children {
-	//	if child.OnClick(cursorPosition) {
-	//		return
-	//	}
-	//}
+func (b *Button) OnClick(cursorPosition vector.Vector) bool {
+	for _, child := range b.children {
+		if child.OnClick(cursorPosition) {
+			return true
+		}
+	}
 
-	//return false
-	//result := collision_check.PointToAABB(cursorPosition, b)
-	//
-	//if result && b.onClick != nil {
-	//	b.onClick()
-	//}
-	//
-	//return result
+	result := test.PointToAABB(cursorPosition, b)
+
+	if result && b.onClick != nil {
+		b.onClick()
+	}
+
+	return result
 }
 
 func (b *Button) Render(screen *ebiten.Image, relativePos *vector.Vector) {
@@ -63,6 +74,22 @@ func (b *Button) Render(screen *ebiten.Image, relativePos *vector.Vector) {
 
 func (b *Button) Position() vector.Vector {
 	return b.position
+}
+
+func (b *Button) Left() float64 {
+	return b.left
+}
+
+func (b *Button) Right() float64 {
+	return b.right
+}
+
+func (b *Button) Bottom() float64 {
+	return b.bottom
+}
+
+func (b *Button) Top() float64 {
+	return b.top
 }
 
 func (b *Button) SetImage(image *ebiten.Image) {

@@ -7,6 +7,6 @@ import (
 
 // Layer is the base object of the user interface.
 type Layer interface {
-	OnClick(cursorPosition vector.Vector)
+	OnClick(cursorPosition vector.Vector) bool
 	Render(screen *ebiten.Image, relativePos *vector.Vector)
 }

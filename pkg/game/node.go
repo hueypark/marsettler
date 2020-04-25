@@ -4,11 +4,11 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hueypark/marsettler/core/asset"
 	"github.com/hueypark/marsettler/core/id_generator"
 	"github.com/hueypark/marsettler/core/math/rotator"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/data"
+	"github.com/hueypark/marsettler/pkg/asset"
 	"github.com/hueypark/marsettler/pkg/consts"
 	"github.com/hueypark/marsettler/pkg/renderer"
 )

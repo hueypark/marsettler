@@ -28,11 +28,6 @@ func Image(str string) *ebiten.Image {
 	return fallbackImg
 }
 
-// Set image sets image.
-func SetImage(str string, src []byte) {
-	images[str] = newImageFromFileBytes(src)
-}
-
 func init() {
 	images = make(map[string]*ebiten.Image)
 
@@ -53,6 +48,10 @@ func newImageFromFileBytes(src []byte) *ebiten.Image {
 	}
 
 	return ebitenImage
+}
+
+func setImage(str string, src []byte) {
+	images[str] = newImageFromFileBytes(src)
 }
 
 func initFont() {

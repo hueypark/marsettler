@@ -23,6 +23,9 @@ type Game struct {
 
 // New create new game.
 func New() *Game {
+	ebiten.SetRunnableInBackground(true)
+	ebiten.SetMaxTPS(consts.TPS)
+
 	world := NewWorld()
 	kingdom := NewKingdom()
 	startNodeID, err := world.StartNodeID()
@@ -44,26 +47,13 @@ func New() *Game {
 	return game
 }
 
-// Run runs game.
-func (g *Game) Run() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
-	ebiten.SetRunnableInBackground(true)
-	ebiten.SetMaxTPS(consts.TPS)
-	err := ebiten.Run(g.tick, config.ScreenWidth, config.ScreenHeight, 1, "Marsettler")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
+// Layout implements the ebiten.Game interface.
+func (g *Game) Layout(_, _ int) (screenWidth, screenHeight int) {
+	return config.ScreenWidth, config.ScreenHeight
 }
 
-func (g *Game) onClick(cursorPosition vector.Vector) {
-	if g.ui != nil {
-		g.ui.OnClick(cursorPosition)
-	}
-}
-
-func (g *Game) tick(screen *ebiten.Image) error {
+// Update implements the ebiten.Game interface.
+func (g *Game) Update(screen *ebiten.Image) error {
 	ebiten.CurrentFPS()
 	x, y := ebiten.CursorPosition()
 	cursorPosition := vector.Vector{X: float64(x), Y: float64(y)}
@@ -79,6 +69,12 @@ func (g *Game) tick(screen *ebiten.Image) error {
 	}
 
 	return ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS()))
+}
+
+func (g *Game) onClick(cursorPosition vector.Vector) {
+	if g.ui != nil {
+		g.ui.OnClick(cursorPosition)
+	}
 }
 
 func (g *Game) tickRenderer(screen *ebiten.Image, cursorPosition vector.Vector) {

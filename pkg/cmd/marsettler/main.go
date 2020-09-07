@@ -2,17 +2,30 @@ package main
 
 import (
 	"log"
+	"sync"
 
-	"github.com/hajimehoshi/ebiten"
-	_ "github.com/hueypark/marsettler/pkg/ai"
-	"github.com/hueypark/marsettler/pkg/game"
+	"github.com/hueypark/marsettler/pkg/client"
+	"github.com/hueypark/marsettler/pkg/server"
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	g := game.New()
-	if err := ebiten.RunGame(g); err != nil {
-		panic(err)
-	}
+	var wg sync.WaitGroup
+
+	go func() {
+		wg.Add(1)
+
+		c := client.NewClient()
+		c.Run()
+	}()
+
+	go func() {
+		wg.Add(1)
+
+		s := server.NewServer()
+		s.Run()
+	}()
+
+	wg.Wait()
 }

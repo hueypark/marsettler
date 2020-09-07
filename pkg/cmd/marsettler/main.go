@@ -13,18 +13,21 @@ func main() {
 
 	var wg sync.WaitGroup
 
+	wg.Add(1)
 	go func() {
-		wg.Add(1)
-
 		c := client.NewClient()
+
 		c.Run()
 	}()
 
+	wg.Add(1)
 	go func() {
-		wg.Add(1)
-
 		s := server.NewServer()
-		s.Run()
+
+		err := s.Run()
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}()
 
 	wg.Wait()

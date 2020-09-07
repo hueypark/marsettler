@@ -17,7 +17,12 @@ func main() {
 	go func() {
 		c := client.NewClient()
 
-		c.Run()
+		err := c.Run()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		_ = c.Close()
 	}()
 
 	wg.Add(1)

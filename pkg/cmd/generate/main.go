@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	generateFlatbuffers()
-	generateAsset()
+	generateMessage()
+	//generateAsset()
 }
 
 type image struct {
@@ -21,21 +21,29 @@ type image struct {
 	asset string
 }
 
-func generateFlatbuffers() {
-	files, err := filepath.Glob("./game/message/fbs/*.fbs")
+func generateMessage() {
+	wd, err := os.Getwd()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	for _, f := range files {
-		cmd := exec.Command("flatc", "--go", "-o", "./game/message", f)
-		cmdOutput := &bytes.Buffer{}
-		cmd.Stdout = cmdOutput
-		err := cmd.Run()
-		if err != nil {
-			log.Println(cmdOutput.String())
-			log.Fatalln(err)
-		}
+	log.Println(wd)
+	cmd := exec.Command(
+		"protoc",
+		"--gofast_out="+wd+"/../../message",
+		wd+"/../../message/message.proto",
+		"--proto_path="+wd+"/../../message",
+	)
+
+	buffer := &bytes.Buffer{}
+	cmd.Stdin = buffer
+	cmd.Stdout = buffer
+	cmd.Stderr = buffer
+
+	err = cmd.Run()
+	if err != nil {
+		log.Println(buffer.String())
+		log.Fatalln(err)
 	}
 }
 

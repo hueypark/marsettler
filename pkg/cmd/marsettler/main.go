@@ -15,14 +15,17 @@ func main() {
 
 	wg.Add(1)
 	go func() {
-		c := client.NewClient()
-
-		err := c.Run()
+		c, err := client.NewClient()
 		if err != nil {
 			log.Fatalln(err)
 		}
 
-		_ = c.Close()
+		err = c.Run()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		c.Close()
 	}()
 
 	wg.Add(1)

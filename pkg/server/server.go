@@ -2,9 +2,12 @@ package server
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/hueypark/marsettler/pkg/message"
+	"github.com/hueypark/marsettler/pkg/shared"
 )
 
 // Server is the marsettler server.
@@ -23,27 +26,10 @@ func NewServer() *Server {
 	s.gin.GET(
 		"/ws",
 		func(c *gin.Context) {
-			conn, err := s.upgrader.Upgrade(c.Writer, c.Request, nil)
+			err := upgrade(c.Writer, c.Request)
 			if err != nil {
 				log.Println(err)
 				return
-			}
-			defer conn.Close()
-
-			for {
-				_, message, err := conn.ReadMessage()
-				if err != nil {
-					log.Println(err)
-					break
-				}
-
-				log.Println(string(message))
-
-				err = conn.WriteMessage(websocket.BinaryMessage, message)
-				if err != nil {
-					log.Println(err)
-					break
-				}
 			}
 		})
 
@@ -53,4 +39,51 @@ func NewServer() *Server {
 // Run runs server.
 func (s *Server) Run() error {
 	return s.gin.Run()
+}
+
+func upgrade(w http.ResponseWriter, r *http.Request) error {
+	var upgrader websocket.Upgrader
+
+	websocketConn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		return err
+	}
+
+	handlers := message.HandlerFuncs{
+		message.PingID: func(m *message.Ping) error {
+			log.Println("Ping")
+			return nil
+		},
+	}
+
+	conn, err := shared.NewConn(websocketConn, handlers)
+	if err != nil {
+		return err
+	}
+
+	go conn.Run()
+
+	for {
+		conn.Consume()
+	}
+
+	//defer conn.Close()
+	//
+	//for {
+	//	_, message, err := conn.ReadMessage()
+	//	if err != nil {
+	//		log.Println(err)
+	//		break
+	//	}
+	//
+	//	log.Println(string(message))
+	//
+	//	err = conn.WriteMessage(websocket.BinaryMessage, message)
+	//	if err != nil {
+	//		log.Println(err)
+	//		break
+	//	}
+	//}
+
+	return nil
 }

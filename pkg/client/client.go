@@ -1,6 +1,7 @@
 package client
 
 import (
+	"log"
 	"net/url"
 	"time"
 
@@ -23,7 +24,14 @@ func NewClient() (*Client, error) {
 		return nil, err
 	}
 
-	conn, err := shared.NewConn(websocketConn, make(shared.HandlerFuncs))
+	conn, err := shared.NewConn(
+		websocketConn,
+		shared.HandlerFuncs{
+			message.PongID: func(conn *shared.Conn, m *message.Pong) error {
+				log.Println("Pong")
+				return nil
+			},
+		})
 	if err != nil {
 		return nil, err
 	}

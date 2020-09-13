@@ -12,8 +12,8 @@ import (
 
 // Handler is message handler.
 type Handler struct {
-	pingHandler func(*message.Ping) error
-	pongHandler func(*message.Pong) error
+	pingHandler func(*Conn, *message.Ping) error
+	pongHandler func(*Conn, *message.Pong) error
 }
 
 // HandlerFuncs represents handler functions.
@@ -26,14 +26,14 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 	for id, handler := range handlers {
 		switch id {
 		case message.PingID:
-			v, ok := handler.(func(*message.Ping) error)
+			v, ok := handler.(func(*Conn, *message.Ping) error)
 			if !ok {
 				return nil, errors.New("handler does not handles Ping")
 			}
 
 			h.pingHandler = v
 		case message.PongID:
-			v, ok := handler.(func(*message.Pong) error)
+			v, ok := handler.(func(*Conn, *message.Pong) error)
 			if !ok {
 				return nil, errors.New("handler does not handles Pong")
 			}
@@ -46,7 +46,7 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 }
 
 // Handle handles message.
-func (h *Handler) Handle(id message.ID, bytes []byte) error {
+func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 	switch id {
 	case message.PingID:
 		m := &message.Ping{}
@@ -59,7 +59,7 @@ func (h *Handler) Handle(id message.ID, bytes []byte) error {
 			return nil
 		}
 
-		return h.pingHandler(m)
+		return h.pingHandler(conn, m)
 	case message.PongID:
 		m := &message.Pong{}
 		err := proto.Unmarshal(bytes, m)
@@ -71,7 +71,7 @@ func (h *Handler) Handle(id message.ID, bytes []byte) error {
 			return nil
 		}
 
-		return h.pongHandler(m)
+		return h.pongHandler(conn, m)
 	}
 
 	return errors.New(fmt.Sprintf("unhandled id: %v", id))

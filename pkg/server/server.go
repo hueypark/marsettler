@@ -51,6 +51,7 @@ func upgrade(w http.ResponseWriter, r *http.Request) error {
 
 	handlers := shared.HandlerFuncs{
 		message.PingID: func(conn *shared.Conn, m *message.Ping) error {
+			log.Println("Ping")
 			pong := &message.Pong{}
 			return conn.Write(pong)
 		},

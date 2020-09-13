@@ -54,7 +54,7 @@ func (c *Conn) Consume() {
 	defer c.mux.Unlock()
 
 	for _, m := range c.messages {
-		err := c.handler.Handle(m.ID, m.Bytes)
+		err := c.handler.Handle(c, m.ID, m.Bytes)
 		if err != nil {
 			log.Println(fmt.Sprintf("id: %v, err: %v", m.ID, err))
 		}

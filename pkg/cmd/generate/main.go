@@ -1,50 +1,33 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 )
 
 func main() {
-	generateMessage()
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	generateMessage(wd)
+
+	err = generateMessageHandler(wd)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	//generateAsset()
 }
 
 type image struct {
 	name  string
 	asset string
-}
-
-func generateMessage() {
-	wd, err := os.Getwd()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	log.Println(wd)
-	cmd := exec.Command(
-		"protoc",
-		"--gofast_out="+wd+"/../../message",
-		wd+"/../../message/message.proto",
-		"--proto_path="+wd+"/../../message",
-	)
-
-	buffer := &bytes.Buffer{}
-	cmd.Stdin = buffer
-	cmd.Stdout = buffer
-	cmd.Stderr = buffer
-
-	err = cmd.Run()
-	if err != nil {
-		log.Println(buffer.String())
-		log.Fatalln(err)
-	}
 }
 
 func generateAsset() {

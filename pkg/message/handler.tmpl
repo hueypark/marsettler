@@ -11,9 +11,8 @@ import (
 
 // Handler is message handler.
 type Handler struct {
-	pingHandler func(*Ping) error
-	pongHandler func(*Pong) error
-}
+{{ with .Messages }}{{ range . }}	{{ .Handler }} func(*{{ .Message }}) error
+{{ end }}{{ end }}}
 
 // HandlerFuncs represents handler functions.
 type HandlerFuncs map[ID]interface{}
@@ -24,21 +23,14 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 
 	for id, handler := range handlers {
 		switch id {
-		case PingID:
-			v, ok := handler.(func(*Ping) error)
+		{{ with .Messages }}{{ range . }}case {{ .Message }}ID:
+			v, ok := handler.(func(*{{ .Message }}) error)
 			if !ok {
-				return nil, errors.New("handler does not handles Ping")
+				return nil, errors.New("handler does not handles {{ .Message }}")
 			}
 
-			h.pingHandler = v
-		case PongID:
-			v, ok := handler.(func(*Pong) error)
-			if !ok {
-				return nil, errors.New("handler does not handles Pong")
-			}
-
-			h.pongHandler = v
-		}
+			h.{{ .Handler }} = v
+		{{ end }}{{ end }}}
 	}
 
 	return h, nil
@@ -47,31 +39,19 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 // Handle handles message.
 func (h *Handler) Handle(id ID, bytes []byte) error {
 	switch id {
-	case PingID:
-		m := &Ping{}
+	{{ with .Messages }}{{ range . }}case {{ .Message }}ID:
+		m := &{{ .Message }}{}
 		err := proto.Unmarshal(bytes, m)
 		if err != nil {
 			return err
 		}
 
-		if h.pingHandler == nil {
+		if h.{{ .Handler }} == nil {
 			return nil
 		}
 
-		return h.pingHandler(m)
-	case PongID:
-		m := &Pong{}
-		err := proto.Unmarshal(bytes, m)
-		if err != nil {
-			return err
-		}
-
-		if h.pongHandler == nil {
-			return nil
-		}
-
-		return h.pongHandler(m)
-	}
+		return h.{{ .Handler }}(m)
+	{{ end }}{{ end }}}
 
 	return errors.New(fmt.Sprintf("unhandled id: %v", id))
 }

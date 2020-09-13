@@ -15,21 +15,7 @@ func main() {
 
 	wg.Add(1)
 	go func() {
-		c, err := client.NewClient()
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		err = c.Run()
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		c.Close()
-	}()
-
-	wg.Add(1)
-	go func() {
+		defer wg.Done()
 		s := server.NewServer()
 
 		err := s.Run()
@@ -38,5 +24,21 @@ func main() {
 		}
 	}()
 
+	runClient()
+
 	wg.Wait()
+}
+
+func runClient() {
+	c, err := client.NewClient()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	err = c.Run()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	c.Close()
 }

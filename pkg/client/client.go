@@ -3,9 +3,10 @@ package client
 import (
 	"log"
 	"net/url"
-	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/shared"
 )
@@ -50,17 +51,27 @@ func (c *Client) Close() {
 func (c *Client) Run() error {
 	go c.conn.Run()
 
-	for {
-		ping := &message.Ping{}
-		err := c.conn.Write(ping)
-		if err != nil {
-			return err
-		}
+	ebiten.SetWindowSize(640, 480)
+	ebiten.SetWindowTitle("Marsettler")
+	ebiten.SetRunnableOnUnfocused(true)
+	return ebiten.RunGame(c)
+}
 
-		c.conn.Consume()
+// Draw implements ebiten.Game.Draw.
+func (c *Client) Draw(screen *ebiten.Image) {
+	_ = ebitenutil.DebugPrint(screen, "Hello, World!")
+}
 
-		time.Sleep(time.Second)
-	}
+// Draw implements ebiten.Game.Layout.
+func (c *Client) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+	return 320, 240
+}
+
+// Draw implements ebiten.Game.Update.
+func (c *Client) Update(screen *ebiten.Image) error {
+	c.conn.Consume()
+
+	return nil
 }
 
 func connect() (*websocket.Conn, error) {

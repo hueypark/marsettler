@@ -5,6 +5,8 @@ import (
 	"os"
 	"strings"
 	"text/template"
+
+	"github.com/iancoleman/strcase"
 )
 
 func generateMessageHandler(root string) error {
@@ -41,7 +43,7 @@ func generateMessageHandler(root string) error {
 			data.Messages,
 			Message{
 				Message: text,
-				Handler: strings.ToLower(text) + "Handler",
+				Handler: strcase.ToLowerCamel(text) + "Handler",
 			})
 	}
 

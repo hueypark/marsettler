@@ -1,21 +1,22 @@
 // This file was generated from `./pkg/cmd/generate/generate_handler.go`.
 
-package message
+package shared
 
 import (
 	"errors"
 	"fmt"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/hueypark/marsettler/pkg/message"
 )
 
 // Handler is message handler.
 type Handler struct {
-{{ with .Messages }}{{ range . }}	{{ .Handler }} func(*{{ .Message }}) error
+{{ with .Messages }}{{ range . }}	{{ .Handler }} func(*message.{{ .Message }}) error
 {{ end }}{{ end }}}
 
 // HandlerFuncs represents handler functions.
-type HandlerFuncs map[ID]interface{}
+type HandlerFuncs map[message.ID]interface{}
 
 // NewHandler creates new handler.
 func NewHandler(handlers HandlerFuncs) (*Handler, error) {
@@ -23,8 +24,8 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 
 	for id, handler := range handlers {
 		switch id {
-		{{ with .Messages }}{{ range . }}case {{ .Message }}ID:
-			v, ok := handler.(func(*{{ .Message }}) error)
+		{{ with .Messages }}{{ range . }}case message.{{ .Message }}ID:
+			v, ok := handler.(func(*message.{{ .Message }}) error)
 			if !ok {
 				return nil, errors.New("handler does not handles {{ .Message }}")
 			}
@@ -37,10 +38,10 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 }
 
 // Handle handles message.
-func (h *Handler) Handle(id ID, bytes []byte) error {
+func (h *Handler) Handle(id message.ID, bytes []byte) error {
 	switch id {
-	{{ with .Messages }}{{ range . }}case {{ .Message }}ID:
-		m := &{{ .Message }}{}
+	{{ with .Messages }}{{ range . }}case message.{{ .Message }}ID:
+		m := &message.{{ .Message }}{}
 		err := proto.Unmarshal(bytes, m)
 		if err != nil {
 			return err

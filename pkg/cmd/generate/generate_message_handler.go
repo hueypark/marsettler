@@ -45,12 +45,12 @@ func generateMessageHandler(root string) error {
 			})
 	}
 
-	tmpl, err := template.ParseFiles(root + "/pkg/message/handler.tmpl")
+	tmpl, err := template.ParseFiles(root + "/pkg/shared/handler.tmpl")
 	if err != nil {
 		return err
 	}
 
-	handlerFile, err := os.Create(root + "/pkg/message/handler.go")
+	handlerFile, err := os.Create(root + "/pkg/shared/handler.go")
 	if err != nil {
 		return err
 	}

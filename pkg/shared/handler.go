@@ -14,6 +14,8 @@ import (
 type Handler struct {
 	pingHandler func(*Conn, *message.Ping) error
 	pongHandler func(*Conn, *message.Pong) error
+	signInHandler func(*Conn, *message.SignIn) error
+	signInResponseHandler func(*Conn, *message.SignInResponse) error
 }
 
 // HandlerFuncs represents handler functions.
@@ -39,6 +41,20 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 			}
 
 			h.pongHandler = v
+		case message.SignInID:
+			v, ok := handler.(func(*Conn, *message.SignIn) error)
+			if !ok {
+				return nil, errors.New("handler does not handles SignIn")
+			}
+
+			h.signInHandler = v
+		case message.SignInResponseID:
+			v, ok := handler.(func(*Conn, *message.SignInResponse) error)
+			if !ok {
+				return nil, errors.New("handler does not handles SignInResponse")
+			}
+
+			h.signInResponseHandler = v
 		}
 	}
 
@@ -72,6 +88,30 @@ func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 		}
 
 		return h.pongHandler(conn, m)
+	case message.SignInID:
+		m := &message.SignIn{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.signInHandler == nil {
+			return nil
+		}
+
+		return h.signInHandler(conn, m)
+	case message.SignInResponseID:
+		m := &message.SignInResponse{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.signInResponseHandler == nil {
+			return nil
+		}
+
+		return h.signInResponseHandler(conn, m)
 	}
 
 	return errors.New(fmt.Sprintf("unhandled id: %v", id))

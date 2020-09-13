@@ -7,3 +7,10 @@ message Ping {
 
 message Pong {
 }
+
+message SignIn {
+}
+
+message SignInResponse {
+  int64 id = 1;
+}

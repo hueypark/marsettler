@@ -52,7 +52,7 @@ func generateMessageHandler(root string) error {
 		return err
 	}
 
-	handlerFile, err := os.Create(root + "/pkg/shared/handler.go")
+	handlerFile, err := os.Create(root + "/pkg/shared/handler_generated.go")
 	if err != nil {
 		return err
 	}

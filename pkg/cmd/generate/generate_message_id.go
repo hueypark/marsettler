@@ -53,7 +53,7 @@ func generateMessageID(root string) error {
 		return err
 	}
 
-	handlerFile, err := os.Create(root + "/pkg/message/message_id.go")
+	handlerFile, err := os.Create(root + "/pkg/message/message_id_generated.go")
 	if err != nil {
 		return err
 	}

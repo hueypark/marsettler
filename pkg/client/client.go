@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/shared"
 )
@@ -32,6 +33,7 @@ func NewClient() (*Client, error) {
 				log.Println("Pong")
 				return nil
 			},
+			message.SignInResponseID: SignInResponseHandler,
 		})
 	if err != nil {
 		return nil, err
@@ -69,6 +71,14 @@ func (c *Client) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHei
 
 // Draw implements ebiten.Game.Update.
 func (c *Client) Update(screen *ebiten.Image) error {
+	if inpututil.IsKeyJustReleased(ebiten.KeyEnter) {
+		signIn := &message.SignIn{}
+		err := c.conn.Write(signIn)
+		if err != nil {
+			return err
+		}
+	}
+
 	c.conn.Consume()
 
 	return nil

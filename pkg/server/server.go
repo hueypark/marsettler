@@ -55,6 +55,7 @@ func upgrade(w http.ResponseWriter, r *http.Request) error {
 			pong := &message.Pong{}
 			return conn.Write(pong)
 		},
+		message.SignInID: SignInHandler,
 	}
 
 	conn, err := shared.NewConn(websocketConn, handlers)

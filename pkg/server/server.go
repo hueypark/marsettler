@@ -49,10 +49,10 @@ func upgrade(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	handlers := message.HandlerFuncs{
-		message.PingID: func(m *message.Ping) error {
-			log.Println("Ping")
-			return nil
+	handlers := shared.HandlerFuncs{
+		message.PingID: func(conn *shared.Conn, m *message.Ping) error {
+			pong := &message.Pong{}
+			return conn.Write(pong)
 		},
 	}
 

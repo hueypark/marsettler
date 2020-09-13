@@ -19,3 +19,9 @@ type Message interface {
 func (m *Ping) ID() ID {
 	return PingID
 }
+
+// ID represents messageID.
+func (m *Pong) ID() ID {
+	return PongID
+
+}

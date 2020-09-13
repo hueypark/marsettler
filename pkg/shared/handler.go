@@ -1,22 +1,23 @@
 // This file was generated from `./pkg/cmd/generate/generate_handler.go`.
 
-package message
+package shared
 
 import (
 	"errors"
 	"fmt"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/hueypark/marsettler/pkg/message"
 )
 
 // Handler is message handler.
 type Handler struct {
-	pingHandler func(*Ping) error
-	pongHandler func(*Pong) error
+	pingHandler func(*message.Ping) error
+	pongHandler func(*message.Pong) error
 }
 
 // HandlerFuncs represents handler functions.
-type HandlerFuncs map[ID]interface{}
+type HandlerFuncs map[message.ID]interface{}
 
 // NewHandler creates new handler.
 func NewHandler(handlers HandlerFuncs) (*Handler, error) {
@@ -24,15 +25,15 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 
 	for id, handler := range handlers {
 		switch id {
-		case PingID:
-			v, ok := handler.(func(*Ping) error)
+		case message.PingID:
+			v, ok := handler.(func(*message.Ping) error)
 			if !ok {
 				return nil, errors.New("handler does not handles Ping")
 			}
 
 			h.pingHandler = v
-		case PongID:
-			v, ok := handler.(func(*Pong) error)
+		case message.PongID:
+			v, ok := handler.(func(*message.Pong) error)
 			if !ok {
 				return nil, errors.New("handler does not handles Pong")
 			}
@@ -45,10 +46,10 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 }
 
 // Handle handles message.
-func (h *Handler) Handle(id ID, bytes []byte) error {
+func (h *Handler) Handle(id message.ID, bytes []byte) error {
 	switch id {
-	case PingID:
-		m := &Ping{}
+	case message.PingID:
+		m := &message.Ping{}
 		err := proto.Unmarshal(bytes, m)
 		if err != nil {
 			return err
@@ -59,8 +60,8 @@ func (h *Handler) Handle(id ID, bytes []byte) error {
 		}
 
 		return h.pingHandler(m)
-	case PongID:
-		m := &Pong{}
+	case message.PongID:
+		m := &message.Pong{}
 		err := proto.Unmarshal(bytes, m)
 		if err != nil {
 			return err

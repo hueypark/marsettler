@@ -23,7 +23,7 @@ func NewClient() (*Client, error) {
 		return nil, err
 	}
 
-	conn, err := shared.NewConn(websocketConn, make(message.HandlerFuncs))
+	conn, err := shared.NewConn(websocketConn, make(shared.HandlerFuncs))
 	if err != nil {
 		return nil, err
 	}

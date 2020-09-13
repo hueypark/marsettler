@@ -15,7 +15,7 @@ import (
 type Conn struct {
 	closeChan chan bool
 	conn      *websocket.Conn
-	handler   *message.Handler
+	handler   *Handler
 	messages  []rawMessage
 	mux       sync.Mutex
 }
@@ -26,13 +26,13 @@ type rawMessage struct {
 }
 
 // NewConn creates new connection.
-func NewConn(conn *websocket.Conn, handlerFuncs message.HandlerFuncs) (*Conn, error) {
+func NewConn(conn *websocket.Conn, handlerFuncs HandlerFuncs) (*Conn, error) {
 	c := &Conn{
 		conn:      conn,
 		closeChan: make(chan bool),
 	}
 
-	handler, err := message.NewHandler(handlerFuncs)
+	handler, err := NewHandler(handlerFuncs)
 	if err != nil {
 		return nil, err
 	}

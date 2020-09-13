@@ -1,0 +1,20 @@
+// This file was generated from `./pkg/cmd/generate/generate_message_id.go`.
+
+package message
+
+import proto "github.com/golang/protobuf/proto"
+
+type ID int32
+
+const (
+{{ with .Messages }}{{ range . }}	{{ .Message }}ID ID = {{ .ID }}
+{{ end }}{{ end }})
+
+// Message represents message.
+type Message interface {
+	ID() ID
+	proto.Message
+}
+
+{{ with .Messages }}{{ range . }}func (m *{{ .Message }}) ID() ID { return {{ .Message }}ID }
+{{ end }}{{ end }}

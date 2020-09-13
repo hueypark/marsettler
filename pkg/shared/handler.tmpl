@@ -1,4 +1,4 @@
-// This file was generated from `./pkg/cmd/generate/generate_handler.go`.
+// This file was generated from `./pkg/cmd/generate/generate_message_handler.go`.
 
 package shared
 

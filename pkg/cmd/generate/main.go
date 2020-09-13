@@ -22,6 +22,11 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	err = generateMessageID(wd)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	//generateAsset()
 }
 

@@ -16,6 +16,7 @@ type Handler struct {
 	pongHandler func(*Conn, *message.Pong) error
 	signInHandler func(*Conn, *message.SignIn) error
 	signInResponseHandler func(*Conn, *message.SignInResponse) error
+	vectorHandler func(*Conn, *message.Vector) error
 }
 
 // HandlerFuncs represents handler functions.
@@ -55,6 +56,13 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 			}
 
 			h.signInResponseHandler = v
+		case message.VectorID:
+			v, ok := handler.(func(*Conn, *message.Vector) error)
+			if !ok {
+				return nil, errors.New("handler does not handles Vector")
+			}
+
+			h.vectorHandler = v
 		}
 	}
 
@@ -112,6 +120,18 @@ func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 		}
 
 		return h.signInResponseHandler(conn, m)
+	case message.VectorID:
+		m := &message.Vector{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.vectorHandler == nil {
+			return nil
+		}
+
+		return h.vectorHandler(conn, m)
 	}
 
 	return errors.New(fmt.Sprintf("unhandled id: %v", id))

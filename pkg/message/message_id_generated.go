@@ -11,6 +11,7 @@ const (
 	PongID ID = 1
 	SignInID ID = 2
 	SignInResponseID ID = 3
+	VectorID ID = 4
 )
 
 // Message represents message.
@@ -23,3 +24,4 @@ func (m *Ping) ID() ID { return PingID }
 func (m *Pong) ID() ID { return PongID }
 func (m *SignIn) ID() ID { return SignInID }
 func (m *SignInResponse) ID() ID { return SignInResponseID }
+func (m *Vector) ID() ID { return VectorID }

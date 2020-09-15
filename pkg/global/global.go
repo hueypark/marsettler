@@ -1,4 +1,4 @@
-package server
+package global
 
 import (
 	"log"

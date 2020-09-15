@@ -10,7 +10,7 @@ import (
 
 // SignInResponseHandler handles message.SignInResponse.
 func SignInResponseHandler(conn *shared.Conn, m *message.SignInResponse) error {
-	log.Println(fmt.Sprintf("I am %v and I'm in (%v, %v)", m.Id, m.Position.X, m.Position.Y))
+	log.Println(fmt.Sprintf("I am %v and I'm in (%v, %v)", m.Id, m.Actor.Position.X, m.Actor.Position.Y))
 
 	return nil
 }

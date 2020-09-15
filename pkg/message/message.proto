@@ -2,6 +2,11 @@ syntax = "proto3";
 
 package message;
 
+message Actor {
+  int64 id = 1;
+  Vector position = 2;
+}
+
 message Ping {
 }
 
@@ -13,10 +18,10 @@ message SignIn {
 
 message SignInResponse {
   int64 id = 1;
-  Vector position = 2;
+  Actor actor = 2;
 }
 
 message Vector {
-  float X = 1;
-  float Y = 2;
+  double X = 1;
+  double Y = 2;
 }

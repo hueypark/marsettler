@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/hueypark/marsettler/pkg/game"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/shared"
 )
@@ -14,6 +15,7 @@ import (
 type Server struct {
 	gin      *gin.Engine
 	upgrader websocket.Upgrader
+	world    *game.World
 }
 
 // NewServer creates new server.
@@ -21,12 +23,13 @@ func NewServer() *Server {
 	s := &Server{
 		gin:      gin.Default(),
 		upgrader: websocket.Upgrader{},
+		world:    game.NewWorld(),
 	}
 
 	s.gin.GET(
 		"/ws",
 		func(c *gin.Context) {
-			err := upgrade(c.Writer, c.Request)
+			err := s.upgrade(c.Writer, c.Request)
 			if err != nil {
 				log.Println(err)
 				return
@@ -41,7 +44,7 @@ func (s *Server) Run() error {
 	return s.gin.Run()
 }
 
-func upgrade(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 	var upgrader websocket.Upgrader
 
 	websocketConn, err := upgrader.Upgrade(w, r, nil)
@@ -49,13 +52,17 @@ func upgrade(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
+	user := NewUser()
+
 	handlers := shared.HandlerFuncs{
 		message.PingID: func(conn *shared.Conn, m *message.Ping) error {
 			log.Println("Ping")
 			pong := &message.Pong{}
 			return conn.Write(pong)
 		},
-		message.SignInID: SignInHandler,
+		message.SignInID: func(conn *shared.Conn, m *message.SignIn) error {
+			return SignInHandler(conn, m, user, s.world)
+		},
 	}
 
 	conn, err := shared.NewConn(websocketConn, handlers)

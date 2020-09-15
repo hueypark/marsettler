@@ -12,6 +12,7 @@ import (
 
 // Handler is message handler.
 type Handler struct {
+	actorHandler func(*Conn, *message.Actor) error
 	pingHandler func(*Conn, *message.Ping) error
 	pongHandler func(*Conn, *message.Pong) error
 	signInHandler func(*Conn, *message.SignIn) error
@@ -28,6 +29,13 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 
 	for id, handler := range handlers {
 		switch id {
+		case message.ActorID:
+			v, ok := handler.(func(*Conn, *message.Actor) error)
+			if !ok {
+				return nil, errors.New("handler does not handles Actor")
+			}
+
+			h.actorHandler = v
 		case message.PingID:
 			v, ok := handler.(func(*Conn, *message.Ping) error)
 			if !ok {
@@ -72,6 +80,18 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 // Handle handles message.
 func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 	switch id {
+	case message.ActorID:
+		m := &message.Actor{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.actorHandler == nil {
+			return nil
+		}
+
+		return h.actorHandler(conn, m)
 	case message.PingID:
 		m := &message.Ping{}
 		err := proto.Unmarshal(bytes, m)

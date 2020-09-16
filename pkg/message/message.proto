@@ -7,6 +7,19 @@ message Actor {
   Vector position = 2;
 }
 
+message ActorMove {
+  int64 id = 1;
+  Vector position = 2;
+}
+
+message ActorMovesPush {
+  repeated ActorMove moves = 1;
+}
+
+message MoveStick {
+  Vector direction = 1;
+}
+
 message Ping {
 }
 

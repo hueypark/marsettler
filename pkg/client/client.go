@@ -8,6 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
+	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/shared"
 )
@@ -26,15 +27,19 @@ func NewClient() (*Client, error) {
 		return nil, err
 	}
 
-	conn, err := shared.NewConn(
-		websocketConn,
-		shared.HandlerFuncs{
-			message.PongID: func(conn *shared.Conn, m *message.Pong) error {
-				log.Println("Pong")
-				return nil
-			},
-			message.SignInResponseID: SignInResponseHandler,
-		})
+	conn, err := shared.NewConn(websocketConn)
+	if err != nil {
+		return nil, err
+	}
+
+	err = conn.SetHandlers(shared.HandlerFuncs{
+		message.ActorMovesPushID: ActorMovesPushHandler,
+		message.PongID: func(conn *shared.Conn, m *message.Pong) error {
+			log.Println("Pong")
+			return nil
+		},
+		message.SignInResponseID: SignInResponseHandler,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -79,6 +84,11 @@ func (c *Client) Update(screen *ebiten.Image) error {
 		}
 	}
 
+	err := c.updateMoveStickRequest()
+	if err != nil {
+		return err
+	}
+
 	c.conn.Consume()
 
 	return nil
@@ -92,4 +102,48 @@ func connect() (*websocket.Conn, error) {
 	}
 
 	return conn, nil
+}
+
+func (c *Client) updateMoveStickRequest() error {
+	if inpututil.IsKeyJustPressed(ebiten.KeyW) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyA) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyS) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyD) ||
+		inpututil.IsKeyJustReleased(ebiten.KeyW) ||
+		inpututil.IsKeyJustReleased(ebiten.KeyA) ||
+		inpututil.IsKeyJustReleased(ebiten.KeyS) ||
+		inpututil.IsKeyJustReleased(ebiten.KeyD) {
+
+		var direction vector.Vector
+
+		if ebiten.IsKeyPressed(ebiten.KeyW) {
+			direction = direction.Add(vector.Vector{X: 0, Y: 1})
+		}
+
+		if ebiten.IsKeyPressed(ebiten.KeyA) {
+			direction = direction.Add(vector.Vector{X: -1, Y: 0})
+		}
+
+		if ebiten.IsKeyPressed(ebiten.KeyS) {
+			direction = direction.Add(vector.Vector{X: 0, Y: -1})
+		}
+
+		if ebiten.IsKeyPressed(ebiten.KeyD) {
+			direction = direction.Add(vector.Vector{X: 1, Y: 0})
+		}
+
+		direction = direction.Normalize()
+
+		moveStick := &message.MoveStick{}
+		moveStick.Direction = &message.Vector{
+			X: direction.X,
+			Y: direction.Y,
+		}
+		err := c.conn.Write(moveStick)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

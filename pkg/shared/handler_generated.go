@@ -10,9 +10,12 @@ import (
 	"github.com/hueypark/marsettler/pkg/message"
 )
 
-// Handler is message handler.
+// Handler is message handlers.
 type Handler struct {
 	actorHandler func(*Conn, *message.Actor) error
+	actorMoveHandler func(*Conn, *message.ActorMove) error
+	actorMovesPushHandler func(*Conn, *message.ActorMovesPush) error
+	moveStickHandler func(*Conn, *message.MoveStick) error
 	pingHandler func(*Conn, *message.Ping) error
 	pongHandler func(*Conn, *message.Pong) error
 	signInHandler func(*Conn, *message.SignIn) error
@@ -20,10 +23,10 @@ type Handler struct {
 	vectorHandler func(*Conn, *message.Vector) error
 }
 
-// HandlerFuncs represents handler functions.
+// HandlerFuncs represents handlers functions.
 type HandlerFuncs map[message.ID]interface{}
 
-// NewHandler creates new handler.
+// NewHandler creates new handlers.
 func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 	h := &Handler{}
 
@@ -32,42 +35,63 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 		case message.ActorID:
 			v, ok := handler.(func(*Conn, *message.Actor) error)
 			if !ok {
-				return nil, errors.New("handler does not handles Actor")
+				return nil, errors.New("handlers does not handles Actor")
 			}
 
 			h.actorHandler = v
+		case message.ActorMoveID:
+			v, ok := handler.(func(*Conn, *message.ActorMove) error)
+			if !ok {
+				return nil, errors.New("handlers does not handles ActorMove")
+			}
+
+			h.actorMoveHandler = v
+		case message.ActorMovesPushID:
+			v, ok := handler.(func(*Conn, *message.ActorMovesPush) error)
+			if !ok {
+				return nil, errors.New("handlers does not handles ActorMovesPush")
+			}
+
+			h.actorMovesPushHandler = v
+		case message.MoveStickID:
+			v, ok := handler.(func(*Conn, *message.MoveStick) error)
+			if !ok {
+				return nil, errors.New("handlers does not handles MoveStick")
+			}
+
+			h.moveStickHandler = v
 		case message.PingID:
 			v, ok := handler.(func(*Conn, *message.Ping) error)
 			if !ok {
-				return nil, errors.New("handler does not handles Ping")
+				return nil, errors.New("handlers does not handles Ping")
 			}
 
 			h.pingHandler = v
 		case message.PongID:
 			v, ok := handler.(func(*Conn, *message.Pong) error)
 			if !ok {
-				return nil, errors.New("handler does not handles Pong")
+				return nil, errors.New("handlers does not handles Pong")
 			}
 
 			h.pongHandler = v
 		case message.SignInID:
 			v, ok := handler.(func(*Conn, *message.SignIn) error)
 			if !ok {
-				return nil, errors.New("handler does not handles SignIn")
+				return nil, errors.New("handlers does not handles SignIn")
 			}
 
 			h.signInHandler = v
 		case message.SignInResponseID:
 			v, ok := handler.(func(*Conn, *message.SignInResponse) error)
 			if !ok {
-				return nil, errors.New("handler does not handles SignInResponse")
+				return nil, errors.New("handlers does not handles SignInResponse")
 			}
 
 			h.signInResponseHandler = v
 		case message.VectorID:
 			v, ok := handler.(func(*Conn, *message.Vector) error)
 			if !ok {
-				return nil, errors.New("handler does not handles Vector")
+				return nil, errors.New("handlers does not handles Vector")
 			}
 
 			h.vectorHandler = v
@@ -92,6 +116,42 @@ func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 		}
 
 		return h.actorHandler(conn, m)
+	case message.ActorMoveID:
+		m := &message.ActorMove{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.actorMoveHandler == nil {
+			return nil
+		}
+
+		return h.actorMoveHandler(conn, m)
+	case message.ActorMovesPushID:
+		m := &message.ActorMovesPush{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.actorMovesPushHandler == nil {
+			return nil
+		}
+
+		return h.actorMovesPushHandler(conn, m)
+	case message.MoveStickID:
+		m := &message.MoveStick{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.moveStickHandler == nil {
+			return nil
+		}
+
+		return h.moveStickHandler(conn, m)
 	case message.PingID:
 		m := &message.Ping{}
 		err := proto.Unmarshal(bytes, m)

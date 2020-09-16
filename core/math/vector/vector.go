@@ -104,3 +104,12 @@ func (v *Vector) Clear() {
 func (v Vector) OnTheRight(o Vector) bool {
 	return Cross(v, o) < 0
 }
+
+// Zero returns true if its zero.
+func (v Vector) Zero() bool {
+	if v.X == 0 && v.Y == 0 {
+		return true
+	}
+
+	return false
+}

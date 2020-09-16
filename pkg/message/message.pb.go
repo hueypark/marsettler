@@ -78,6 +78,155 @@ func (m *Actor) GetPosition() *Vector {
 	return nil
 }
 
+type ActorMove struct {
+	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Position             *Vector  `protobuf:"bytes,2,opt,name=position,proto3" json:"position,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ActorMove) Reset()         { *m = ActorMove{} }
+func (m *ActorMove) String() string { return proto.CompactTextString(m) }
+func (*ActorMove) ProtoMessage()    {}
+func (*ActorMove) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33c57e4bae7b9afd, []int{1}
+}
+func (m *ActorMove) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ActorMove) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ActorMove.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ActorMove) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActorMove.Merge(m, src)
+}
+func (m *ActorMove) XXX_Size() int {
+	return m.Size()
+}
+func (m *ActorMove) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActorMove.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActorMove proto.InternalMessageInfo
+
+func (m *ActorMove) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *ActorMove) GetPosition() *Vector {
+	if m != nil {
+		return m.Position
+	}
+	return nil
+}
+
+type ActorMovesPush struct {
+	Moves                []*ActorMove `protobuf:"bytes,1,rep,name=moves,proto3" json:"moves,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
+}
+
+func (m *ActorMovesPush) Reset()         { *m = ActorMovesPush{} }
+func (m *ActorMovesPush) String() string { return proto.CompactTextString(m) }
+func (*ActorMovesPush) ProtoMessage()    {}
+func (*ActorMovesPush) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33c57e4bae7b9afd, []int{2}
+}
+func (m *ActorMovesPush) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ActorMovesPush) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ActorMovesPush.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ActorMovesPush) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActorMovesPush.Merge(m, src)
+}
+func (m *ActorMovesPush) XXX_Size() int {
+	return m.Size()
+}
+func (m *ActorMovesPush) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActorMovesPush.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActorMovesPush proto.InternalMessageInfo
+
+func (m *ActorMovesPush) GetMoves() []*ActorMove {
+	if m != nil {
+		return m.Moves
+	}
+	return nil
+}
+
+type MoveStick struct {
+	Direction            *Vector  `protobuf:"bytes,1,opt,name=direction,proto3" json:"direction,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MoveStick) Reset()         { *m = MoveStick{} }
+func (m *MoveStick) String() string { return proto.CompactTextString(m) }
+func (*MoveStick) ProtoMessage()    {}
+func (*MoveStick) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33c57e4bae7b9afd, []int{3}
+}
+func (m *MoveStick) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MoveStick) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MoveStick.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MoveStick) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MoveStick.Merge(m, src)
+}
+func (m *MoveStick) XXX_Size() int {
+	return m.Size()
+}
+func (m *MoveStick) XXX_DiscardUnknown() {
+	xxx_messageInfo_MoveStick.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MoveStick proto.InternalMessageInfo
+
+func (m *MoveStick) GetDirection() *Vector {
+	if m != nil {
+		return m.Direction
+	}
+	return nil
+}
+
 type Ping struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -88,7 +237,7 @@ func (m *Ping) Reset()         { *m = Ping{} }
 func (m *Ping) String() string { return proto.CompactTextString(m) }
 func (*Ping) ProtoMessage()    {}
 func (*Ping) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{1}
+	return fileDescriptor_33c57e4bae7b9afd, []int{4}
 }
 func (m *Ping) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -127,7 +276,7 @@ func (m *Pong) Reset()         { *m = Pong{} }
 func (m *Pong) String() string { return proto.CompactTextString(m) }
 func (*Pong) ProtoMessage()    {}
 func (*Pong) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{2}
+	return fileDescriptor_33c57e4bae7b9afd, []int{5}
 }
 func (m *Pong) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -166,7 +315,7 @@ func (m *SignIn) Reset()         { *m = SignIn{} }
 func (m *SignIn) String() string { return proto.CompactTextString(m) }
 func (*SignIn) ProtoMessage()    {}
 func (*SignIn) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{3}
+	return fileDescriptor_33c57e4bae7b9afd, []int{6}
 }
 func (m *SignIn) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -207,7 +356,7 @@ func (m *SignInResponse) Reset()         { *m = SignInResponse{} }
 func (m *SignInResponse) String() string { return proto.CompactTextString(m) }
 func (*SignInResponse) ProtoMessage()    {}
 func (*SignInResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{4}
+	return fileDescriptor_33c57e4bae7b9afd, []int{7}
 }
 func (m *SignInResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -262,7 +411,7 @@ func (m *Vector) Reset()         { *m = Vector{} }
 func (m *Vector) String() string { return proto.CompactTextString(m) }
 func (*Vector) ProtoMessage()    {}
 func (*Vector) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{5}
+	return fileDescriptor_33c57e4bae7b9afd, []int{8}
 }
 func (m *Vector) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -307,6 +456,9 @@ func (m *Vector) GetY() float64 {
 
 func init() {
 	proto.RegisterType((*Actor)(nil), "message.Actor")
+	proto.RegisterType((*ActorMove)(nil), "message.ActorMove")
+	proto.RegisterType((*ActorMovesPush)(nil), "message.ActorMovesPush")
+	proto.RegisterType((*MoveStick)(nil), "message.MoveStick")
 	proto.RegisterType((*Ping)(nil), "message.Ping")
 	proto.RegisterType((*Pong)(nil), "message.Pong")
 	proto.RegisterType((*SignIn)(nil), "message.SignIn")
@@ -317,20 +469,24 @@ func init() {
 func init() { proto.RegisterFile("message.proto", fileDescriptor_33c57e4bae7b9afd) }
 
 var fileDescriptor_33c57e4bae7b9afd = []byte{
-	// 203 bytes of a gzipped FileDescriptorProto
+	// 272 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcd, 0x4d, 0x2d, 0x2e,
 	0x4e, 0x4c, 0x4f, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x87, 0x72, 0x95, 0x5c, 0xb8,
 	0x58, 0x1d, 0x93, 0x4b, 0xf2, 0x8b, 0x84, 0xf8, 0xb8, 0x98, 0x32, 0x53, 0x24, 0x18, 0x15, 0x18,
 	0x35, 0x98, 0x83, 0x98, 0x32, 0x53, 0x84, 0xb4, 0xb9, 0x38, 0x0a, 0xf2, 0x8b, 0x33, 0x4b, 0x32,
 	0xf3, 0xf3, 0x24, 0x98, 0x14, 0x18, 0x35, 0xb8, 0x8d, 0xf8, 0xf5, 0x60, 0x66, 0x84, 0xa5, 0x82,
-	0xb4, 0x04, 0xc1, 0x15, 0x28, 0xb1, 0x71, 0xb1, 0x04, 0x64, 0xe6, 0xa5, 0x83, 0xe9, 0xfc, 0xbc,
-	0x74, 0x25, 0x0e, 0x2e, 0xb6, 0xe0, 0xcc, 0xf4, 0x3c, 0xcf, 0x3c, 0x25, 0x37, 0x2e, 0x3e, 0x08,
-	0x2b, 0x28, 0xb5, 0xb8, 0x20, 0x3f, 0xaf, 0x38, 0x15, 0xc3, 0x22, 0x15, 0x2e, 0xd6, 0x44, 0x90,
-	0x71, 0x50, 0x5b, 0xf8, 0xe0, 0xb6, 0x80, 0xdd, 0x15, 0x04, 0x91, 0x54, 0x52, 0xe1, 0x62, 0x83,
-	0xd8, 0x2a, 0xc4, 0xc3, 0xc5, 0x18, 0x01, 0xd6, 0xce, 0x18, 0xc4, 0x18, 0x01, 0xe2, 0x45, 0x82,
-	0x75, 0x32, 0x06, 0x31, 0x46, 0x3a, 0x09, 0x9c, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3,
-	0x83, 0x47, 0x72, 0x8c, 0x33, 0x1e, 0xcb, 0x31, 0x24, 0xb1, 0x81, 0xfd, 0x6b, 0x0c, 0x08, 0x00,
-	0x00, 0xff, 0xff, 0x78, 0x73, 0xb4, 0x49, 0x00, 0x01, 0x00, 0x00,
+	0xb4, 0x04, 0xc1, 0x15, 0x28, 0x79, 0x70, 0x71, 0x82, 0x4d, 0xf1, 0xcd, 0x2f, 0x4b, 0xa5, 0xcc,
+	0x24, 0x2b, 0x2e, 0x3e, 0xb8, 0x49, 0xc5, 0x01, 0xa5, 0xc5, 0x19, 0x42, 0x1a, 0x5c, 0xac, 0xb9,
+	0x20, 0x8e, 0x04, 0xa3, 0x02, 0xb3, 0x06, 0xb7, 0x91, 0x10, 0x5c, 0x2f, 0x5c, 0x5d, 0x10, 0x44,
+	0x81, 0x92, 0x15, 0x17, 0x27, 0x88, 0x1b, 0x5c, 0x92, 0x99, 0x9c, 0x2d, 0xa4, 0xcb, 0xc5, 0x99,
+	0x92, 0x59, 0x94, 0x9a, 0x0c, 0xb6, 0x96, 0x11, 0xbb, 0xb5, 0x08, 0x15, 0x4a, 0x6c, 0x5c, 0x2c,
+	0x01, 0x99, 0x79, 0xe9, 0x60, 0x3a, 0x3f, 0x2f, 0x5d, 0x89, 0x83, 0x8b, 0x2d, 0x38, 0x33, 0x3d,
+	0xcf, 0x33, 0x4f, 0xc9, 0x8d, 0x8b, 0x0f, 0xc2, 0x0a, 0x4a, 0x2d, 0x2e, 0xc8, 0xcf, 0x2b, 0xc6,
+	0xf4, 0xa0, 0x0a, 0x17, 0x6b, 0x22, 0xc8, 0x3c, 0xa8, 0xef, 0xf8, 0x50, 0x5d, 0x18, 0x04, 0x91,
+	0x54, 0x52, 0xe1, 0x62, 0x83, 0x58, 0x2b, 0xc4, 0xc3, 0xc5, 0x18, 0x01, 0xd6, 0xce, 0x18, 0xc4,
+	0x18, 0x01, 0xe2, 0x45, 0x82, 0x75, 0x32, 0x06, 0x31, 0x46, 0x3a, 0x09, 0x9c, 0x78, 0x24, 0xc7,
+	0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x33, 0x1e, 0xcb, 0x31, 0x24, 0xb1, 0x81,
+	0x63, 0xcc, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x75, 0xb6, 0x76, 0xf2, 0xc2, 0x01, 0x00, 0x00,
 }
 
 func (m *Actor) Marshal() (dAtA []byte, err error) {
@@ -373,6 +529,130 @@ func (m *Actor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintMessage(dAtA, i, uint64(m.Id))
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ActorMove) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ActorMove) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActorMove) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Position != nil {
+		{
+			size, err := m.Position.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessage(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Id != 0 {
+		i = encodeVarintMessage(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ActorMovesPush) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ActorMovesPush) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActorMovesPush) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Moves) > 0 {
+		for iNdEx := len(m.Moves) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Moves[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintMessage(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MoveStick) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MoveStick) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MoveStick) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Direction != nil {
+		{
+			size, err := m.Direction.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessage(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -571,6 +851,59 @@ func (m *Actor) Size() (n int) {
 	return n
 }
 
+func (m *ActorMove) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovMessage(uint64(m.Id))
+	}
+	if m.Position != nil {
+		l = m.Position.Size()
+		n += 1 + l + sovMessage(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ActorMovesPush) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Moves) > 0 {
+		for _, e := range m.Moves {
+			l = e.Size()
+			n += 1 + l + sovMessage(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MoveStick) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Direction != nil {
+		l = m.Direction.Size()
+		n += 1 + l + sovMessage(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
 func (m *Ping) Size() (n int) {
 	if m == nil {
 		return 0
@@ -731,6 +1064,293 @@ func (m *Actor) Unmarshal(dAtA []byte) error {
 				m.Position = &Vector{}
 			}
 			if err := m.Position.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ActorMove) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ActorMove: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ActorMove: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Position == nil {
+				m.Position = &Vector{}
+			}
+			if err := m.Position.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ActorMovesPush) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ActorMovesPush: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ActorMovesPush: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Moves", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Moves = append(m.Moves, &ActorMove{})
+			if err := m.Moves[len(m.Moves)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MoveStick) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MoveStick: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MoveStick: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Direction", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Direction == nil {
+				m.Direction = &Vector{}
+			}
+			if err := m.Direction.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

@@ -3,6 +3,7 @@ package server
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -16,6 +17,7 @@ type Server struct {
 	gin      *gin.Engine
 	upgrader websocket.Upgrader
 	world    *game.World
+	users    map[int64]*User
 }
 
 // NewServer creates new server.
@@ -23,8 +25,18 @@ func NewServer() *Server {
 	s := &Server{
 		gin:      gin.Default(),
 		upgrader: websocket.Upgrader{},
-		world:    game.NewWorld(),
 	}
+	s.users = make(map[int64]*User)
+	s.world = game.NewWorld(func(m message.Message) error {
+		for _, user := range s.users {
+			err := user.Write(m)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 
 	s.gin.GET(
 		"/ws",
@@ -41,6 +53,28 @@ func NewServer() *Server {
 
 // Run runs server.
 func (s *Server) Run() error {
+	quit := make(chan bool)
+	defer func() {
+		quit <- true
+	}()
+
+	go func() {
+		delta := time.Second / 10
+		ticker := time.NewTicker(delta)
+
+		for _ = range ticker.C {
+			select {
+			case <-quit:
+				return
+			default:
+				err := s.world.Tick(delta.Seconds())
+				if err != nil {
+					log.Println(err)
+				}
+			}
+		}
+	}()
+
 	return s.gin.Run()
 }
 
@@ -52,9 +86,20 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	user := NewUser()
+	conn, err := shared.NewConn(websocketConn)
+	if err != nil {
+		return err
+	}
 
-	handlers := shared.HandlerFuncs{
+	user := NewUser(conn)
+
+	s.users[user.ID()] = user
+	defer delete(s.users, user.ID())
+
+	err = conn.SetHandlers(shared.HandlerFuncs{
+		message.MoveStickID: func(conn *shared.Conn, m *message.MoveStick) error {
+			return MoveStickHandler(conn, m, user)
+		},
 		message.PingID: func(conn *shared.Conn, m *message.Ping) error {
 			log.Println("Ping")
 			pong := &message.Pong{}
@@ -63,9 +108,7 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 		message.SignInID: func(conn *shared.Conn, m *message.SignIn) error {
 			return SignInHandler(conn, m, user, s.world)
 		},
-	}
-
-	conn, err := shared.NewConn(websocketConn, handlers)
+	})
 	if err != nil {
 		return err
 	}
@@ -75,24 +118,6 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 	for {
 		conn.Consume()
 	}
-
-	//defer conn.Close()
-	//
-	//for {
-	//	_, message, err := conn.ReadMessage()
-	//	if err != nil {
-	//		log.Println(err)
-	//		break
-	//	}
-	//
-	//	log.Println(string(message))
-	//
-	//	err = conn.WriteMessage(websocket.BinaryMessage, message)
-	//	if err != nil {
-	//		log.Println(err)
-	//		break
-	//	}
-	//}
 
 	return nil
 }

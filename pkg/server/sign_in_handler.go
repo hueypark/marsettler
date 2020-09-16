@@ -10,7 +10,7 @@ import (
 func SignInHandler(conn *shared.Conn, m *message.SignIn, user *User, world *game.World) error {
 	response := &message.SignInResponse{}
 
-	actor := world.NewActor()
+	actor := world.NewActor(user.ID())
 	user.SetActor(actor)
 
 	response.Id = actor.ID()

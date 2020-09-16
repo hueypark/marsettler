@@ -15,7 +15,7 @@ import (
 type Conn struct {
 	closeChan chan bool
 	conn      *websocket.Conn
-	handler   *Handler
+	handlers  *Handler
 	messages  []rawMessage
 	mux       sync.Mutex
 }
@@ -26,18 +26,11 @@ type rawMessage struct {
 }
 
 // NewConn creates new connection.
-func NewConn(conn *websocket.Conn, handlerFuncs HandlerFuncs) (*Conn, error) {
+func NewConn(conn *websocket.Conn) (*Conn, error) {
 	c := &Conn{
 		conn:      conn,
 		closeChan: make(chan bool),
 	}
-
-	handler, err := NewHandler(handlerFuncs)
-	if err != nil {
-		return nil, err
-	}
-
-	c.handler = handler
 
 	return c, nil
 }
@@ -54,7 +47,7 @@ func (c *Conn) Consume() {
 	defer c.mux.Unlock()
 
 	for _, m := range c.messages {
-		err := c.handler.Handle(c, m.ID, m.Bytes)
+		err := c.handlers.Handle(c, m.ID, m.Bytes)
 		if err != nil {
 			log.Println(fmt.Sprintf("id: %v, err: %v", m.ID, err))
 		}
@@ -91,6 +84,18 @@ func (c *Conn) Run() {
 			}()
 		}
 	}
+}
+
+// SetHandlers sets handlers.
+func (c *Conn) SetHandlers(handlerFuncs HandlerFuncs) error {
+	handler, err := NewHandler(handlerFuncs)
+	if err != nil {
+		return err
+	}
+
+	c.handlers = handler
+
+	return nil
 }
 
 // Send sends message.

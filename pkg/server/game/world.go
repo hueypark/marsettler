@@ -24,9 +24,7 @@ func NewWorld(broadcast func(m message.Message) error) *World {
 
 // Actor creates new actor.
 func (w *World) NewActor(id int64) *Actor {
-	a := &Actor{
-		id: id,
-	}
+	a := NewActor(id)
 
 	w.actors[a.ID()] = a
 

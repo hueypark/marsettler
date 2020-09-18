@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/hueypark/marsettler/pkg/game"
 	"github.com/hueypark/marsettler/pkg/message"
+	"github.com/hueypark/marsettler/pkg/server/game"
 	"github.com/hueypark/marsettler/pkg/shared"
 )
 

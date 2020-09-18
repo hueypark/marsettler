@@ -1,9 +1,9 @@
 package server
 
 import (
-	"github.com/hueypark/marsettler/pkg/game"
 	"github.com/hueypark/marsettler/pkg/global"
 	"github.com/hueypark/marsettler/pkg/message"
+	"github.com/hueypark/marsettler/pkg/server/game"
 	"github.com/hueypark/marsettler/pkg/shared"
 )
 

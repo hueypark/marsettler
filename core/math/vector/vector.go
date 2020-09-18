@@ -12,87 +12,80 @@ func Zero() Vector {
 	return Vector{X: 0, Y: 0}
 }
 
-// Add returns add vector.
-func (v Vector) Add(other Vector) Vector {
-	return Vector{v.X + other.X, v.Y + other.Y}
+// Add adds vector.
+func (v *Vector) Add(other *Vector) {
+	v.X += other.X
+	v.Y += other.Y
 }
 
-func Add(lhs, rhs Vector) Vector {
+func Add(lhs, rhs *Vector) Vector {
 	return Vector{lhs.X + rhs.X, lhs.Y + rhs.Y}
 }
 
-func (v Vector) AddScaledVector(other Vector, scale float64) (result Vector) {
-	result.X = v.X + (other.X * scale)
-	result.Y = v.Y + (other.Y * scale)
-
-	return result
+func (v *Vector) AddScaledVector(other *Vector, scale float64) {
+	v.X += other.X * scale
+	v.Y += other.Y * scale
 }
 
-// Sub returns subtract vector.
-func (v Vector) Sub(other Vector) Vector {
-	return Vector{v.X - other.X, v.Y - other.Y}
+// Sub subtracts vector.
+func (v *Vector) Sub(other *Vector) {
+	v.X -= other.X
+	v.Y -= other.Y
 }
 
-func Sub(lhs, rhs Vector) Vector {
+func Sub(lhs, rhs *Vector) Vector {
 	return Vector{lhs.X - rhs.X, lhs.Y - rhs.Y}
 }
 
-func (v Vector) Invert() Vector {
+func (v *Vector) Invert() {
+	v.X = -v.X
+	v.Y = -v.Y
+}
+
+func Invert(v *Vector) Vector {
 	return Vector{-v.X, -v.Y}
 }
 
-func Invert(v Vector) Vector {
-	return Vector{-v.X, -v.Y}
-}
-
-// Normalize returns normalized vector.
-func (v Vector) Normalize() Vector {
-	dot := v.Dot(v)
+// Normalize normalizes vector.
+func (v *Vector) Normalize() {
+	dot := Dot(v, v)
 
 	if dot == 0 {
-		return Vector{0, 0}
+		return
 	}
-	return v.Mul(1 / math.Sqrt(dot))
+
+	v.Mul(1 / math.Sqrt(dot))
 }
 
-// Mul returns the scalar product of v and other.
-func (v Vector) Mul(val float64) Vector {
+// Mul makes vector scalar product of v and other.
+func (v *Vector) Mul(val float64) {
+	v.X *= val
+	v.Y *= val
+}
+
+func Mul(v *Vector, val float64) Vector {
 	return Vector{v.X * val, v.Y * val}
 }
 
-func Mul(v Vector, val float64) Vector {
-	return Vector{v.X * val, v.Y * val}
-}
-
-// Dot returns the dot product of v and other.
-func (v Vector) Dot(other Vector) float64 {
-	return (v.X * other.X) + (v.Y * other.Y)
-}
-
-func Dot(lhs, rhs Vector) float64 {
+func Dot(lhs, rhs *Vector) float64 {
 	return (lhs.X * rhs.X) + (lhs.Y * rhs.Y)
 }
 
-// Cross returns cross product.
-func (v Vector) Cross(other Vector) float64 {
-	return (v.X * other.Y) - (v.Y * other.X)
-}
-
-func Cross(lhs, rhs Vector) float64 {
+func Cross(lhs, rhs *Vector) float64 {
 	return (lhs.X * rhs.Y) - (lhs.Y * rhs.X)
 }
 
-func (v Vector) Right() Vector {
+func (v *Vector) Right() Vector {
 	return Vector{v.Y, -v.X}
 }
 
 // Size returns size.
-func (v Vector) Size() float64 {
+func (v *Vector) Size() float64 {
 	return math.Sqrt((v.X * v.X) + (v.Y * v.Y))
 }
 
 // SizeSquare returns size squared.
-func (v Vector) SizeSquare() float64 {
+func (v *Vector) SizeSquare() float64 {
 	return (v.X * v.X) + (v.Y * v.Y)
 }
 
@@ -101,12 +94,12 @@ func (v *Vector) Clear() {
 	v.Y = 0
 }
 
-func (v Vector) OnTheRight(o Vector) bool {
-	return Cross(v, o) < 0
+func OnTheRight(lhs, rhs *Vector) bool {
+	return Cross(lhs, rhs) < 0
 }
 
 // Zero returns true if its zero.
-func (v Vector) Zero() bool {
+func (v *Vector) Zero() bool {
 	if v.X == 0 && v.Y == 0 {
 		return true
 	}

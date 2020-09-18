@@ -112,22 +112,22 @@ func (c *Client) updateMoveStickRequest() error {
 		var direction vector.Vector
 
 		if ebiten.IsKeyPressed(ebiten.KeyW) {
-			direction = direction.Add(vector.Vector{X: 0, Y: 1})
+			direction.Add(&vector.Vector{X: 0, Y: 1})
 		}
 
 		if ebiten.IsKeyPressed(ebiten.KeyA) {
-			direction = direction.Add(vector.Vector{X: -1, Y: 0})
+			direction.Add(&vector.Vector{X: -1, Y: 0})
 		}
 
 		if ebiten.IsKeyPressed(ebiten.KeyS) {
-			direction = direction.Add(vector.Vector{X: 0, Y: -1})
+			direction.Add(&vector.Vector{X: 0, Y: -1})
 		}
 
 		if ebiten.IsKeyPressed(ebiten.KeyD) {
-			direction = direction.Add(vector.Vector{X: 1, Y: 0})
+			direction.Add(&vector.Vector{X: 1, Y: 0})
 		}
 
-		direction = direction.Normalize()
+		direction.Normalize()
 
 		moveStick := &message.MoveStickRequest{}
 		moveStick.Direction = &message.Vector{

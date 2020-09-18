@@ -16,17 +16,11 @@ message ActorMovesPush {
   repeated ActorMove moves = 1;
 }
 
-message MoveStick {
+message MoveStickRequest {
   Vector direction = 1;
 }
 
-message Ping {
-}
-
-message Pong {
-}
-
-message SignIn {
+message SignInRequest {
 }
 
 message SignInResponse {

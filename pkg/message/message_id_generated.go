@@ -10,12 +10,10 @@ const (
 	ActorID ID = 0
 	ActorMoveID ID = 1
 	ActorMovesPushID ID = 2
-	MoveStickID ID = 3
-	PingID ID = 4
-	PongID ID = 5
-	SignInID ID = 6
-	SignInResponseID ID = 7
-	VectorID ID = 8
+	MoveStickRequestID ID = 3
+	SignInRequestID ID = 4
+	SignInResponseID ID = 5
+	VectorID ID = 6
 )
 
 // Message represents message.
@@ -27,9 +25,7 @@ type Message interface {
 func (m *Actor) ID() ID { return ActorID }
 func (m *ActorMove) ID() ID { return ActorMoveID }
 func (m *ActorMovesPush) ID() ID { return ActorMovesPushID }
-func (m *MoveStick) ID() ID { return MoveStickID }
-func (m *Ping) ID() ID { return PingID }
-func (m *Pong) ID() ID { return PongID }
-func (m *SignIn) ID() ID { return SignInID }
+func (m *MoveStickRequest) ID() ID { return MoveStickRequestID }
+func (m *SignInRequest) ID() ID { return SignInRequestID }
 func (m *SignInResponse) ID() ID { return SignInResponseID }
 func (m *Vector) ID() ID { return VectorID }

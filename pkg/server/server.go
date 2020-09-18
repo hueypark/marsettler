@@ -97,15 +97,10 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 	defer delete(s.users, user.ID())
 
 	err = conn.SetHandlers(shared.HandlerFuncs{
-		message.MoveStickID: func(conn *shared.Conn, m *message.MoveStick) error {
+		message.MoveStickRequestID: func(conn *shared.Conn, m *message.MoveStickRequest) error {
 			return MoveStickHandler(conn, m, user)
 		},
-		message.PingID: func(conn *shared.Conn, m *message.Ping) error {
-			log.Println("Ping")
-			pong := &message.Pong{}
-			return conn.Write(pong)
-		},
-		message.SignInID: func(conn *shared.Conn, m *message.SignIn) error {
+		message.SignInRequestID: func(conn *shared.Conn, m *message.SignInRequest) error {
 			return SignInHandler(conn, m, user, s.world)
 		},
 	})

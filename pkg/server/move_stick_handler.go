@@ -11,7 +11,7 @@ import (
 )
 
 // MoveStickHandler handles message.ActorMove.
-func MoveStickHandler(conn *shared.Conn, m *message.MoveStick, user *User) error {
+func MoveStickHandler(conn *shared.Conn, m *message.MoveStickRequest, user *User) error {
 	actor := user.Actor()
 	if actor == nil {
 		log.Println(fmt.Sprintf("actor is nil. [user: %v]", user.ID()))

@@ -1,7 +1,6 @@
 package client
 
 import (
-	"log"
 	"net/url"
 
 	"github.com/gorilla/websocket"
@@ -34,10 +33,6 @@ func NewClient() (*Client, error) {
 
 	err = conn.SetHandlers(shared.HandlerFuncs{
 		message.ActorMovesPushID: ActorMovesPushHandler,
-		message.PongID: func(conn *shared.Conn, m *message.Pong) error {
-			log.Println("Pong")
-			return nil
-		},
 		message.SignInResponseID: SignInResponseHandler,
 	})
 	if err != nil {
@@ -77,7 +72,7 @@ func (c *Client) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHei
 // Draw implements ebiten.Game.Update.
 func (c *Client) Update(screen *ebiten.Image) error {
 	if inpututil.IsKeyJustReleased(ebiten.KeyEnter) {
-		signIn := &message.SignIn{}
+		signIn := &message.SignInRequest{}
 		err := c.conn.Write(signIn)
 		if err != nil {
 			return err
@@ -134,7 +129,7 @@ func (c *Client) updateMoveStickRequest() error {
 
 		direction = direction.Normalize()
 
-		moveStick := &message.MoveStick{}
+		moveStick := &message.MoveStickRequest{}
 		moveStick.Direction = &message.Vector{
 			X: direction.X,
 			Y: direction.Y,

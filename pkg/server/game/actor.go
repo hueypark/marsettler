@@ -31,7 +31,7 @@ func (a *Actor) MoveStick(direction vector.Vector) {
 // Tick updates actor periodically.
 func (a *Actor) Tick(world *World, delta float64) error {
 	if !a.moveStickDirection.Zero() {
-		a.Position().AddScaledVector(a.moveStickDirection, delta)
+		a.Position().AddScaledVector(a.moveStickDirection, delta*a.Speed())
 
 		world.SetActorMove(&message.ActorMove{Id: a.ID(), Position: &message.Vector{X: a.Position().X, Y: a.Position().Y}})
 	}

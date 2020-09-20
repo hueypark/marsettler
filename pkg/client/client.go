@@ -5,16 +5,18 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/pkg/client/game"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/shared"
 )
 
 // Client is the marsettler client.
 type Client struct {
-	conn *shared.Conn
+	conn      *shared.Conn
+	world     *game.World
+	tickDelta float64
 }
 
 // NewClient creates new client.
@@ -31,15 +33,21 @@ func NewClient() (*Client, error) {
 		return nil, err
 	}
 
+	c.conn = conn
+	c.world = game.NewWorld()
+	c.tickDelta = 1.0 / ebiten.DefaultTPS
+
 	err = conn.SetHandlers(shared.HandlerFuncs{
-		message.ActorMovesPushID: ActorMovesPushHandler,
-		message.SignInResponseID: SignInResponseHandler,
+		message.ActorMovesPushID: func(conn *shared.Conn, m *message.ActorMovesPush) error {
+			return ActorMovesPushHandler(conn, m, c.world)
+		},
+		message.SignInResponseID: func(conn *shared.Conn, m *message.SignInResponse) error {
+			return SignInResponseHandler(conn, m, c.world)
+		},
 	})
 	if err != nil {
 		return nil, err
 	}
-
-	c.conn = conn
 
 	return c, nil
 }
@@ -61,16 +69,21 @@ func (c *Client) Run() error {
 
 // Draw implements ebiten.Game.Draw.
 func (c *Client) Draw(screen *ebiten.Image) {
-	_ = ebitenutil.DebugPrint(screen, "Hello, World!")
+	c.world.Draw(screen)
 }
 
-// Draw implements ebiten.Game.Layout.
+// Layout implements ebiten.Game.Layout.
 func (c *Client) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return 320, 240
 }
 
-// Draw implements ebiten.Game.Update.
+// Update implements ebiten.Game.Update.
 func (c *Client) Update(screen *ebiten.Image) error {
+	err := c.world.Tick(c.tickDelta)
+	if err != nil {
+		return err
+	}
+
 	if inpututil.IsKeyJustReleased(ebiten.KeyEnter) {
 		signIn := &message.SignInRequest{}
 		err := c.conn.Write(signIn)
@@ -79,7 +92,7 @@ func (c *Client) Update(screen *ebiten.Image) error {
 		}
 	}
 
-	err := c.updateMoveStickRequest()
+	err = c.updateMoveStickRequest()
 	if err != nil {
 		return err
 	}

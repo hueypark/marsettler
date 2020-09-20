@@ -22,7 +22,7 @@ func NewWorld(broadcast func(m message.Message) error) *World {
 	return w
 }
 
-// Actor creates new actor.
+// NewActor creates new actor.
 func (w *World) NewActor(id int64) *Actor {
 	a := NewActor(id)
 

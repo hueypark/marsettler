@@ -1,16 +1,15 @@
 package client
 
 import (
-	"fmt"
-	"log"
-
+	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/pkg/client/game"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/shared"
 )
 
 // SignInResponseHandler handles message.SignInResponse.
-func SignInResponseHandler(conn *shared.Conn, m *message.SignInResponse) error {
-	log.Println(fmt.Sprintf("I am %v and I'm in (%v, %v)", m.Id, m.Actor.Position.X, m.Actor.Position.Y))
+func SignInResponseHandler(conn *shared.Conn, m *message.SignInResponse, world *game.World) error {
+	_ = world.NewActor(m.Actor.Id, vector.Vector{X: m.Actor.Position.X, Y: m.Actor.Position.Y})
 
 	return nil
 }

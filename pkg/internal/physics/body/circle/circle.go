@@ -1,8 +1,6 @@
 package circle
 
-import (
-	"github.com/hueypark/marsettler/core/physics/body"
-)
+import "github.com/hueypark/marsettler/pkg/internal/physics/body"
 
 type Circle struct {
 	Radius float64

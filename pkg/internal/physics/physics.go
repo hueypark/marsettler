@@ -3,8 +3,8 @@ package physics
 import (
 	"sync"
 
-	"github.com/hueypark/marsettler/core/physics/body"
 	"github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/physics/body"
 )
 
 type World struct {

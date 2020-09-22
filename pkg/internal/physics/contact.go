@@ -1,8 +1,8 @@
 package physics
 
 import (
-	"github.com/hueypark/marsettler/core/physics/body"
 	"github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/physics/body"
 )
 
 const RESTITUTION = 0.5

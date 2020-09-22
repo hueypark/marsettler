@@ -26,15 +26,15 @@ func (r *Rotator) Degree() float64 {
 	return r.radian / math.Pi * 180.0
 }
 
-func (r *Rotator) Dir() math2.Vector {
-	return math2.Vector{X: math.Cos(r.radian), Y: math.Sin(r.radian)}
+func (r *Rotator) Dir() Vector {
+	return Vector{X: math.Cos(r.radian), Y: math.Sin(r.radian)}
 }
 
 func (r *Rotator) Radian() float64 {
 	return r.radian
 }
 
-func (r Rotator) RotateVector(v math2.Vector) math2.Vector {
+func (r Rotator) RotateVector(v Vector) Vector {
 	return r.RotationMatrix().TransformVector(v)
 }
 

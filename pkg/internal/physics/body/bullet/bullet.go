@@ -1,6 +1,6 @@
 package bullet
 
-import "github.com/hueypark/marsettler/core/physics/body"
+import "github.com/hueypark/marsettler/pkg/internal/physics/body"
 
 type Bullet struct {
 }

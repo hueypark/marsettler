@@ -3,11 +3,11 @@ package physics
 import (
 	"math"
 
-	"github.com/hueypark/marsettler/core/physics/body"
-	"github.com/hueypark/marsettler/core/physics/body/circle"
-	"github.com/hueypark/marsettler/core/physics/body/convex"
-	"github.com/hueypark/marsettler/core/physics/closest_point"
 	math2 "github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/physics/body"
+	"github.com/hueypark/marsettler/pkg/internal/physics/body/circle"
+	"github.com/hueypark/marsettler/pkg/internal/physics/body/convex"
+	"github.com/hueypark/marsettler/pkg/internal/physics/closest_point"
 )
 
 func (c *Contact) DetectCollision() {

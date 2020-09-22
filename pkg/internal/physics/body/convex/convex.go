@@ -3,8 +3,8 @@ package convex
 import (
 	"math"
 
-	"github.com/hueypark/marsettler/core/physics/body"
 	math2 "github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/physics/body"
 )
 
 type Convex struct {

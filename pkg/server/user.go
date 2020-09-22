@@ -2,20 +2,20 @@ package server
 
 import (
 	"github.com/hueypark/marsettler/pkg/global"
+	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/server/game"
-	"github.com/hueypark/marsettler/pkg/shared"
 )
 
 // User represents user.
 type User struct {
 	id    int64
-	conn  *shared.Conn
+	conn  *net.Conn
 	actor *game.Actor
 }
 
 // NewUser creates new user.
-func NewUser(conn *shared.Conn) *User {
+func NewUser(conn *net.Conn) *User {
 	u := &User{
 		id:   global.IdGenerator.Generate().Int64(),
 		conn: conn,

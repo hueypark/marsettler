@@ -2,8 +2,8 @@ package game
 
 import (
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/pkg/internal/game"
 	"github.com/hueypark/marsettler/pkg/message"
-	"github.com/hueypark/marsettler/pkg/shared/game"
 )
 
 // Actor is basic object in world.

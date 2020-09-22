@@ -1,15 +1,13 @@
 package server
 
 import (
+	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/server/game"
-	"github.com/hueypark/marsettler/pkg/shared"
 )
 
 // SignInHandler handles message.SignIn.
-func SignInHandler(
-	conn *shared.Conn, m *message.SignInRequest, user *User, world *game.World,
-) error {
+func SignInHandler(conn *net.Conn, m *message.SignInRequest, user *User, world *game.World) error {
 	response := &message.SignInResponse{}
 
 	actor := world.NewActor(user.ID())

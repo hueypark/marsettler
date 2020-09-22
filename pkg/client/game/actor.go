@@ -4,7 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hueypark/marsettler/core/math/vector"
-	"github.com/hueypark/marsettler/pkg/shared/game"
+	"github.com/hueypark/marsettler/pkg/internal/game"
 	"golang.org/x/image/colornames"
 )
 

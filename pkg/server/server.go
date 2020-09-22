@@ -7,9 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/server/game"
-	"github.com/hueypark/marsettler/pkg/shared"
 )
 
 // Server is the marsettler server.
@@ -86,7 +86,7 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	conn, err := shared.NewConn(websocketConn)
+	conn, err := net.NewConn(websocketConn)
 	if err != nil {
 		return err
 	}
@@ -96,11 +96,11 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 	s.users[user.ID()] = user
 	defer delete(s.users, user.ID())
 
-	err = conn.SetHandlers(shared.HandlerFuncs{
-		message.MoveStickRequestID: func(conn *shared.Conn, m *message.MoveStickRequest) error {
+	err = conn.SetHandlers(net.HandlerFuncs{
+		message.MoveStickRequestID: func(conn *net.Conn, m *message.MoveStickRequest) error {
 			return MoveStickHandler(conn, m, user)
 		},
-		message.SignInRequestID: func(conn *shared.Conn, m *message.SignInRequest) error {
+		message.SignInRequestID: func(conn *net.Conn, m *message.SignInRequest) error {
 			return SignInHandler(conn, m, user, s.world)
 		},
 	})

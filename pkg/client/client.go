@@ -8,13 +8,13 @@ import (
 	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/pkg/client/game"
+	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
-	"github.com/hueypark/marsettler/pkg/shared"
 )
 
 // Client is the marsettler client.
 type Client struct {
-	conn      *shared.Conn
+	conn      *net.Conn
 	world     *game.World
 	tickDelta float64
 }
@@ -28,7 +28,7 @@ func NewClient() (*Client, error) {
 		return nil, err
 	}
 
-	conn, err := shared.NewConn(websocketConn)
+	conn, err := net.NewConn(websocketConn)
 	if err != nil {
 		return nil, err
 	}
@@ -37,11 +37,11 @@ func NewClient() (*Client, error) {
 	c.world = game.NewWorld()
 	c.tickDelta = 1.0 / ebiten.DefaultTPS
 
-	err = conn.SetHandlers(shared.HandlerFuncs{
-		message.ActorMovesPushID: func(conn *shared.Conn, m *message.ActorMovesPush) error {
+	err = conn.SetHandlers(net.HandlerFuncs{
+		message.ActorMovesPushID: func(conn *net.Conn, m *message.ActorMovesPush) error {
 			return ActorMovesPushHandler(conn, m, c.world)
 		},
-		message.SignInResponseID: func(conn *shared.Conn, m *message.SignInResponse) error {
+		message.SignInResponseID: func(conn *net.Conn, m *message.SignInResponse) error {
 			return SignInResponseHandler(conn, m, c.world)
 		},
 	})

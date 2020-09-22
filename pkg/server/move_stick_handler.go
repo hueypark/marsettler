@@ -6,12 +6,12 @@ import (
 	"log"
 
 	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
-	"github.com/hueypark/marsettler/pkg/shared"
 )
 
 // MoveStickHandler handles message.ActorMove.
-func MoveStickHandler(conn *shared.Conn, m *message.MoveStickRequest, user *User) error {
+func MoveStickHandler(conn *net.Conn, m *message.MoveStickRequest, user *User) error {
 	actor := user.Actor()
 	if actor == nil {
 		log.Println(fmt.Sprintf("actor is nil. [user: %v]", user.ID()))

@@ -1,11 +1,6 @@
-package rotator
+package math
 
-import (
-	"math"
-
-	"github.com/hueypark/marsettler/core/math/matrix"
-	"github.com/hueypark/marsettler/core/math/vector"
-)
+import "math"
 
 type Rotator struct {
 	radian float64
@@ -31,19 +26,19 @@ func (r *Rotator) Degree() float64 {
 	return r.radian / math.Pi * 180.0
 }
 
-func (r *Rotator) Dir() vector.Vector {
-	return vector.Vector{X: math.Cos(r.radian), Y: math.Sin(r.radian)}
+func (r *Rotator) Dir() math2.Vector {
+	return math2.Vector{X: math.Cos(r.radian), Y: math.Sin(r.radian)}
 }
 
 func (r *Rotator) Radian() float64 {
 	return r.radian
 }
 
-func (r Rotator) RotateVector(v vector.Vector) vector.Vector {
+func (r Rotator) RotateVector(v math2.Vector) math2.Vector {
 	return r.RotationMatrix().TransformVector(v)
 }
 
-func (r Rotator) RotationMatrix() (m matrix.Matrix) {
+func (r Rotator) RotationMatrix() (m Matrix) {
 	c := math.Cos(r.radian)
 	s := math.Sin(r.radian)
 

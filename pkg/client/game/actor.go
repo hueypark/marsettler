@@ -3,22 +3,22 @@ package game
 import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
-	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/pkg/internal/game"
+	"github.com/hueypark/marsettler/pkg/internal/math"
 	"golang.org/x/image/colornames"
 )
 
 // Actor is basic object in world.
 type Actor struct {
 	*game.Actor
-	clientPosition *vector.Vector
+	clientPosition *math.Vector
 }
 
 // NewActor Creates new actor.
 func NewActor(id int64) *Actor {
 	a := &Actor{
 		Actor:          game.NewActor(id),
-		clientPosition: &vector.Vector{},
+		clientPosition: &math.Vector{},
 	}
 
 	return a
@@ -30,7 +30,7 @@ func (a *Actor) Draw(screen *ebiten.Image) {
 }
 
 // Position is actor's position.
-func (a *Actor) Position() *vector.Vector {
+func (a *Actor) Position() *math.Vector {
 	return a.clientPosition
 }
 

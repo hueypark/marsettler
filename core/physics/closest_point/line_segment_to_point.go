@@ -1,16 +1,16 @@
 package closest_point
 
-import "github.com/hueypark/marsettler/core/math/vector"
+import "github.com/hueypark/marsettler/pkg/internal/math"
 
-func LineSegmentToPoint(point, lineA, lineB vector.Vector) vector.Vector {
-	ab := vector.Sub(lineB, lineA)
+func LineSegmentToPoint(point, lineA, lineB math.Vector) math.Vector {
+	ab := math.Sub(lineB, lineA)
 
-	t := vector.Dot(vector.Sub(point, lineA), ab) / vector.Dot(ab, ab)
+	t := math.Dot(math.Sub(point, lineA), ab) / math.Dot(ab, ab)
 	if t < 0.0 {
 		t = 0.0
 	} else if t > 1.0 {
 		t = 1
 	}
 
-	return vector.Add(lineA, vector.Mul(ab, t))
+	return math.Add(lineA, math.Mul(ab, t))
 }

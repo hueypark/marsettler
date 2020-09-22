@@ -1,18 +1,18 @@
 package test
 
-import "github.com/hueypark/marsettler/core/math/vector"
+import "github.com/hueypark/marsettler/pkg/internal/math"
 
 // Triangles a, b, and c must be ccw
-func PointInTriangle(p, a, b, c vector.Vector) bool {
-	if vector.Sub(p, a).OnTheRight(vector.Sub(b, a)) == false {
+func PointInTriangle(p, a, b, c math.Vector) bool {
+	if math.Sub(p, a).OnTheRight(math.Sub(b, a)) == false {
 		return false
 	}
 
-	if vector.Sub(p, b).OnTheRight(vector.Sub(c, b)) == false {
+	if math.Sub(p, b).OnTheRight(math.Sub(c, b)) == false {
 		return false
 	}
 
-	if vector.Sub(p, c).OnTheRight(vector.Sub(a, c)) == false {
+	if math.Sub(p, c).OnTheRight(math.Sub(a, c)) == false {
 		return false
 	}
 

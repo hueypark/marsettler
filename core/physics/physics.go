@@ -3,8 +3,8 @@ package physics
 import (
 	"sync"
 
-	"github.com/hueypark/marsettler/core/math/vector"
 	"github.com/hueypark/marsettler/core/physics/body"
+	"github.com/hueypark/marsettler/pkg/internal/math"
 )
 
 type World struct {
@@ -45,7 +45,7 @@ func (w *World) ReservedDelete(id int64) {
 	w.reservedDeleteBodyIds = append(w.reservedDeleteBodyIds, id)
 }
 
-func (w *World) SetBodyPosition(id int64, pos vector.Vector) {
+func (w *World) SetBodyPosition(id int64, pos math.Vector) {
 	w.mux.Lock()
 	defer w.mux.Unlock()
 
@@ -55,7 +55,7 @@ func (w *World) SetBodyPosition(id int64, pos vector.Vector) {
 	}
 }
 
-func (w *World) SetBodyVelocity(id int64, vel vector.Vector) {
+func (w *World) SetBodyVelocity(id int64, vel math.Vector) {
 	w.mux.Lock()
 	defer w.mux.Unlock()
 

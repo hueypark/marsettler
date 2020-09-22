@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/hueypark/marsettler/core/math/vector"
+	"github.com/hueypark/marsettler/pkg/internal/math"
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 )
@@ -22,7 +22,7 @@ func MoveStickHandler(conn *net.Conn, m *message.MoveStickRequest, user *User) e
 		return errors.New("direction is nil")
 	}
 
-	actor.MoveStick(vector.Vector{X: m.Direction.X, Y: m.Direction.Y})
+	actor.MoveStick(math.Vector{X: m.Direction.X, Y: m.Direction.Y})
 
 	return nil
 }

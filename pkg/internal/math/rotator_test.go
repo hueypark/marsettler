@@ -1,10 +1,8 @@
-package rotator
+package math
 
 import (
 	"math"
 	"testing"
-
-	"github.com/hueypark/marsettler/core/math/vector"
 )
 
 func TestRotateVector(t *testing.T) {
@@ -29,7 +27,7 @@ func BenchmarkDir(b *testing.B) {
 }
 
 func BenchmarkRotateVector(b *testing.B) {
-	v := vector.Vector{X: 0, Y: 1}
+	v := Vector{X: 0, Y: 1}
 	r := Rotator{math.Pi}
 
 	b.ResetTimer()

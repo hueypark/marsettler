@@ -73,12 +73,12 @@ func (c *Client) Draw(screen *ebiten.Image) {
 }
 
 // Layout implements ebiten.Game.Layout.
-func (c *Client) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+func (c *Client) Layout(_, _ int) (screenWidth, screenHeight int) {
 	return 320, 240
 }
 
 // Update implements ebiten.Game.Update.
-func (c *Client) Update(screen *ebiten.Image) error {
+func (c *Client) Update(_ *ebiten.Image) error {
 	err := c.world.Tick(c.tickDelta)
 	if err != nil {
 		return err

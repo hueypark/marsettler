@@ -1,6 +1,9 @@
 package server
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/server/game"
@@ -21,6 +24,8 @@ func SignInHandler(conn *net.Conn, m *message.SignInRequest, user *User, world *
 			Y: actor.Position().Y,
 		},
 	}
+
+	log.Println(fmt.Sprintf("Sign in [id: %v]", actor.ID()))
 
 	return conn.Write(response)
 }

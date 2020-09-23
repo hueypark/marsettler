@@ -1,8 +1,8 @@
 package test
 
-import "github.com/hueypark/marsettler/pkg/internal/math"
+import "github.com/hueypark/marsettler/pkg/internal/math2d"
 
-func PointToAABB(p math.Vector, box aabb) bool {
+func PointToAABB(p math2d.Vector, box aabb) bool {
 	return box.Left() <= p.X && p.X <= box.Right() &&
 		box.Bottom() <= p.Y && p.Y <= box.Top()
 }

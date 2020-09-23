@@ -1,30 +1,30 @@
 package body
 
-import "github.com/hueypark/marsettler/pkg/internal/math"
+import "github.com/hueypark/marsettler/pkg/internal/math2d"
 
 type Body struct {
 	id              int64
-	position        *math.Vector
-	rotation        math.Rotator
-	Velocity        *math.Vector
+	position        *math2d.Vector
+	rotation        math2d.Rotator
+	Velocity        *math2d.Vector
 	angularVelocity float64
 	Shape           shape
 	mass            float64
 	inverseMass     float64
 	inverseInertia  float64
-	forceSum        *math.Vector
+	forceSum        *math2d.Vector
 }
 
 type shape interface {
 	Type() Shape
 }
 
-func New(id int64, position math.Vector) *Body {
+func New(id int64, position math2d.Vector) *Body {
 	r := Body{
 		id:       id,
-		position: &math.Vector{X: position.X, Y: position.Y},
-		Velocity: &math.Vector{},
-		forceSum: &math.Vector{},
+		position: &math2d.Vector{X: position.X, Y: position.Y},
+		Velocity: &math2d.Vector{},
+		forceSum: &math2d.Vector{},
 	}
 	return &r
 }
@@ -38,23 +38,23 @@ func (r *Body) ID() int64 {
 	return r.id
 }
 
-func (r *Body) Position() *math.Vector {
-	return &math.Vector{X: r.position.X, Y: r.position.Y}
+func (r *Body) Position() *math2d.Vector {
+	return &math2d.Vector{X: r.position.X, Y: r.position.Y}
 }
 
-func (r *Body) SetPosition(position *math.Vector) {
+func (r *Body) SetPosition(position *math2d.Vector) {
 	r.position.Set(position)
 }
 
-func (r *Body) SetVelocity(velovity *math.Vector) {
+func (r *Body) SetVelocity(velovity *math2d.Vector) {
 	r.Velocity.Set(velovity)
 }
 
-func (r *Body) Rotation() math.Rotator {
+func (r *Body) Rotation() math2d.Rotator {
 	return r.rotation
 }
 
-func (r *Body) SetRotation(rotation math.Rotator) {
+func (r *Body) SetRotation(rotation math2d.Rotator) {
 	r.rotation = rotation
 }
 
@@ -69,7 +69,7 @@ func (r *Body) Tick(delta float64) {
 
 	r.position.AddScaledVector(r.Velocity, delta)
 
-	var acceleration = &math.Vector{}
+	var acceleration = &math2d.Vector{}
 	acceleration.AddScaledVector(r.forceSum, r.inverseMass)
 
 	r.Velocity.AddScaledVector(acceleration, delta)
@@ -109,11 +109,11 @@ func (r *Body) SetShape(s shape) {
 	r.Shape = s
 }
 
-func (r *Body) AddForce(force *math.Vector) {
+func (r *Body) AddForce(force *math2d.Vector) {
 	r.forceSum.Add(force)
 }
 
-func (r *Body) AddImpluse(impulse, contact *math.Vector) {
+func (r *Body) AddImpluse(impulse, contact *math2d.Vector) {
 	r.Velocity.AddScaledVector(impulse, r.inverseMass)
-	r.angularVelocity -= math.Cross(contact, impulse) * r.inverseInertia * 0.01
+	r.angularVelocity -= math2d.Cross(contact, impulse) * r.inverseInertia * 0.01
 }

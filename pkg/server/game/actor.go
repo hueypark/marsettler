@@ -2,28 +2,28 @@ package game
 
 import (
 	"github.com/hueypark/marsettler/pkg/internal/game"
-	"github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/message"
 )
 
 // Actor is basic object in world.
 type Actor struct {
 	*game.Actor
-	moveStickDirection *math.Vector
+	moveStickDirection *math2d.Vector
 }
 
 // NewActor Creates new actor.
 func NewActor(id int64) *Actor {
 	a := &Actor{
 		Actor:              game.NewActor(id),
-		moveStickDirection: &math.Vector{},
+		moveStickDirection: &math2d.Vector{},
 	}
 
 	return a
 }
 
 // MoveStick handle move stick of actor.
-func (a *Actor) MoveStick(direction math.Vector) {
+func (a *Actor) MoveStick(direction math2d.Vector) {
 	a.moveStickDirection = &direction
 	a.moveStickDirection.Normalize()
 }

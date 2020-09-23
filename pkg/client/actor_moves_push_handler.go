@@ -2,7 +2,7 @@ package client
 
 import (
 	"github.com/hueypark/marsettler/pkg/client/game"
-	"github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 )
@@ -15,7 +15,7 @@ func ActorMovesPushHandler(conn *net.Conn, m *message.ActorMovesPush, world *gam
 			continue
 		}
 
-		actor.SetPosition(&math.Vector{X: move.Position.X, Y: move.Position.Y})
+		actor.SetPosition(&math2d.Vector{X: move.Position.X, Y: move.Position.Y})
 	}
 
 	return nil

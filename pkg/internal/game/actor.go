@@ -1,11 +1,11 @@
 package game
 
-import "github.com/hueypark/marsettler/pkg/internal/math"
+import "github.com/hueypark/marsettler/pkg/internal/math2d"
 
 // Actor is basic object in world.
 type Actor struct {
 	id       int64
-	position *math.Vector
+	position *math2d.Vector
 	speed    float64
 }
 
@@ -13,7 +13,7 @@ type Actor struct {
 func NewActor(id int64) *Actor {
 	a := &Actor{
 		id:       id,
-		position: &math.Vector{},
+		position: &math2d.Vector{},
 		speed:    100,
 	}
 
@@ -26,12 +26,12 @@ func (a *Actor) ID() int64 {
 }
 
 // Position is actor's position.
-func (a *Actor) Position() *math.Vector {
+func (a *Actor) Position() *math2d.Vector {
 	return a.position
 }
 
 // SetPosition sets position.
-func (a *Actor) SetPosition(position *math.Vector) {
+func (a *Actor) SetPosition(position *math2d.Vector) {
 	a.position = position
 }
 

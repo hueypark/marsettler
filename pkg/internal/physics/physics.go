@@ -3,7 +3,7 @@ package physics
 import (
 	"sync"
 
-	"github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/internal/physics/body"
 )
 
@@ -45,7 +45,7 @@ func (w *World) ReservedDelete(id int64) {
 	w.reservedDeleteBodyIds = append(w.reservedDeleteBodyIds, id)
 }
 
-func (w *World) SetBodyPosition(id int64, pos *math.Vector) {
+func (w *World) SetBodyPosition(id int64, pos *math2d.Vector) {
 	w.mux.Lock()
 	defer w.mux.Unlock()
 
@@ -55,7 +55,7 @@ func (w *World) SetBodyPosition(id int64, pos *math.Vector) {
 	}
 }
 
-func (w *World) SetBodyVelocity(id int64, vel *math.Vector) {
+func (w *World) SetBodyVelocity(id int64, vel *math2d.Vector) {
 	w.mux.Lock()
 	defer w.mux.Unlock()
 

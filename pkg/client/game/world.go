@@ -2,7 +2,7 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/math2d"
 )
 
 // World represents game world.
@@ -19,7 +19,7 @@ func NewWorld() *World {
 }
 
 // NewActor creates new actor.
-func (w *World) NewActor(id int64, position math.Vector) *Actor {
+func (w *World) NewActor(id int64, position math2d.Vector) *Actor {
 	a := NewActor(id)
 
 	w.actors[a.ID()] = a

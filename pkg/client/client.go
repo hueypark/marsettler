@@ -7,7 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/pkg/client/game"
-	"github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 )
@@ -122,22 +122,22 @@ func (c *Client) updateMoveStickRequest() error {
 		inpututil.IsKeyJustReleased(ebiten.KeyS) ||
 		inpututil.IsKeyJustReleased(ebiten.KeyD) {
 
-		var direction math.Vector
+		var direction math2d.Vector
 
 		if ebiten.IsKeyPressed(ebiten.KeyW) {
-			direction.Add(&math.Vector{X: 0, Y: 1})
+			direction.Add(&math2d.Vector{X: 0, Y: 1})
 		}
 
 		if ebiten.IsKeyPressed(ebiten.KeyA) {
-			direction.Add(&math.Vector{X: -1, Y: 0})
+			direction.Add(&math2d.Vector{X: -1, Y: 0})
 		}
 
 		if ebiten.IsKeyPressed(ebiten.KeyS) {
-			direction.Add(&math.Vector{X: 0, Y: -1})
+			direction.Add(&math2d.Vector{X: 0, Y: -1})
 		}
 
 		if ebiten.IsKeyPressed(ebiten.KeyD) {
-			direction.Add(&math.Vector{X: 1, Y: 0})
+			direction.Add(&math2d.Vector{X: 1, Y: 0})
 		}
 
 		direction.Normalize()

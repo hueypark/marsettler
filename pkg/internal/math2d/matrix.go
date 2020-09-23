@@ -1,4 +1,4 @@
-package math
+package math2d
 
 type Matrix struct {
 	M [2][2]float64

@@ -3,15 +3,15 @@ package convex
 import (
 	"testing"
 
-	"github.com/hueypark/marsettler/pkg/internal/math"
+	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewConvex(t *testing.T) {
 	a := assert.New(t)
 
-	vertices := []math.Vector{{0, 0}, {100, 0}, {100, -10}, {150, 100}, {100, 200}, {0, 210}, {-50, 100}, {30, 30}, {75, 30}}
-	hull := []math.Vector{{-50, 100}, {0, 0}, {100, -10}, {150, 100}, {100, 200}, {0, 210}}
+	vertices := []math2d.Vector{{0, 0}, {100, 0}, {100, -10}, {150, 100}, {100, 200}, {0, 210}, {-50, 100}, {30, 30}, {75, 30}}
+	hull := []math2d.Vector{{-50, 100}, {0, 0}, {100, -10}, {150, 100}, {100, 200}, {0, 210}}
 
 	c := New(vertices)
 
@@ -21,7 +21,7 @@ func TestNewConvex(t *testing.T) {
 func TestEdge(t *testing.T) {
 	a := assert.New(t)
 
-	vertices := []math.Vector{
+	vertices := []math2d.Vector{
 		{0, 0},
 		{100, 0},
 		{0, 100},
@@ -37,14 +37,14 @@ func TestEdge(t *testing.T) {
 		}
 
 		nextEdge := edges[nextIndex]
-		a.True(math.Sub(nextEdge.End, nextEdge.Start).OnTheRight(math.Sub(edge.End, edge.Start)))
+		a.True(math2d.Sub(nextEdge.End, nextEdge.Start).OnTheRight(math2d.Sub(edge.End, edge.Start)))
 	}
 }
 
 func TestInHull(t *testing.T) {
 	a := assert.New(t)
 
-	vertices := []math.Vector{
+	vertices := []math2d.Vector{
 		{0, 0},
 		{100, 0},
 		{0, 100},
@@ -52,19 +52,19 @@ func TestInHull(t *testing.T) {
 
 	c := New(vertices)
 
-	a.True(c.InHull(math.Zero(), math.ZERO(), math.Vector{50, 50}))
-	a.False(c.InHull(math.Zero(), math.ZERO(), math.Vector{50, -50}))
+	a.True(c.InHull(math2d.Zero(), math2d.ZERO(), math2d.Vector{50, 50}))
+	a.False(c.InHull(math2d.Zero(), math2d.ZERO(), math2d.Vector{50, -50}))
 }
 
 func TestSupport(t *testing.T) {
 	a := assert.New(t)
 
 	c := New(
-		[]math.Vector{
+		[]math2d.Vector{
 			{0, 0},
 			{100, 0},
 			{0, 100},
 			{100, 100}})
 
-	a.Equal(c.Support(math.Vector{1, 1}, math.ZERO()), math.Vector{100, 100})
+	a.Equal(c.Support(math2d.Vector{1, 1}, math2d.ZERO()), math2d.Vector{100, 100})
 }

@@ -57,31 +57,27 @@ func (c *Conn) Consume() {
 }
 
 // Run runs connection.
-func (c *Conn) Run() {
+func (c *Conn) Run() error {
 	for {
 		select {
 		case <-c.closeChan:
-			return
+			return nil
 		default:
-			func() {
-				_, idBytes, err := c.conn.ReadMessage()
-				if err != nil {
-					log.Println(err)
-					return
-				}
+			_, idBytes, err := c.conn.ReadMessage()
+			if err != nil {
+				return err
+			}
 
-				_, bytes, err := c.conn.ReadMessage()
-				if err != nil {
-					log.Println(err)
-					return
-				}
+			_, bytes, err := c.conn.ReadMessage()
+			if err != nil {
+				return err
+			}
 
-				id := message.ID(binary.LittleEndian.Uint32(idBytes))
+			id := message.ID(binary.LittleEndian.Uint32(idBytes))
 
-				c.mux.Lock()
-				defer c.mux.Unlock()
-				c.messages = append(c.messages, rawMessage{id, bytes})
-			}()
+			c.mux.Lock()
+			c.messages = append(c.messages, rawMessage{id, bytes})
+			c.mux.Unlock()
 		}
 	}
 }

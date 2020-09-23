@@ -1,6 +1,7 @@
 package client
 
 import (
+	"log"
 	"net/url"
 
 	"github.com/gorilla/websocket"
@@ -59,7 +60,12 @@ func (c *Client) Close() {
 
 // Run runs client.
 func (c *Client) Run() error {
-	go c.conn.Run()
+	go func() {
+		err := c.conn.Run()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	ebiten.SetWindowSize(640, 480)
 	ebiten.SetWindowTitle("Marsettler")

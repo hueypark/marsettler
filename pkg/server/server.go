@@ -62,7 +62,7 @@ func (s *Server) Run() error {
 		delta := time.Second / 10
 		ticker := time.NewTicker(delta)
 
-		for _ = range ticker.C {
+		for range ticker.C {
 			select {
 			case <-quit:
 				return
@@ -108,11 +108,14 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	go conn.Run()
+	go func() {
+		err := conn.Run()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	for {
 		conn.Consume()
 	}
-
-	return nil
 }

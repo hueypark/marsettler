@@ -8,23 +8,30 @@ type Vector struct {
 	Y float64
 }
 
-func Zero() Vector {
-	return Vector{X: 0, Y: 0}
-}
-
 // Add adds vector.
 func (v *Vector) Add(other *Vector) {
 	v.X += other.X
 	v.Y += other.Y
 }
 
-func Add(lhs, rhs *Vector) Vector {
-	return Vector{lhs.X + rhs.X, lhs.Y + rhs.Y}
+func Add(lhs, rhs *Vector) *Vector {
+	return &Vector{lhs.X + rhs.X, lhs.Y + rhs.Y}
 }
 
 func (v *Vector) AddScaledVector(other *Vector, scale float64) {
 	v.X += other.X * scale
 	v.Y += other.Y * scale
+}
+
+// Clone returns clone of vector.
+func (v *Vector) Clone() *Vector {
+	return &Vector{v.X, v.Y}
+}
+
+// Set sets vector.
+func (v *Vector) Set(other *Vector) {
+	v.X = other.X
+	v.Y = other.Y
 }
 
 // Sub subtracts vector.
@@ -33,8 +40,8 @@ func (v *Vector) Sub(other *Vector) {
 	v.Y -= other.Y
 }
 
-func Sub(lhs, rhs *Vector) Vector {
-	return Vector{lhs.X - rhs.X, lhs.Y - rhs.Y}
+func Sub(lhs, rhs *Vector) *Vector {
+	return &Vector{lhs.X - rhs.X, lhs.Y - rhs.Y}
 }
 
 func (v *Vector) Invert() {
@@ -42,8 +49,8 @@ func (v *Vector) Invert() {
 	v.Y = -v.Y
 }
 
-func Invert(v *Vector) Vector {
-	return Vector{-v.X, -v.Y}
+func Invert(v *Vector) *Vector {
+	return &Vector{-v.X, -v.Y}
 }
 
 // Normalize normalizes vector.
@@ -63,8 +70,8 @@ func (v *Vector) Mul(val float64) {
 	v.Y *= val
 }
 
-func Mul(v *Vector, val float64) Vector {
-	return Vector{v.X * val, v.Y * val}
+func Mul(v *Vector, val float64) *Vector {
+	return &Vector{v.X * val, v.Y * val}
 }
 
 func Dot(lhs, rhs *Vector) float64 {
@@ -75,8 +82,8 @@ func Cross(lhs, rhs *Vector) float64 {
 	return (lhs.X * rhs.Y) - (lhs.Y * rhs.X)
 }
 
-func (v *Vector) Right() Vector {
-	return Vector{v.Y, -v.X}
+func (v *Vector) Right() *Vector {
+	return &Vector{v.Y, -v.X}
 }
 
 // Size returns size.

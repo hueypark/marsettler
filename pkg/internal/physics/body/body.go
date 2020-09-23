@@ -4,15 +4,15 @@ import "github.com/hueypark/marsettler/pkg/internal/math"
 
 type Body struct {
 	id              int64
-	position        math.Vector
+	position        *math.Vector
 	rotation        math.Rotator
-	Velocity        math.Vector
+	Velocity        *math.Vector
 	angularVelocity float64
 	Shape           shape
 	mass            float64
 	inverseMass     float64
 	inverseInertia  float64
-	forceSum        math.Vector
+	forceSum        *math.Vector
 }
 
 type shape interface {
@@ -22,7 +22,9 @@ type shape interface {
 func New(id int64, position math.Vector) *Body {
 	r := Body{
 		id:       id,
-		position: position,
+		position: &math.Vector{X: position.X, Y: position.Y},
+		Velocity: &math.Vector{},
+		forceSum: &math.Vector{},
 	}
 	return &r
 }
@@ -36,16 +38,16 @@ func (r *Body) ID() int64 {
 	return r.id
 }
 
-func (r *Body) Position() math.Vector {
-	return r.position
+func (r *Body) Position() *math.Vector {
+	return &math.Vector{X: r.position.X, Y: r.position.Y}
 }
 
-func (r *Body) SetPosition(position math.Vector) {
-	r.position = position
+func (r *Body) SetPosition(position *math.Vector) {
+	r.position.Set(position)
 }
 
-func (r *Body) SetVelocity(velovity math.Vector) {
-	r.Velocity = velovity
+func (r *Body) SetVelocity(velovity *math.Vector) {
+	r.Velocity.Set(velovity)
 }
 
 func (r *Body) Rotation() math.Rotator {
@@ -65,12 +67,12 @@ func (r *Body) Tick(delta float64) {
 		return
 	}
 
-	r.position = r.position.AddScaledVector(r.Velocity, delta)
+	r.position.AddScaledVector(r.Velocity, delta)
 
-	var acceleration = math.Zero()
-	acceleration = acceleration.AddScaledVector(r.forceSum, r.inverseMass)
+	var acceleration = &math.Vector{}
+	acceleration.AddScaledVector(r.forceSum, r.inverseMass)
 
-	r.Velocity = r.Velocity.AddScaledVector(acceleration, delta)
+	r.Velocity.AddScaledVector(acceleration, delta)
 
 	r.forceSum.Clear()
 
@@ -107,11 +109,11 @@ func (r *Body) SetShape(s shape) {
 	r.Shape = s
 }
 
-func (r *Body) AddForce(force math.Vector) {
-	r.forceSum = r.forceSum.Add(force)
+func (r *Body) AddForce(force *math.Vector) {
+	r.forceSum.Add(force)
 }
 
-func (r *Body) AddImpluse(impulse, contact math.Vector) {
-	r.Velocity = r.Velocity.AddScaledVector(impulse, r.inverseMass)
+func (r *Body) AddImpluse(impulse, contact *math.Vector) {
+	r.Velocity.AddScaledVector(impulse, r.inverseMass)
 	r.angularVelocity -= math.Cross(contact, impulse) * r.inverseInertia * 0.01
 }

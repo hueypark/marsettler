@@ -45,7 +45,7 @@ func (w *World) ReservedDelete(id int64) {
 	w.reservedDeleteBodyIds = append(w.reservedDeleteBodyIds, id)
 }
 
-func (w *World) SetBodyPosition(id int64, pos math.Vector) {
+func (w *World) SetBodyPosition(id int64, pos *math.Vector) {
 	w.mux.Lock()
 	defer w.mux.Unlock()
 
@@ -55,13 +55,13 @@ func (w *World) SetBodyPosition(id int64, pos math.Vector) {
 	}
 }
 
-func (w *World) SetBodyVelocity(id int64, vel math.Vector) {
+func (w *World) SetBodyVelocity(id int64, vel *math.Vector) {
 	w.mux.Lock()
 	defer w.mux.Unlock()
 
 	b := w.bodys[id]
 	if b != nil {
-		b.Velocity = vel
+		b.Velocity.Set(vel)
 	}
 }
 

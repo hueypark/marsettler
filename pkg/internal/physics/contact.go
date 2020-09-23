@@ -10,13 +10,16 @@ const RESTITUTION = 0.5
 type Contact struct {
 	lhs         *body.Body
 	rhs         *body.Body
-	normal      math.Vector // lhs to rhs
+	normal      *math.Vector // lhs to rhs
 	penetration float64
-	points      []math.Vector
+	points      []*math.Vector
 }
 
 func New(lhs, rhs *body.Body) *Contact {
-	return &Contact{lhs: lhs, rhs: rhs}
+	return &Contact{
+		lhs:    lhs,
+		rhs:    rhs,
+		normal: &math.Vector{}}
 }
 
 func (c *Contact) SolveCollision() {
@@ -24,12 +27,12 @@ func (c *Contact) SolveCollision() {
 	c.solvePenetration()
 }
 
-func (c *Contact) Points() []math.Vector {
+func (c *Contact) Points() []*math.Vector {
 	return c.points
 }
 
-func (c *Contact) Normal() math.Vector {
-	return c.normal
+func (c *Contact) Normal() *math.Vector {
+	return c.normal.Clone()
 }
 
 func (c *Contact) Penetration() float64 {

@@ -34,7 +34,7 @@ func (r *Rotator) Radian() float64 {
 	return r.radian
 }
 
-func (r Rotator) RotateVector(v Vector) Vector {
+func (r Rotator) RotateVector(v *Vector) *Vector {
 	return r.RotationMatrix().TransformVector(v)
 }
 

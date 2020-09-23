@@ -2,7 +2,7 @@ package closest_point
 
 import "github.com/hueypark/marsettler/pkg/internal/math"
 
-func LineSegmentToPoint(point, lineA, lineB math.Vector) math.Vector {
+func LineSegmentToPoint(point, lineA, lineB *math.Vector) *math.Vector {
 	ab := math.Sub(lineB, lineA)
 
 	t := math.Dot(math.Sub(point, lineA), ab) / math.Dot(ab, ab)

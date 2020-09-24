@@ -13,7 +13,7 @@ import (
 	"github.com/hueypark/marsettler/pkg/message"
 )
 
-// Client is the marsettler client.
+// Client is the client client.
 type Client struct {
 	conn      *net.Conn
 	world     *game.World

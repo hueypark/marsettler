@@ -12,7 +12,7 @@ import (
 	"github.com/hueypark/marsettler/pkg/server/game"
 )
 
-// Server is the marsettler server.
+// Server is the client server.
 type Server struct {
 	gin      *gin.Engine
 	upgrader websocket.Upgrader

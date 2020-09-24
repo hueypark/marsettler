@@ -42,6 +42,9 @@ func NewClient() (*Client, error) {
 		message.ActorMovesPushID: func(conn *net.Conn, m *message.ActorMovesPush) error {
 			return ActorMovesPushHandler(conn, m, c.world)
 		},
+		message.ActorsPushID: func(conn *net.Conn, m *message.ActorsPush) error {
+			return ActorsPushHandler(conn, m, c.world)
+		},
 		message.SignInResponseID: func(conn *net.Conn, m *message.SignInResponse) error {
 			return SignInResponseHandler(conn, m, c.world)
 		},

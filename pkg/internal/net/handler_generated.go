@@ -15,6 +15,7 @@ type Handler struct {
 	actorHandler func(*Conn, *message.Actor) error
 	actorMoveHandler func(*Conn, *message.ActorMove) error
 	actorMovesPushHandler func(*Conn, *message.ActorMovesPush) error
+	actorsPushHandler func(*Conn, *message.ActorsPush) error
 	moveStickRequestHandler func(*Conn, *message.MoveStickRequest) error
 	signInRequestHandler func(*Conn, *message.SignInRequest) error
 	signInResponseHandler func(*Conn, *message.SignInResponse) error
@@ -51,6 +52,13 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 			}
 
 			h.actorMovesPushHandler = v
+		case message.ActorsPushID:
+			v, ok := handler.(func(*Conn, *message.ActorsPush) error)
+			if !ok {
+				return nil, errors.New("handler does not handles ActorsPush")
+			}
+
+			h.actorsPushHandler = v
 		case message.MoveStickRequestID:
 			v, ok := handler.(func(*Conn, *message.MoveStickRequest) error)
 			if !ok {
@@ -124,6 +132,18 @@ func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 		}
 
 		return h.actorMovesPushHandler(conn, m)
+	case message.ActorsPushID:
+		m := &message.ActorsPush{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.actorsPushHandler == nil {
+			return nil
+		}
+
+		return h.actorsPushHandler(conn, m)
 	case message.MoveStickRequestID:
 		m := &message.MoveStickRequest{}
 		err := proto.Unmarshal(bytes, m)

@@ -1,6 +1,6 @@
 // This file was generated from `./pkg/cmd/generate/generate_message_handler.go`.
 
-package shared
+package net
 
 import (
 	"errors"

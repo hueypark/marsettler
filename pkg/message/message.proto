@@ -16,6 +16,10 @@ message ActorMovesPush {
   repeated ActorMove moves = 1;
 }
 
+message ActorsPush {
+  repeated Actor actors = 1;
+}
+
 message MoveStickRequest {
   Vector direction = 1;
 }

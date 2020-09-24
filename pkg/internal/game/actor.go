@@ -32,7 +32,7 @@ func (a *Actor) Position() *math2d.Vector {
 
 // SetPosition sets position.
 func (a *Actor) SetPosition(position *math2d.Vector) {
-	a.position = position
+	a.position.Set(position)
 }
 
 // Speed returns speed of actor.

@@ -25,6 +25,11 @@ func SignInHandler(conn *net.Conn, m *message.SignInRequest, user *User, world *
 		},
 	}
 
+	err := conn.Write(world.ActorsPush())
+	if err != nil {
+		return err
+	}
+
 	log.Println(fmt.Sprintf("Sign in [id: %v]", actor.ID()))
 
 	return conn.Write(response)

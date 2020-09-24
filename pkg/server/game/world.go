@@ -22,6 +22,24 @@ func NewWorld(broadcast func(m message.Message) error) *World {
 	return w
 }
 
+// ActorsPush return actors push message.
+//
+// It has all actor's data.
+func (w *World) ActorsPush() *message.ActorsPush {
+	m := &message.ActorsPush{}
+
+	for _, actor := range w.actors {
+		m.Actors = append(
+			m.Actors,
+			&message.Actor{
+				Id:       actor.ID(),
+				Position: &message.Vector{X: actor.Position().X, Y: actor.Position().Y},
+			})
+	}
+
+	return m
+}
+
 // NewActor creates new actor.
 func (w *World) NewActor(id int64) *Actor {
 	a := NewActor(id)

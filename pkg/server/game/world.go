@@ -46,6 +46,14 @@ func (w *World) NewActor(id int64) *Actor {
 
 	w.actors[a.ID()] = a
 
+	m := &message.ActorsPush{}
+	m.Actors = append(m.Actors, a.Message())
+
+	err := w.broadcast(m)
+	if err != nil {
+		log.Println(err)
+	}
+
 	return a
 }
 

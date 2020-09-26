@@ -20,7 +20,7 @@ func NewWorld() *World {
 
 // NewActor creates new actor.
 func (w *World) NewActor(id int64, position *math2d.Vector) *Actor {
-	a := NewActor(id)
+	a := NewActor(id, position)
 	a.SetPosition(position)
 
 	w.actors[a.ID()] = a

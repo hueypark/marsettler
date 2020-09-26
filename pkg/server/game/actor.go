@@ -22,6 +22,16 @@ func NewActor(id int64) *Actor {
 	return a
 }
 
+// Message returns message.Actor.
+func (a *Actor) Message() *message.Actor {
+	m := &message.Actor{
+		Id:       a.ID(),
+		Position: &message.Vector{X: a.Position().X, Y: a.Position().Y},
+	}
+
+	return m
+}
+
 // MoveStick handle move stick of actor.
 func (a *Actor) MoveStick(direction math2d.Vector) {
 	a.moveStickDirection = &direction

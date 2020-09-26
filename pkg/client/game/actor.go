@@ -15,11 +15,14 @@ type Actor struct {
 }
 
 // NewActor Creates new actor.
-func NewActor(id int64) *Actor {
+func NewActor(id int64, position *math2d.Vector) *Actor {
 	a := &Actor{
 		Actor:          game.NewActor(id),
 		clientPosition: &math2d.Vector{},
 	}
+
+	a.clientPosition.Set(position)
+	a.SetPosition(position)
 
 	return a
 }

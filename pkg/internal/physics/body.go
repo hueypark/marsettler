@@ -1,6 +1,9 @@
-package body
+package physics
 
-import "github.com/hueypark/marsettler/pkg/internal/math2d"
+import (
+	"github.com/hueypark/marsettler/pkg/internal/math2d"
+	"github.com/hueypark/marsettler/pkg/internal/physics/shape"
+)
 
 type Body struct {
 	id              int64
@@ -8,14 +11,15 @@ type Body struct {
 	rotation        math2d.Rotator
 	Velocity        *math2d.Vector
 	angularVelocity float64
-	Shape           shape
+	Shape           shape.Shape
 	mass            float64
 	inverseMass     float64
 	inverseInertia  float64
 	forceSum        *math2d.Vector
 }
 
-func New(id int64, position *math2d.Vector) *Body {
+// NewBody creates new shape.
+func NewBody(id int64, position *math2d.Vector) *Body {
 	r := Body{
 		id:       id,
 		position: &math2d.Vector{X: position.X, Y: position.Y},
@@ -101,7 +105,7 @@ func (r *Body) Static() bool {
 	return false
 }
 
-func (r *Body) SetShape(s shape) {
+func (r *Body) SetShape(s shape.Shape) {
 	r.Shape = s
 }
 

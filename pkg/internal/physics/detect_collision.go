@@ -4,10 +4,8 @@ import (
 	"math"
 
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
-	"github.com/hueypark/marsettler/pkg/internal/physics/body"
-	"github.com/hueypark/marsettler/pkg/internal/physics/body/circle"
-	"github.com/hueypark/marsettler/pkg/internal/physics/body/convex"
 	"github.com/hueypark/marsettler/pkg/internal/physics/closest_point"
+	"github.com/hueypark/marsettler/pkg/internal/physics/shape"
 )
 
 func (c *Contact) DetectCollision() {
@@ -15,42 +13,42 @@ func (c *Contact) DetectCollision() {
 	rhsType := c.rhs.Shape.Type()
 
 	switch lhsType {
-	case body.Bullet:
+	case shape.BulletType:
 		switch rhsType {
-		case body.Bullet:
+		case shape.BulletType:
 			break
-		case body.Circle:
+		case shape.CircleType:
 			c.normal, c.penetration, c.points = bulletToCircle(c.lhs, c.rhs)
 			break
-		case body.Convex:
+		case shape.ConvecType:
 			c.normal, c.penetration, c.points = bulletToConvex(c.lhs, c.rhs)
 			break
 		}
 		break
-	case body.Circle:
+	case shape.CircleType:
 		switch rhsType {
-		case body.Bullet:
+		case shape.BulletType:
 			c.swap()
 			c.normal, c.penetration, c.points = bulletToCircle(c.lhs, c.rhs)
 			break
-		case body.Circle:
+		case shape.CircleType:
 			c.normal, c.penetration, c.points = circleToCircle(c.lhs, c.rhs)
 			break
-		case body.Convex:
+		case shape.ConvecType:
 			c.normal, c.penetration, c.points = circleToConvex(c.lhs, c.rhs)
 			break
 		}
 		break
-	case body.Convex:
+	case shape.ConvecType:
 		switch rhsType {
-		case body.Bullet:
+		case shape.BulletType:
 			c.swap()
 			c.normal, c.penetration, c.points = bulletToConvex(c.lhs, c.rhs)
-		case body.Circle:
+		case shape.CircleType:
 			c.swap()
 			c.normal, c.penetration, c.points = circleToConvex(c.lhs, c.rhs)
 			break
-		case body.Convex:
+		case shape.ConvecType:
 			c.normal, c.penetration, c.points = convexToConvex(c.lhs, c.rhs)
 			break
 		}
@@ -63,9 +61,9 @@ func (c *Contact) swap() {
 }
 
 func bulletToCircle(
-	lhs, rhs *body.Body,
+	lhs, rhs *Body,
 ) (normal *math2d.Vector, penetration float64, points []*math2d.Vector) {
-	rhsCircle := rhs.Shape.(*circle.Circle)
+	rhsCircle := rhs.Shape.(*shape.Circle)
 
 	normal = math2d.Sub(rhs.Position(), lhs.Position())
 
@@ -87,9 +85,9 @@ func bulletToCircle(
 }
 
 func bulletToConvex(
-	lhs, rhs *body.Body,
+	lhs, rhs *Body,
 ) (normal *math2d.Vector, penetration float64, points []*math2d.Vector) {
-	rhsConvex := rhs.Shape.(*convex.Convex)
+	rhsConvex := rhs.Shape.(*shape.Convex)
 
 	penetration = math.MaxFloat64
 
@@ -128,10 +126,10 @@ func bulletToConvex(
 }
 
 func circleToCircle(
-	lhs, rhs *body.Body,
+	lhs, rhs *Body,
 ) (normal *math2d.Vector, penetration float64, points []*math2d.Vector) {
-	lhsCircle := lhs.Shape.(*circle.Circle)
-	rhsCircle := rhs.Shape.(*circle.Circle)
+	lhsCircle := lhs.Shape.(*shape.Circle)
+	rhsCircle := rhs.Shape.(*shape.Circle)
 
 	normal = math2d.Sub(rhs.Position(), lhs.Position())
 
@@ -154,13 +152,13 @@ func circleToCircle(
 }
 
 func circleToConvex(
-	l, r *body.Body,
+	l, r *Body,
 ) (normal *math2d.Vector, penetration float64, points []*math2d.Vector) {
-	lCircle := l.Shape.(*circle.Circle)
-	rConvex := r.Shape.(*convex.Convex)
+	lCircle := l.Shape.(*shape.Circle)
+	rConvex := r.Shape.(*shape.Convex)
 
 	minPenetration := math.MaxFloat64
-	var minPenEdge convex.Edge
+	var minPenEdge shape.Edge
 	for _, edge := range rConvex.Edges() {
 		edgeNormal := r.Rotation().RotateVector(edge.Normal)
 		edgeStart := r.Rotation().RotateVector(edge.Start)
@@ -202,10 +200,10 @@ func circleToConvex(
 }
 
 func convexToConvex(
-	l, r *body.Body,
+	l, r *Body,
 ) (normal *math2d.Vector, penetration float64, points []*math2d.Vector) {
-	lConvex := l.Shape.(*convex.Convex)
-	rConvex := r.Shape.(*convex.Convex)
+	lConvex := l.Shape.(*shape.Convex)
+	rConvex := r.Shape.(*shape.Convex)
 
 	lPenetration, lNormal, lPoint := findAxisLeastPenetration(lConvex, rConvex, l.Position(), r.Position(), l.Rotation(), r.Rotation())
 	if lPenetration < 0.0 {
@@ -231,7 +229,7 @@ func convexToConvex(
 }
 
 func findAxisLeastPenetration(
-	l, r *convex.Convex, lPos, rPos *math2d.Vector, lRot, rRot math2d.Rotator,
+	l, r *shape.Convex, lPos, rPos *math2d.Vector, lRot, rRot math2d.Rotator,
 ) (minPenetration float64, bestNormal *math2d.Vector, bestPoint *math2d.Vector) {
 	minPenetration = math.MaxFloat64
 

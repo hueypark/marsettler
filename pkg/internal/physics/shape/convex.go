@@ -1,12 +1,12 @@
-package convex
+package shape
 
 import (
 	"math"
 
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
-	"github.com/hueypark/marsettler/pkg/internal/physics/body"
 )
 
+// Convex represents physics shape convex.
 type Convex struct {
 	vertices []*math2d.Vector
 	hull     []*math2d.Vector
@@ -19,14 +19,16 @@ type Edge struct {
 	Normal *math2d.Vector
 }
 
-func New(vertices []*math2d.Vector) *Convex {
+// NewConvex creates new convex.
+func NewConvex(vertices []*math2d.Vector) *Convex {
 	c := Convex{vertices, nil, nil}
 
 	return &c
 }
 
-func (c *Convex) Type() body.Shape {
-	return body.Convex
+// Type returns type.
+func (c *Convex) Type() Type {
+	return ConvecType
 }
 
 // Hull is ccw
@@ -82,7 +84,7 @@ func MinkowskiDifference(
 		}
 	}
 
-	return New(vertices)
+	return NewConvex(vertices)
 }
 
 func (c *Convex) Support(dir *math2d.Vector, rot math2d.Rotator) (bestVertex *math2d.Vector) {

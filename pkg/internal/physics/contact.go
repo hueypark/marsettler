@@ -1,21 +1,18 @@
 package physics
 
-import (
-	"github.com/hueypark/marsettler/pkg/internal/math2d"
-	"github.com/hueypark/marsettler/pkg/internal/physics/body"
-)
+import "github.com/hueypark/marsettler/pkg/internal/math2d"
 
 const RESTITUTION = 0.5
 
 type Contact struct {
-	lhs         *body.Body
-	rhs         *body.Body
+	lhs         *Body
+	rhs         *Body
 	normal      *math2d.Vector // lhs to rhs
 	penetration float64
 	points      []*math2d.Vector
 }
 
-func New(lhs, rhs *body.Body) *Contact {
+func New(lhs, rhs *Body) *Contact {
 	return &Contact{
 		lhs:    lhs,
 		rhs:    rhs,

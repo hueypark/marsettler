@@ -1,33 +1,27 @@
 package physics
 
-import (
-	"sync"
+import "sync"
 
-	"github.com/hueypark/marsettler/pkg/internal/math2d"
-	"github.com/hueypark/marsettler/pkg/internal/physics/body"
-)
-
+// World represents physics world.
 type World struct {
-	bodys                 map[int64]*body.Body
-	contacts              []*Contact
-	reservedDeleteBodyIds []int64
-	mux                   sync.RWMutex
+	bodys map[int64]*Body
+	mux   sync.RWMutex
 }
 
+// NewWorld creates new world.
 func NewWorld() *World {
 	return &World{
-		bodys: make(map[int64]*body.Body),
+		bodys: make(map[int64]*Body),
 	}
 }
 
+// Tick updates world periodically.
 func (w *World) Tick(delta float64) {
 	w.mux.Lock()
 	defer w.mux.Unlock()
 
-	w.deleteReserveDeleteBodys()
-
-	w.contacts = w.broadPhase()
-	for _, c := range w.contacts {
+	contacts := w.broadPhase()
+	for _, c := range contacts {
 		c.DetectCollision()
 		c.SolveCollision()
 	}
@@ -37,40 +31,9 @@ func (w *World) Tick(delta float64) {
 	}
 }
 
-func (w *World) Add(b *body.Body) {
+// Add adds new body to world.
+func (w *World) Add(b *Body) {
 	w.bodys[b.ID()] = b
-}
-
-func (w *World) ReservedDelete(id int64) {
-	w.reservedDeleteBodyIds = append(w.reservedDeleteBodyIds, id)
-}
-
-func (w *World) SetBodyPosition(id int64, pos *math2d.Vector) {
-	w.mux.Lock()
-	defer w.mux.Unlock()
-
-	b := w.bodys[id]
-	if b != nil {
-		b.SetPosition(pos)
-	}
-}
-
-func (w *World) SetBodyVelocity(id int64, vel *math2d.Vector) {
-	w.mux.Lock()
-	defer w.mux.Unlock()
-
-	b := w.bodys[id]
-	if b != nil {
-		b.Velocity.Set(vel)
-	}
-}
-
-func (w *World) Bodys() map[int64]*body.Body {
-	return w.bodys
-}
-
-func (w *World) Contacts() []*Contact {
-	return w.contacts
 }
 
 func (w *World) broadPhase() []*Contact {
@@ -87,12 +50,4 @@ func (w *World) broadPhase() []*Contact {
 	}
 
 	return contacts
-}
-
-func (w *World) deleteReserveDeleteBodys() {
-	for _, id := range w.reservedDeleteBodyIds {
-		delete(w.bodys, id)
-	}
-
-	w.reservedDeleteBodyIds = []int64{}
 }

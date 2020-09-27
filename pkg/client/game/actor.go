@@ -2,16 +2,16 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hueypark/marsettler/pkg/asset"
 	"github.com/hueypark/marsettler/pkg/internal/game"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
-	"golang.org/x/image/colornames"
 )
 
 // Actor is basic object in world.
 type Actor struct {
 	*game.Actor
 	clientPosition *math2d.Vector
+	image          *ebiten.Image
 }
 
 // NewActor Creates new actor.
@@ -24,12 +24,18 @@ func NewActor(id int64, position *math2d.Vector) *Actor {
 	a.clientPosition.Set(position)
 	a.SetPosition(position)
 
+	a.image = asset.Image("circle")
+
 	return a
 }
 
 // Draw implements ebiten.Game.Draw.
-func (a *Actor) Draw(screen *ebiten.Image) {
-	ebitenutil.DrawRect(screen, a.Position().X, a.Position().Y, 10, 10, colornames.Saddlebrown)
+func (a *Actor) Draw(screen *ebiten.Image, cameraFunc func(*Actor) ebiten.GeoM) error {
+	return screen.DrawImage(
+		a.image,
+		&ebiten.DrawImageOptions{
+			GeoM: cameraFunc(a),
+		})
 }
 
 // Position is actor's position.

@@ -18,6 +18,7 @@ type Client struct {
 	conn      *net.Conn
 	world     *game.World
 	tickDelta float64
+	geoM      ebiten.GeoM
 }
 
 // NewClient creates new client.
@@ -53,6 +54,8 @@ func NewClient() (*Client, error) {
 		return nil, err
 	}
 
+	c.geoM.Scale(1, -1)
+
 	return c, nil
 }
 
@@ -78,7 +81,22 @@ func (c *Client) Run() error {
 
 // Draw implements ebiten.Game.Draw.
 func (c *Client) Draw(screen *ebiten.Image) {
-	c.world.Draw(screen)
+	err := c.world.Draw(
+		screen,
+		func(a *game.Actor) ebiten.GeoM {
+			m := ebiten.GeoM{}
+
+			m.Scale(1, -1)
+
+			m.Translate(a.Position().X, a.Position().Y)
+
+			m.Scale(1, -1)
+
+			return m
+		})
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 // Layout implements ebiten.Game.Layout.

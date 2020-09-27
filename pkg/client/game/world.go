@@ -33,10 +33,15 @@ func (w *World) Actor(id int64) *Actor {
 }
 
 // Draw drasw world.
-func (w *World) Draw(screen *ebiten.Image) {
+func (w *World) Draw(screen *ebiten.Image, cameraFunc func(*Actor) ebiten.GeoM) error {
 	for _, a := range w.actors {
-		a.Draw(screen)
+		err := a.Draw(screen, cameraFunc)
+		if err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
 // Tick updates world periodically.

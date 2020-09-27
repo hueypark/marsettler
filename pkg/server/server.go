@@ -110,12 +110,25 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 
 	go func() {
 		err := conn.Run()
+		defer func() {
+			user.Close()
+		}()
+
 		if err != nil {
 			log.Println(err)
+			return
 		}
 	}()
 
 	for {
-		conn.Consume()
+		err := conn.Consume()
+		if err != nil {
+			log.Println(err)
+			break
+		}
 	}
+
+	delete(s.users, user.ID())
+
+	return nil
 }

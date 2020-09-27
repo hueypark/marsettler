@@ -2,8 +2,7 @@ package net
 
 import (
 	"encoding/binary"
-	"fmt"
-	"log"
+	"errors"
 	"sync"
 
 	"github.com/golang/protobuf/proto"
@@ -42,18 +41,25 @@ func (c *Conn) Close() {
 }
 
 // Consume consumes messages.
-func (c *Conn) Consume() {
+func (c *Conn) Consume() error {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 
-	for _, m := range c.messages {
-		err := c.handlers.Handle(c, m.ID, m.Bytes)
-		if err != nil {
-			log.Println(fmt.Sprintf("id: %v, err: %v", m.ID, err))
+	select {
+	case <-c.closeChan:
+		return errors.New("closed connection")
+	default:
+		for _, m := range c.messages {
+			err := c.handlers.Handle(c, m.ID, m.Bytes)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
 	c.messages = nil
+
+	return nil
 }
 
 // Run runs connection.

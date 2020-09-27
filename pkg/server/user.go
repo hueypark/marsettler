@@ -9,9 +9,10 @@ import (
 
 // User represents user.
 type User struct {
-	id    int64
-	conn  *net.Conn
-	actor *game.Actor
+	id        int64
+	conn      *net.Conn
+	closeChan chan bool
+	actor     *game.Actor
 }
 
 // NewUser creates new user.
@@ -27,6 +28,11 @@ func NewUser(conn *net.Conn) *User {
 // Actor returns actor.
 func (u *User) Actor() *game.Actor {
 	return u.actor
+}
+
+// Close closes user.
+func (u *User) Close() {
+	u.conn.Close()
 }
 
 // ID returns id.

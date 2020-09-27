@@ -3,12 +3,14 @@ package game
 import (
 	"log"
 
+	"github.com/hueypark/marsettler/pkg/internal/physics"
 	"github.com/hueypark/marsettler/pkg/message"
 )
 
 // World is an area where fewer than 2,000 users can play at the same time.
 type World struct {
 	actors                     map[int64]*Actor
+	physicsWorld               *physics.World
 	messageActorMovesPushCache message.ActorMovesPush
 	broadcast                  func(m message.Message) error
 }
@@ -17,6 +19,7 @@ type World struct {
 func NewWorld(broadcast func(m message.Message) error) *World {
 	w := &World{}
 	w.actors = make(map[int64]*Actor)
+	w.physicsWorld = physics.NewWorld()
 	w.broadcast = broadcast
 
 	return w
@@ -45,6 +48,7 @@ func (w *World) NewActor(id int64) *Actor {
 	a := NewActor(id)
 
 	w.actors[a.ID()] = a
+	w.physicsWorld.Add(a.Body)
 
 	m := &message.ActorsPush{}
 	m.Actors = append(m.Actors, a.Message())
@@ -70,6 +74,8 @@ func (w *World) Tick(delta float64) error {
 			return err
 		}
 	}
+
+	w.physicsWorld.Tick(delta)
 
 	w.flushActorMovePush()
 

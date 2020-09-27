@@ -7,3 +7,7 @@ const (
 	Circle
 	Convex
 )
+
+type shape interface {
+	Type() Shape
+}

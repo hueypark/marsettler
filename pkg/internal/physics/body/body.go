@@ -15,11 +15,7 @@ type Body struct {
 	forceSum        *math2d.Vector
 }
 
-type shape interface {
-	Type() Shape
-}
-
-func New(id int64, position math2d.Vector) *Body {
+func New(id int64, position *math2d.Vector) *Body {
 	r := Body{
 		id:       id,
 		position: &math2d.Vector{X: position.X, Y: position.Y},

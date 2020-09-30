@@ -1,6 +1,9 @@
 package game
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/hueypark/marsettler/pkg/internal/game"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/message"
@@ -20,6 +23,13 @@ func NewActor(id int64) *Actor {
 	}
 
 	return a
+}
+
+// Act acts to target.
+func (a *Actor) Act(target *Actor) error {
+	log.Println(fmt.Sprintf("%v acts to %v", *a, *target))
+
+	return nil
 }
 
 // Message returns message.Actor.

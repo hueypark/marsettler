@@ -15,6 +15,7 @@ import (
 
 // Client is the client client.
 type Client struct {
+	id        int64
 	conn      *net.Conn
 	world     *game.World
 	tickDelta float64
@@ -40,6 +41,9 @@ func NewClient() (*Client, error) {
 	c.tickDelta = 1.0 / ebiten.DefaultTPS
 
 	err = conn.SetHandlers(net.HandlerFuncs{
+		message.ActResponseID: func(conn *net.Conn, m *message.ActResponse) error {
+			return ActResponseHandler(conn, m)
+		},
 		message.ActorMovesPushID: func(conn *net.Conn, m *message.ActorMovesPush) error {
 			return ActorMovesPushHandler(conn, m, c.world)
 		},
@@ -47,7 +51,7 @@ func NewClient() (*Client, error) {
 			return ActorsPushHandler(conn, m, c.world)
 		},
 		message.SignInResponseID: func(conn *net.Conn, m *message.SignInResponse) error {
-			return SignInResponseHandler(conn, m, c.world)
+			return SignInResponseHandler(conn, m, c, c.world)
 		},
 	})
 	if err != nil {
@@ -57,6 +61,24 @@ func NewClient() (*Client, error) {
 	c.geoM.Scale(1, -1)
 
 	return c, nil
+}
+
+// Act does act.
+func (c *Client) Act() error {
+	m := &message.ActRequest{}
+
+	var err error
+	m.TargetId, err = c.world.NearestActorId(c.id)
+	if err != nil {
+		return err
+	}
+
+	err = c.conn.Write(m)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Close closes client.
@@ -114,6 +136,13 @@ func (c *Client) Update(_ *ebiten.Image) error {
 	if inpututil.IsKeyJustReleased(ebiten.KeyEnter) {
 		signIn := &message.SignInRequest{}
 		err := c.conn.Write(signIn)
+		if err != nil {
+			return err
+		}
+	}
+
+	if inpututil.IsKeyJustReleased(ebiten.KeySpace) {
+		err := c.Act()
 		if err != nil {
 			return err
 		}

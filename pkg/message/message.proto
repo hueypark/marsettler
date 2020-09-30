@@ -2,6 +2,14 @@ syntax = "proto3";
 
 package message;
 
+message ActResponse {
+  ResponseCode responseCode = 1;
+}
+
+message ActRequest {
+  int64 targetId = 1;
+}
+
 message Actor {
   int64 id = 1;
   Vector position = 2;
@@ -22,6 +30,12 @@ message ActorsPush {
 
 message MoveStickRequest {
   Vector direction = 1;
+}
+
+enum ResponseCode {
+  Success = 0;
+  ActorIsNil = 1;
+  TargetIsNil = 2;
 }
 
 message SignInRequest {

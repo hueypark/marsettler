@@ -7,14 +7,16 @@ import proto "github.com/golang/protobuf/proto"
 type ID int32
 
 const (
-	ActorID ID = 0
-	ActorMoveID ID = 1
-	ActorMovesPushID ID = 2
-	ActorsPushID ID = 3
-	MoveStickRequestID ID = 4
-	SignInRequestID ID = 5
-	SignInResponseID ID = 6
-	VectorID ID = 7
+	ActResponseID ID = 0
+	ActRequestID ID = 1
+	ActorID ID = 2
+	ActorMoveID ID = 3
+	ActorMovesPushID ID = 4
+	ActorsPushID ID = 5
+	MoveStickRequestID ID = 6
+	SignInRequestID ID = 7
+	SignInResponseID ID = 8
+	VectorID ID = 9
 )
 
 // Message represents message.
@@ -23,6 +25,8 @@ type Message interface {
 	proto.Message
 }
 
+func (m *ActResponse) ID() ID { return ActResponseID }
+func (m *ActRequest) ID() ID { return ActRequestID }
 func (m *Actor) ID() ID { return ActorID }
 func (m *ActorMove) ID() ID { return ActorMoveID }
 func (m *ActorMovesPush) ID() ID { return ActorMovesPushID }

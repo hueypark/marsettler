@@ -97,6 +97,9 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 	defer delete(s.users, user.ID())
 
 	err = conn.SetHandlers(net.HandlerFuncs{
+		message.ActRequestID: func(conn *net.Conn, m *message.ActRequest) error {
+			return ActRequestHandler(conn, m, user, s.world)
+		},
 		message.MoveStickRequestID: func(conn *net.Conn, m *message.MoveStickRequest) error {
 			return MoveStickHandler(conn, m, user)
 		},

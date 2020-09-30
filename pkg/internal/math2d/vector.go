@@ -28,6 +28,14 @@ func (v *Vector) Clone() *Vector {
 	return &Vector{v.X, v.Y}
 }
 
+// DistanceSquared returns distance squared.
+func DistanceSquared(lhs, rhs *Vector) float64 {
+	diffX := lhs.X - rhs.X
+	diffY := lhs.Y - rhs.Y
+
+	return diffX*diffX + diffY*diffY
+}
+
 // Set sets vector.
 func (v *Vector) Set(other *Vector) {
 	v.X = other.X

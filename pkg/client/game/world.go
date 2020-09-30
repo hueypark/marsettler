@@ -1,6 +1,10 @@
 package game
 
 import (
+	"errors"
+	"fmt"
+	"math"
+
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 )
@@ -42,6 +46,34 @@ func (w *World) Draw(screen *ebiten.Image, cameraFunc func(*Actor) ebiten.GeoM) 
 	}
 
 	return nil
+}
+
+// NearestActorId returns the nearest actor id from the given actor.
+func (w *World) NearestActorId(givenActorID int64) (actorID int64, err error) {
+	givenActor := w.Actor(givenActorID)
+	if givenActor == nil {
+		return 0, errors.New(fmt.Sprintf("actor is nil. [givenActorId: %v]", givenActorID))
+	}
+
+	var nearestActor *Actor
+	nearestDistanceSquared := math.MaxFloat64
+	for _, actor := range w.actors {
+		if actor.ID() == givenActorID {
+			continue
+		}
+
+		distanceSquared := math2d.DistanceSquared(givenActor.Position(), actor.Position())
+		if distanceSquared <= nearestDistanceSquared {
+			nearestActor = actor
+			nearestDistanceSquared = distanceSquared
+		}
+	}
+
+	if nearestActor == nil {
+		return 0, errors.New("there is no nearest actor")
+	}
+
+	return nearestActor.ID(), nil
 }
 
 // Tick updates world periodically.

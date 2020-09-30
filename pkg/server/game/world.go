@@ -25,6 +25,11 @@ func NewWorld(broadcast func(m message.Message) error) *World {
 	return w
 }
 
+// Actor returns actor in the world.
+func (w *World) Actor(id int64) *Actor {
+	return w.actors[id]
+}
+
 // ActorsPush return actors push message.
 //
 // It has all actor's data.

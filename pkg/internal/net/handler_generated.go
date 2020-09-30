@@ -12,6 +12,8 @@ import (
 
 // Handler is message handler.
 type Handler struct {
+	actResponseHandler func(*Conn, *message.ActResponse) error
+	actRequestHandler func(*Conn, *message.ActRequest) error
 	actorHandler func(*Conn, *message.Actor) error
 	actorMoveHandler func(*Conn, *message.ActorMove) error
 	actorMovesPushHandler func(*Conn, *message.ActorMovesPush) error
@@ -31,6 +33,20 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 
 	for id, handler := range handlers {
 		switch id {
+		case message.ActResponseID:
+			v, ok := handler.(func(*Conn, *message.ActResponse) error)
+			if !ok {
+				return nil, errors.New("handler does not handles ActResponse")
+			}
+
+			h.actResponseHandler = v
+		case message.ActRequestID:
+			v, ok := handler.(func(*Conn, *message.ActRequest) error)
+			if !ok {
+				return nil, errors.New("handler does not handles ActRequest")
+			}
+
+			h.actRequestHandler = v
 		case message.ActorID:
 			v, ok := handler.(func(*Conn, *message.Actor) error)
 			if !ok {
@@ -96,6 +112,30 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 // Handle handles message.
 func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 	switch id {
+	case message.ActResponseID:
+		m := &message.ActResponse{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.actResponseHandler == nil {
+			return nil
+		}
+
+		return h.actResponseHandler(conn, m)
+	case message.ActRequestID:
+		m := &message.ActRequest{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.actRequestHandler == nil {
+			return nil
+		}
+
+		return h.actRequestHandler(conn, m)
 	case message.ActorID:
 		m := &message.Actor{}
 		err := proto.Unmarshal(bytes, m)

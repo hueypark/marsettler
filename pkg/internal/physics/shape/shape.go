@@ -5,7 +5,7 @@ type Type int
 const (
 	BulletType Type = iota
 	CircleType
-	ConvecType
+	ConvexType
 )
 
 type Shape interface {

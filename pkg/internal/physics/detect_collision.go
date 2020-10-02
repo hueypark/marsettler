@@ -20,7 +20,7 @@ func (c *Contact) DetectCollision() {
 		case shape.CircleType:
 			c.normal, c.penetration, c.points = bulletToCircle(c.lhs, c.rhs)
 			break
-		case shape.ConvecType:
+		case shape.ConvexType:
 			c.normal, c.penetration, c.points = bulletToConvex(c.lhs, c.rhs)
 			break
 		}
@@ -34,12 +34,12 @@ func (c *Contact) DetectCollision() {
 		case shape.CircleType:
 			c.normal, c.penetration, c.points = circleToCircle(c.lhs, c.rhs)
 			break
-		case shape.ConvecType:
+		case shape.ConvexType:
 			c.normal, c.penetration, c.points = circleToConvex(c.lhs, c.rhs)
 			break
 		}
 		break
-	case shape.ConvecType:
+	case shape.ConvexType:
 		switch rhsType {
 		case shape.BulletType:
 			c.swap()
@@ -48,7 +48,7 @@ func (c *Contact) DetectCollision() {
 			c.swap()
 			c.normal, c.penetration, c.points = circleToConvex(c.lhs, c.rhs)
 			break
-		case shape.ConvecType:
+		case shape.ConvexType:
 			c.normal, c.penetration, c.points = convexToConvex(c.lhs, c.rhs)
 			break
 		}

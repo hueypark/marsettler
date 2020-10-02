@@ -28,7 +28,7 @@ func NewConvex(vertices []*math2d.Vector) *Convex {
 
 // Type returns type.
 func (c *Convex) Type() Type {
-	return ConvecType
+	return ConvexType
 }
 
 // Hull is ccw

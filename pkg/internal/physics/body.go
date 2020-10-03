@@ -8,6 +8,7 @@ import (
 type Body struct {
 	id              int64
 	position        *math2d.Vector
+	onSetPosition   func(position *math2d.Vector)
 	rotation        math2d.Rotator
 	Velocity        *math2d.Vector
 	angularVelocity float64
@@ -19,12 +20,13 @@ type Body struct {
 }
 
 // NewBody creates new shape.
-func NewBody(id int64, position *math2d.Vector) *Body {
+func NewBody(id int64, position *math2d.Vector, onSetPosition func(position *math2d.Vector)) *Body {
 	r := Body{
-		id:       id,
-		position: &math2d.Vector{X: position.X, Y: position.Y},
-		Velocity: &math2d.Vector{},
-		forceSum: &math2d.Vector{},
+		id:            id,
+		position:      &math2d.Vector{X: position.X, Y: position.Y},
+		onSetPosition: onSetPosition,
+		Velocity:      &math2d.Vector{},
+		forceSum:      &math2d.Vector{},
 	}
 	return &r
 }
@@ -44,6 +46,9 @@ func (r *Body) Position() *math2d.Vector {
 
 func (r *Body) SetPosition(position *math2d.Vector) {
 	r.position.Set(position)
+	if r.onSetPosition != nil {
+		r.onSetPosition(position)
+	}
 }
 
 func (r *Body) SetVelocity(velovity *math2d.Vector) {

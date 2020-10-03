@@ -13,13 +13,13 @@ type Actor struct {
 }
 
 // NewActor creates new actor.
-func NewActor(id int64) *Actor {
+func NewActor(id int64, onSetPosition func(position *math2d.Vector)) *Actor {
 	a := &Actor{
-		Body:  physics.NewBody(id, &math2d.Vector{}),
+		Body:  physics.NewBody(id, &math2d.Vector{}, onSetPosition),
 		speed: 100,
 	}
 
-	a.Body.SetShape(shape.NewCircle(100))
+	a.Body.SetShape(shape.NewCircle(16))
 	a.Body.SetMass(10)
 
 	return a

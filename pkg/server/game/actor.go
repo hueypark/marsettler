@@ -13,14 +13,20 @@ import (
 type Actor struct {
 	*game.Actor
 	moveStickDirection *math2d.Vector
+	moved              bool
 }
 
 // NewActor Creates new actor.
 func NewActor(id int64) *Actor {
 	a := &Actor{
-		Actor:              game.NewActor(id),
 		moveStickDirection: &math2d.Vector{},
 	}
+
+	a.Actor = game.NewActor(
+		id,
+		func(position *math2d.Vector) {
+			a.moved = true
+		})
 
 	return a
 }
@@ -54,8 +60,12 @@ func (a *Actor) Tick(world *World, delta float64) error {
 		position := a.Position()
 		position.AddScaledVector(a.moveStickDirection, delta*a.Speed())
 		a.SetPosition(position)
+		a.moved = true
+	}
 
+	if a.moved {
 		world.SetActorMove(&message.ActorMove{Id: a.ID(), Position: &message.Vector{X: a.Position().X, Y: a.Position().Y}})
+		a.moved = false
 	}
 
 	return nil

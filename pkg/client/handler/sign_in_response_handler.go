@@ -1,4 +1,4 @@
-package client
+package handler
 
 import (
 	"github.com/hueypark/marsettler/pkg/client/game"
@@ -9,9 +9,9 @@ import (
 
 // SignInResponseHandler handles message.SignInResponse.
 func SignInResponseHandler(
-	_ *net.Conn, m *message.SignInResponse, c *Client, world *game.World,
+	_ *net.Conn, m *message.SignInResponse, c client, world *game.World,
 ) error {
-	c.id = m.Id
+	c.SetID(m.Id)
 	_ = world.NewActor(m.Actor.Id, &math2d.Vector{X: m.Actor.Position.X, Y: m.Actor.Position.Y})
 
 	return nil

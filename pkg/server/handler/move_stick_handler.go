@@ -1,4 +1,4 @@
-package server
+package handler
 
 import (
 	"errors"
@@ -8,10 +8,11 @@ import (
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
+	"github.com/hueypark/marsettler/pkg/server/user"
 )
 
-// MoveStickHandler handles message.ActorMove.
-func MoveStickHandler(conn *net.Conn, m *message.MoveStickRequest, user *User) error {
+// OnMoveStick handles message.ActorMove.
+func OnMoveStick(conn *net.Conn, m *message.MoveStickRequest, user *user.User) error {
 	actor := user.Actor()
 	if actor == nil {
 		log.Println(fmt.Sprintf("actor is nil. [user: %v]", user.ID()))

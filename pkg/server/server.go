@@ -10,6 +10,8 @@ import (
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/server/game"
+	"github.com/hueypark/marsettler/pkg/server/handler"
+	"github.com/hueypark/marsettler/pkg/server/user"
 )
 
 // Server is the client server.
@@ -17,7 +19,7 @@ type Server struct {
 	gin      *gin.Engine
 	upgrader websocket.Upgrader
 	world    *game.World
-	users    map[int64]*User
+	users    map[int64]*user.User
 }
 
 // NewServer creates new server.
@@ -26,7 +28,7 @@ func NewServer() *Server {
 		gin:      gin.Default(),
 		upgrader: websocket.Upgrader{},
 	}
-	s.users = make(map[int64]*User)
+	s.users = make(map[int64]*user.User)
 	s.world = game.NewWorld(func(m message.Message) error {
 		for _, user := range s.users {
 			err := user.Write(m)
@@ -91,22 +93,12 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	user := NewUser(conn)
+	user := user.NewUser(conn)
 
 	s.users[user.ID()] = user
 	defer delete(s.users, user.ID())
 
-	err = conn.SetHandlers(net.HandlerFuncs{
-		message.ActRequestID: func(conn *net.Conn, m *message.ActRequest) error {
-			return ActRequestHandler(conn, m, user, s.world)
-		},
-		message.MoveStickRequestID: func(conn *net.Conn, m *message.MoveStickRequest) error {
-			return MoveStickHandler(conn, m, user)
-		},
-		message.SignInRequestID: func(conn *net.Conn, m *message.SignInRequest) error {
-			return SignInHandler(conn, m, user, s.world)
-		},
-	})
+	err = conn.SetHandlers(handler.Generate(user, s.world))
 	if err != nil {
 		return err
 	}

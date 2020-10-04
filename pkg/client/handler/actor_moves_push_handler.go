@@ -1,4 +1,4 @@
-package client
+package handler
 
 import (
 	"github.com/hueypark/marsettler/pkg/client/game"

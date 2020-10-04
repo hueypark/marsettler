@@ -1,13 +1,14 @@
-package server
+package handler
 
 import (
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/server/game"
+	"github.com/hueypark/marsettler/pkg/server/user"
 )
 
-// ActRequestHandler handles message.ActRequest.
-func ActRequestHandler(conn *net.Conn, m *message.ActRequest, user *User, world *game.World) error {
+// OnActRequest handles message.ActRequest.
+func OnActRequest(conn *net.Conn, m *message.ActRequest, user *user.User, world *game.World) error {
 	response := &message.ActResponse{}
 
 	actor := user.Actor()

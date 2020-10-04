@@ -8,6 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/hueypark/marsettler/pkg/client/game"
+	"github.com/hueypark/marsettler/pkg/client/handler"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
@@ -40,7 +41,7 @@ func NewClient() (*Client, error) {
 	c.world = game.NewWorld()
 	c.tickDelta = 1.0 / ebiten.DefaultTPS
 
-	err = conn.SetHandlers(c.handlerFuncs())
+	err = conn.SetHandlers(handler.Generate(c, c.world))
 	if err != nil {
 		return nil, err
 	}
@@ -108,6 +109,11 @@ func (c *Client) Draw(screen *ebiten.Image) {
 	}
 }
 
+// SetID sets id.
+func (c *Client) SetID(id int64) {
+	c.id = id
+}
+
 // Layout implements ebiten.Game.Layout.
 func (c *Client) Layout(_, _ int) (screenWidth, screenHeight int) {
 	return 320, 240
@@ -156,26 +162,6 @@ func connect() (*websocket.Conn, error) {
 	}
 
 	return conn, nil
-}
-
-func (c *Client) handlerFuncs() net.HandlerFuncs {
-	return net.HandlerFuncs{
-		message.ActorDisappearsPushID: func(conn *net.Conn, m *message.ActorDisappearsPush) error {
-			return ActorDisappearsPushHandler(conn, m, c.world)
-		},
-		message.ActResponseID: func(conn *net.Conn, m *message.ActResponse) error {
-			return ActResponseHandler(conn, m)
-		},
-		message.ActorMovesPushID: func(conn *net.Conn, m *message.ActorMovesPush) error {
-			return ActorMovesPushHandler(conn, m, c.world)
-		},
-		message.ActorsPushID: func(conn *net.Conn, m *message.ActorsPush) error {
-			return ActorsPushHandler(conn, m, c.world)
-		},
-		message.SignInResponseID: func(conn *net.Conn, m *message.SignInResponse) error {
-			return SignInResponseHandler(conn, m, c, c.world)
-		},
-	}
 }
 
 func (c *Client) updateMoveStickRequest() error {

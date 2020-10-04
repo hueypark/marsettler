@@ -1,4 +1,4 @@
-package server
+package handler
 
 import (
 	"fmt"
@@ -7,10 +7,11 @@ import (
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/server/game"
+	"github.com/hueypark/marsettler/pkg/server/user"
 )
 
-// SignInHandler handles message.SignIn.
-func SignInHandler(conn *net.Conn, m *message.SignInRequest, user *User, world *game.World) error {
+// OnSignIn handles message.SignIn.
+func OnSignIn(conn *net.Conn, m *message.SignInRequest, user *user.User, world *game.World) error {
 	response := &message.SignInResponse{}
 
 	actor, err := world.NewActor(user.ID())

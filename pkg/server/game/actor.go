@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/hueypark/marsettler/pkg/internal/game"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
@@ -32,10 +31,8 @@ func NewActor(id int64) *Actor {
 }
 
 // Act acts to target.
-func (a *Actor) Act(target *Actor) error {
-	log.Println(fmt.Sprintf("%v acts to %v", *a, *target))
-
-	return nil
+func (a *Actor) Act(world *World, target *Actor) error {
+	return world.DeleteActor(target.ID())
 }
 
 // Message returns message.Actor.
@@ -52,6 +49,11 @@ func (a *Actor) Message() *message.Actor {
 func (a *Actor) MoveStick(direction math2d.Vector) {
 	a.moveStickDirection = &direction
 	a.moveStickDirection.Normalize()
+}
+
+// String implements fmt.Stringer.
+func (a *Actor) String() string {
+	return fmt.Sprintf("id: %v, position: %v", a.ID(), a.Position())
 }
 
 // Tick updates actor periodically.

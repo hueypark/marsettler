@@ -15,6 +15,8 @@ type Handler struct {
 	actResponseHandler func(*Conn, *message.ActResponse) error
 	actRequestHandler func(*Conn, *message.ActRequest) error
 	actorHandler func(*Conn, *message.Actor) error
+	actorDisappearHandler func(*Conn, *message.ActorDisappear) error
+	actorDisappearsPushHandler func(*Conn, *message.ActorDisappearsPush) error
 	actorMoveHandler func(*Conn, *message.ActorMove) error
 	actorMovesPushHandler func(*Conn, *message.ActorMovesPush) error
 	actorsPushHandler func(*Conn, *message.ActorsPush) error
@@ -54,6 +56,20 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 			}
 
 			h.actorHandler = v
+		case message.ActorDisappearID:
+			v, ok := handler.(func(*Conn, *message.ActorDisappear) error)
+			if !ok {
+				return nil, errors.New("handler does not handles ActorDisappear")
+			}
+
+			h.actorDisappearHandler = v
+		case message.ActorDisappearsPushID:
+			v, ok := handler.(func(*Conn, *message.ActorDisappearsPush) error)
+			if !ok {
+				return nil, errors.New("handler does not handles ActorDisappearsPush")
+			}
+
+			h.actorDisappearsPushHandler = v
 		case message.ActorMoveID:
 			v, ok := handler.(func(*Conn, *message.ActorMove) error)
 			if !ok {
@@ -148,6 +164,30 @@ func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 		}
 
 		return h.actorHandler(conn, m)
+	case message.ActorDisappearID:
+		m := &message.ActorDisappear{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.actorDisappearHandler == nil {
+			return nil
+		}
+
+		return h.actorDisappearHandler(conn, m)
+	case message.ActorDisappearsPushID:
+		m := &message.ActorDisappearsPush{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.actorDisappearsPushHandler == nil {
+			return nil
+		}
+
+		return h.actorDisappearsPushHandler(conn, m)
 	case message.ActorMoveID:
 		m := &message.ActorMove{}
 		err := proto.Unmarshal(bytes, m)

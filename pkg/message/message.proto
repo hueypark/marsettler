@@ -15,6 +15,14 @@ message Actor {
   Vector position = 2;
 }
 
+message ActorDisappear {
+  int64 id = 1;
+}
+
+message ActorDisappearsPush {
+  repeated ActorDisappear disappears = 1;
+}
+
 message ActorMove {
   int64 id = 1;
   Vector position = 2;

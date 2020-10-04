@@ -22,6 +22,18 @@ func NewWorld() *World {
 	return w
 }
 
+// DeleteActor deletes an actor.
+func (w *World) DeleteActor(id int64) error {
+	_, ok := w.actors[id]
+	if !ok {
+		return errors.New(fmt.Sprintf("there is no actor %v", id))
+	}
+
+	delete(w.actors, id)
+
+	return nil
+}
+
 // NewActor creates new actor.
 func (w *World) NewActor(id int64, position *math2d.Vector) *Actor {
 	a := NewActor(id, position)

@@ -22,7 +22,7 @@ func ActRequestHandler(conn *net.Conn, m *message.ActRequest, user *User, world 
 		return conn.Write(response)
 	}
 
-	err := actor.Act(target)
+	err := actor.Act(world, target)
 	if err != nil {
 		return err
 	}

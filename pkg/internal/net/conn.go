@@ -3,6 +3,7 @@ package net
 import (
 	"encoding/binary"
 	"errors"
+	"log"
 	"sync"
 
 	"github.com/golang/protobuf/proto"
@@ -52,7 +53,8 @@ func (c *Conn) Consume() error {
 		for _, m := range c.messages {
 			err := c.handlers.Handle(c, m.ID, m.Bytes)
 			if err != nil {
-				return err
+				// TODO(jaewan): Send error message to client.
+				log.Println(err)
 			}
 		}
 	}

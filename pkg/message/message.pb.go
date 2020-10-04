@@ -200,6 +200,100 @@ func (m *Actor) GetPosition() *Vector {
 	return nil
 }
 
+type ActorDisappear struct {
+	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ActorDisappear) Reset()         { *m = ActorDisappear{} }
+func (m *ActorDisappear) String() string { return proto.CompactTextString(m) }
+func (*ActorDisappear) ProtoMessage()    {}
+func (*ActorDisappear) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33c57e4bae7b9afd, []int{3}
+}
+func (m *ActorDisappear) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ActorDisappear) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ActorDisappear.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ActorDisappear) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActorDisappear.Merge(m, src)
+}
+func (m *ActorDisappear) XXX_Size() int {
+	return m.Size()
+}
+func (m *ActorDisappear) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActorDisappear.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActorDisappear proto.InternalMessageInfo
+
+func (m *ActorDisappear) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+type ActorDisappearsPush struct {
+	Disappears           []*ActorDisappear `protobuf:"bytes,1,rep,name=disappears,proto3" json:"disappears,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *ActorDisappearsPush) Reset()         { *m = ActorDisappearsPush{} }
+func (m *ActorDisappearsPush) String() string { return proto.CompactTextString(m) }
+func (*ActorDisappearsPush) ProtoMessage()    {}
+func (*ActorDisappearsPush) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33c57e4bae7b9afd, []int{4}
+}
+func (m *ActorDisappearsPush) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ActorDisappearsPush) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ActorDisappearsPush.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ActorDisappearsPush) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActorDisappearsPush.Merge(m, src)
+}
+func (m *ActorDisappearsPush) XXX_Size() int {
+	return m.Size()
+}
+func (m *ActorDisappearsPush) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActorDisappearsPush.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActorDisappearsPush proto.InternalMessageInfo
+
+func (m *ActorDisappearsPush) GetDisappears() []*ActorDisappear {
+	if m != nil {
+		return m.Disappears
+	}
+	return nil
+}
+
 type ActorMove struct {
 	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Position             *Vector  `protobuf:"bytes,2,opt,name=position,proto3" json:"position,omitempty"`
@@ -212,7 +306,7 @@ func (m *ActorMove) Reset()         { *m = ActorMove{} }
 func (m *ActorMove) String() string { return proto.CompactTextString(m) }
 func (*ActorMove) ProtoMessage()    {}
 func (*ActorMove) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{3}
+	return fileDescriptor_33c57e4bae7b9afd, []int{5}
 }
 func (m *ActorMove) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -266,7 +360,7 @@ func (m *ActorMovesPush) Reset()         { *m = ActorMovesPush{} }
 func (m *ActorMovesPush) String() string { return proto.CompactTextString(m) }
 func (*ActorMovesPush) ProtoMessage()    {}
 func (*ActorMovesPush) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{4}
+	return fileDescriptor_33c57e4bae7b9afd, []int{6}
 }
 func (m *ActorMovesPush) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -313,7 +407,7 @@ func (m *ActorsPush) Reset()         { *m = ActorsPush{} }
 func (m *ActorsPush) String() string { return proto.CompactTextString(m) }
 func (*ActorsPush) ProtoMessage()    {}
 func (*ActorsPush) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{5}
+	return fileDescriptor_33c57e4bae7b9afd, []int{7}
 }
 func (m *ActorsPush) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -360,7 +454,7 @@ func (m *MoveStickRequest) Reset()         { *m = MoveStickRequest{} }
 func (m *MoveStickRequest) String() string { return proto.CompactTextString(m) }
 func (*MoveStickRequest) ProtoMessage()    {}
 func (*MoveStickRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{6}
+	return fileDescriptor_33c57e4bae7b9afd, []int{8}
 }
 func (m *MoveStickRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -406,7 +500,7 @@ func (m *SignInRequest) Reset()         { *m = SignInRequest{} }
 func (m *SignInRequest) String() string { return proto.CompactTextString(m) }
 func (*SignInRequest) ProtoMessage()    {}
 func (*SignInRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{7}
+	return fileDescriptor_33c57e4bae7b9afd, []int{9}
 }
 func (m *SignInRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -447,7 +541,7 @@ func (m *SignInResponse) Reset()         { *m = SignInResponse{} }
 func (m *SignInResponse) String() string { return proto.CompactTextString(m) }
 func (*SignInResponse) ProtoMessage()    {}
 func (*SignInResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{8}
+	return fileDescriptor_33c57e4bae7b9afd, []int{10}
 }
 func (m *SignInResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -502,7 +596,7 @@ func (m *Vector) Reset()         { *m = Vector{} }
 func (m *Vector) String() string { return proto.CompactTextString(m) }
 func (*Vector) ProtoMessage()    {}
 func (*Vector) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{9}
+	return fileDescriptor_33c57e4bae7b9afd, []int{11}
 }
 func (m *Vector) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -550,6 +644,8 @@ func init() {
 	proto.RegisterType((*ActResponse)(nil), "message.ActResponse")
 	proto.RegisterType((*ActRequest)(nil), "message.ActRequest")
 	proto.RegisterType((*Actor)(nil), "message.Actor")
+	proto.RegisterType((*ActorDisappear)(nil), "message.ActorDisappear")
+	proto.RegisterType((*ActorDisappearsPush)(nil), "message.ActorDisappearsPush")
 	proto.RegisterType((*ActorMove)(nil), "message.ActorMove")
 	proto.RegisterType((*ActorMovesPush)(nil), "message.ActorMovesPush")
 	proto.RegisterType((*ActorsPush)(nil), "message.ActorsPush")
@@ -562,31 +658,33 @@ func init() {
 func init() { proto.RegisterFile("message.proto", fileDescriptor_33c57e4bae7b9afd) }
 
 var fileDescriptor_33c57e4bae7b9afd = []byte{
-	// 370 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x92, 0xcf, 0x4a, 0xf3, 0x40,
-	0x14, 0xc5, 0x3b, 0x29, 0xfd, 0x77, 0xd3, 0xa6, 0x61, 0xe0, 0x83, 0xf2, 0x2d, 0x42, 0x19, 0x8a,
-	0x04, 0xc5, 0x2e, 0xaa, 0x1b, 0xc5, 0x4d, 0x55, 0xa4, 0x5d, 0x28, 0x32, 0x15, 0x69, 0x97, 0x35,
-	0x19, 0xea, 0xa0, 0xcd, 0xd4, 0xcc, 0xd4, 0x67, 0xf1, 0x91, 0x5c, 0xfa, 0x08, 0x12, 0x5f, 0x44,
-	0x32, 0x99, 0xc4, 0xb6, 0xb8, 0x73, 0x97, 0x33, 0xf7, 0xfc, 0xce, 0xbd, 0xb9, 0x33, 0xd0, 0x5a,
-	0x32, 0x29, 0xe7, 0x0b, 0xd6, 0x5f, 0xc5, 0x42, 0x09, 0x5c, 0x33, 0x92, 0x8c, 0xc0, 0x1e, 0x06,
-	0x8a, 0x32, 0xb9, 0x12, 0x91, 0x64, 0xf8, 0x04, 0x9a, 0xb1, 0xf9, 0xbe, 0x10, 0x21, 0xeb, 0xa0,
-	0x2e, 0xf2, 0x9d, 0xc1, 0xbf, 0x7e, 0x4e, 0xd3, 0x8d, 0x22, 0xdd, 0xb2, 0x12, 0x1f, 0x40, 0x27,
-	0xbd, 0xac, 0x99, 0x54, 0xf8, 0x3f, 0xd4, 0xd5, 0x3c, 0x5e, 0x30, 0x35, 0x0e, 0x75, 0x48, 0x99,
-	0x16, 0x9a, 0x5c, 0x42, 0x65, 0x18, 0x28, 0x11, 0x63, 0x07, 0x2c, 0x9e, 0x97, 0x2d, 0x1e, 0xe2,
-	0x03, 0xa8, 0xaf, 0x84, 0xe4, 0x8a, 0x8b, 0xa8, 0x63, 0x75, 0x91, 0x6f, 0x0f, 0xda, 0x45, 0xe7,
-	0x7b, 0x96, 0x22, 0xb4, 0x30, 0x90, 0x11, 0x34, 0x74, 0xca, 0xb5, 0x78, 0x65, 0x7f, 0x4b, 0x3a,
-	0x05, 0xa7, 0x48, 0x92, 0xb7, 0x6b, 0xf9, 0x88, 0x7d, 0xa8, 0x2c, 0x53, 0xd1, 0x41, 0xdd, 0xb2,
-	0x6f, 0x0f, 0x70, 0xc1, 0x16, 0x3e, 0x9a, 0x19, 0xc8, 0xb1, 0xfe, 0x6b, 0x11, 0x67, 0xdc, 0x1e,
-	0x54, 0xe7, 0x5a, 0x19, 0xd0, 0xd9, 0x06, 0xa9, 0xa9, 0x92, 0x21, 0xb8, 0x69, 0xc8, 0x44, 0xf1,
-	0xe0, 0x29, 0xdf, 0xd8, 0x21, 0x34, 0x42, 0x1e, 0xb3, 0x40, 0xcf, 0x8c, 0x7e, 0x9f, 0xf9, 0xc7,
-	0x41, 0xda, 0xd0, 0x9a, 0xf0, 0x45, 0x34, 0x8e, 0x0c, 0x4f, 0xae, 0xc0, 0xc9, 0x0f, 0xcc, 0x65,
-	0xee, 0x2e, 0xa5, 0x07, 0x15, 0xdd, 0xdf, 0x6c, 0x64, 0x77, 0xb8, 0xac, 0x48, 0x7a, 0x50, 0xcd,
-	0xba, 0xe1, 0x26, 0xa0, 0xa9, 0xc6, 0x11, 0x45, 0xd3, 0x54, 0xcd, 0x34, 0x89, 0x28, 0x9a, 0xed,
-	0x9f, 0x41, 0x73, 0xf3, 0x2d, 0x60, 0x1b, 0x6a, 0x93, 0x75, 0x10, 0x30, 0x29, 0xdd, 0x12, 0x76,
-	0xcc, 0x52, 0xc6, 0xf2, 0x86, 0x3f, 0xbb, 0x08, 0xb7, 0xc1, 0xbe, 0xcb, 0x2e, 0x5f, 0x1f, 0x58,
-	0xe7, 0xee, 0x7b, 0xe2, 0xa1, 0x8f, 0xc4, 0x43, 0x9f, 0x89, 0x87, 0xde, 0xbe, 0xbc, 0xd2, 0x43,
-	0x55, 0xbf, 0xcb, 0xa3, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd5, 0xf4, 0x9f, 0xbf, 0xa8, 0x02,
-	0x00, 0x00,
+	// 407 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x53, 0x4f, 0x8b, 0xd3, 0x40,
+	0x14, 0xef, 0xa4, 0xf4, 0xdf, 0x4b, 0x9b, 0x86, 0x11, 0xb1, 0x78, 0x08, 0x61, 0x28, 0x12, 0x14,
+	0x7b, 0xa8, 0x82, 0x28, 0x5e, 0xaa, 0x45, 0xda, 0x83, 0x45, 0xa6, 0x22, 0xed, 0x31, 0x26, 0x43,
+	0x1d, 0xb4, 0x99, 0x98, 0x99, 0xee, 0x67, 0xd9, 0x8f, 0xb4, 0xc7, 0xfd, 0x08, 0x4b, 0xf7, 0x8b,
+	0x2c, 0x99, 0x4c, 0xb2, 0x4d, 0x77, 0x6f, 0x7b, 0xcb, 0x7b, 0xbf, 0x3f, 0xef, 0x97, 0x97, 0x17,
+	0x18, 0xec, 0x99, 0x94, 0xe1, 0x8e, 0x4d, 0xd2, 0x4c, 0x28, 0x81, 0x3b, 0xa6, 0x24, 0x0b, 0xb0,
+	0x67, 0x91, 0xa2, 0x4c, 0xa6, 0x22, 0x91, 0x0c, 0x7f, 0x84, 0x7e, 0x66, 0x9e, 0xbf, 0x8a, 0x98,
+	0x8d, 0x90, 0x8f, 0x02, 0x67, 0xfa, 0x7c, 0x52, 0xaa, 0xe9, 0x09, 0x48, 0x6b, 0x54, 0x12, 0x00,
+	0x68, 0xa7, 0xff, 0x07, 0x26, 0x15, 0x7e, 0x09, 0x5d, 0x15, 0x66, 0x3b, 0xa6, 0x96, 0xb1, 0x36,
+	0x69, 0xd2, 0xaa, 0x26, 0x73, 0x68, 0xcd, 0x22, 0x25, 0x32, 0xec, 0x80, 0xc5, 0x4b, 0xd8, 0xe2,
+	0x31, 0x7e, 0x03, 0xdd, 0x54, 0x48, 0xae, 0xb8, 0x48, 0x46, 0x96, 0x8f, 0x02, 0x7b, 0x3a, 0xac,
+	0x26, 0xff, 0x62, 0xb9, 0x84, 0x56, 0x04, 0xe2, 0x83, 0xa3, 0x5d, 0xe6, 0x5c, 0x86, 0x69, 0xca,
+	0xc2, 0x07, 0x76, 0x64, 0x05, 0xcf, 0xea, 0x0c, 0xf9, 0xe3, 0x20, 0xff, 0xe0, 0x0f, 0x00, 0x71,
+	0xd5, 0x19, 0x21, 0xbf, 0x19, 0xd8, 0xd3, 0x17, 0xd5, 0x9c, 0xba, 0x82, 0x9e, 0x50, 0xc9, 0x02,
+	0x7a, 0x1a, 0xfd, 0x2e, 0x2e, 0xd8, 0xd3, 0xb2, 0x7f, 0x32, 0xd9, 0x73, 0xa7, 0x22, 0x54, 0x00,
+	0xad, 0x7d, 0x5e, 0x98, 0x3c, 0xb8, 0x9e, 0x27, 0xe7, 0xd1, 0x82, 0x40, 0xde, 0xeb, 0x3d, 0x0b,
+	0xf3, 0x32, 0xaf, 0xa0, 0x1d, 0xea, 0xca, 0x08, 0x9d, 0xba, 0x90, 0x1a, 0x94, 0xcc, 0xc0, 0xcd,
+	0x4d, 0xd6, 0x8a, 0x47, 0x7f, 0xcb, 0x6f, 0xf4, 0x16, 0x7a, 0x31, 0xcf, 0x58, 0xa4, 0x33, 0xa3,
+	0xc7, 0x33, 0xdf, 0x33, 0xc8, 0x10, 0x06, 0x6b, 0xbe, 0x4b, 0x96, 0x89, 0xd1, 0x93, 0x6f, 0xe0,
+	0x94, 0x0d, 0x73, 0x3e, 0xe7, 0x4b, 0x19, 0x43, 0x4b, 0xcf, 0x37, 0x1b, 0x39, 0x0f, 0x57, 0x80,
+	0x64, 0x0c, 0xed, 0x62, 0x1a, 0xee, 0x03, 0xda, 0x68, 0x39, 0xa2, 0x68, 0x93, 0x57, 0x5b, 0xad,
+	0x44, 0x14, 0x6d, 0x5f, 0x7f, 0x86, 0xfe, 0xe9, 0xf5, 0x61, 0x1b, 0x3a, 0xeb, 0x43, 0x14, 0x31,
+	0x29, 0xdd, 0x06, 0x76, 0xcc, 0x52, 0x96, 0x72, 0xc5, 0xff, 0xb9, 0x08, 0x0f, 0xc1, 0xfe, 0x59,
+	0x9c, 0x9b, 0x6e, 0x58, 0x5f, 0xdc, 0xab, 0xa3, 0x87, 0xae, 0x8f, 0x1e, 0xba, 0x39, 0x7a, 0xe8,
+	0xf2, 0xd6, 0x6b, 0xfc, 0x6e, 0xeb, 0x3f, 0xe1, 0xdd, 0x5d, 0x00, 0x00, 0x00, 0xff, 0xff, 0x6f,
+	0x7f, 0xd1, 0x8b, 0x1a, 0x03, 0x00, 0x00,
 }
 
 func (m *ActResponse) Marshal() (dAtA []byte, err error) {
@@ -693,6 +791,79 @@ func (m *Actor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintMessage(dAtA, i, uint64(m.Id))
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ActorDisappear) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ActorDisappear) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActorDisappear) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Id != 0 {
+		i = encodeVarintMessage(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ActorDisappearsPush) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ActorDisappearsPush) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActorDisappearsPush) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Disappears) > 0 {
+		for iNdEx := len(m.Disappears) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Disappears[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintMessage(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -1025,6 +1196,39 @@ func (m *Actor) Size() (n int) {
 	if m.Position != nil {
 		l = m.Position.Size()
 		n += 1 + l + sovMessage(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ActorDisappear) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovMessage(uint64(m.Id))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ActorDisappearsPush) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Disappears) > 0 {
+		for _, e := range m.Disappears {
+			l = e.Size()
+			n += 1 + l + sovMessage(uint64(l))
+		}
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -1385,6 +1589,167 @@ func (m *Actor) Unmarshal(dAtA []byte) error {
 				m.Position = &Vector{}
 			}
 			if err := m.Position.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ActorDisappear) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ActorDisappear: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ActorDisappear: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ActorDisappearsPush) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ActorDisappearsPush: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ActorDisappearsPush: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Disappears", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Disappears = append(m.Disappears, &ActorDisappear{})
+			if err := m.Disappears[len(m.Disappears)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

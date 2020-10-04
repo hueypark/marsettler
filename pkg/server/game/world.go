@@ -1,6 +1,8 @@
 package game
 
 import (
+	"errors"
+	"fmt"
 	"log"
 
 	"github.com/hueypark/marsettler/pkg/internal/physics"
@@ -48,9 +50,29 @@ func (w *World) ActorsPush() *message.ActorsPush {
 	return m
 }
 
+// DeleteActor deletes an actor.
+func (w *World) DeleteActor(actorID int64) error {
+	_, ok := w.actors[actorID]
+	if !ok {
+		return errors.New(fmt.Sprintf("there is no actor %v", actorID))
+	}
+
+	delete(w.actors, actorID)
+
+	m := &message.ActorDisappearsPush{}
+	m.Disappears = append(m.Disappears, &message.ActorDisappear{Id: actorID})
+
+	return w.broadcast(m)
+}
+
 // NewActor creates new actor.
-func (w *World) NewActor(id int64) *Actor {
+func (w *World) NewActor(id int64) (*Actor, error) {
 	a := NewActor(id)
+
+	_, ok := w.actors[a.ID()]
+	if ok {
+		return nil, errors.New(fmt.Sprintf("actor already exists [id: %v]", a.ID()))
+	}
 
 	w.actors[a.ID()] = a
 	w.physicsWorld.Add(a.Body)
@@ -63,7 +85,7 @@ func (w *World) NewActor(id int64) *Actor {
 		log.Println(err)
 	}
 
-	return a
+	return a, nil
 }
 
 // SetActorMove sets message.ActorMove message.

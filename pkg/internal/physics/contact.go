@@ -58,6 +58,10 @@ func (c *Contact) addImpulse() {
 }
 
 func (c *Contact) solvePenetration() {
+	if c.penetration == 0 {
+		return
+	}
+
 	if !c.lhs.Static() {
 		c.lhs.SetPosition(math2d.Add(c.lhs.Position(), math2d.Mul(c.normal, c.penetration*-0.5)))
 	}

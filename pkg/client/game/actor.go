@@ -17,7 +17,7 @@ type Actor struct {
 // NewActor Creates new actor.
 func NewActor(id int64, position *math2d.Vector) *Actor {
 	a := &Actor{
-		Actor:          game.NewActor(id),
+		Actor:          game.NewActor(id, nil),
 		clientPosition: &math2d.Vector{},
 	}
 

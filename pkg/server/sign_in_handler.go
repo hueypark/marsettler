@@ -13,7 +13,11 @@ import (
 func SignInHandler(conn *net.Conn, m *message.SignInRequest, user *User, world *game.World) error {
 	response := &message.SignInResponse{}
 
-	actor := world.NewActor(user.ID())
+	actor, err := world.NewActor(user.ID())
+	if err != nil {
+		return err
+	}
+
 	user.SetActor(actor)
 
 	response.Id = actor.ID()
@@ -25,7 +29,7 @@ func SignInHandler(conn *net.Conn, m *message.SignInRequest, user *User, world *
 		},
 	}
 
-	err := conn.Write(world.ActorsPush())
+	err = conn.Write(world.ActorsPush())
 	if err != nil {
 		return err
 	}

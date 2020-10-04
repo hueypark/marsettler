@@ -40,20 +40,7 @@ func NewClient() (*Client, error) {
 	c.world = game.NewWorld()
 	c.tickDelta = 1.0 / ebiten.DefaultTPS
 
-	err = conn.SetHandlers(net.HandlerFuncs{
-		message.ActResponseID: func(conn *net.Conn, m *message.ActResponse) error {
-			return ActResponseHandler(conn, m)
-		},
-		message.ActorMovesPushID: func(conn *net.Conn, m *message.ActorMovesPush) error {
-			return ActorMovesPushHandler(conn, m, c.world)
-		},
-		message.ActorsPushID: func(conn *net.Conn, m *message.ActorsPush) error {
-			return ActorsPushHandler(conn, m, c.world)
-		},
-		message.SignInResponseID: func(conn *net.Conn, m *message.SignInResponse) error {
-			return SignInResponseHandler(conn, m, c, c.world)
-		},
-	})
+	err = conn.SetHandlers(c.handlerFuncs())
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +140,10 @@ func (c *Client) Update(_ *ebiten.Image) error {
 		return err
 	}
 
-	c.conn.Consume()
+	err = c.conn.Consume()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -166,6 +156,26 @@ func connect() (*websocket.Conn, error) {
 	}
 
 	return conn, nil
+}
+
+func (c *Client) handlerFuncs() net.HandlerFuncs {
+	return net.HandlerFuncs{
+		message.ActorDisappearsPushID: func(conn *net.Conn, m *message.ActorDisappearsPush) error {
+			return ActorDisappearsPushHandler(conn, m, c.world)
+		},
+		message.ActResponseID: func(conn *net.Conn, m *message.ActResponse) error {
+			return ActResponseHandler(conn, m)
+		},
+		message.ActorMovesPushID: func(conn *net.Conn, m *message.ActorMovesPush) error {
+			return ActorMovesPushHandler(conn, m, c.world)
+		},
+		message.ActorsPushID: func(conn *net.Conn, m *message.ActorsPush) error {
+			return ActorsPushHandler(conn, m, c.world)
+		},
+		message.SignInResponseID: func(conn *net.Conn, m *message.SignInResponse) error {
+			return SignInResponseHandler(conn, m, c, c.world)
+		},
+	}
 }
 
 func (c *Client) updateMoveStickRequest() error {

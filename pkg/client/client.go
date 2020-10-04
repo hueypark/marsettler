@@ -3,6 +3,7 @@ package client
 import (
 	"log"
 	"net/url"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/hajimehoshi/ebiten"
@@ -16,16 +17,20 @@ import (
 
 // Client is the client client.
 type Client struct {
+	useRenderer bool
+
 	id        int64
 	conn      *net.Conn
 	world     *game.World
-	tickDelta float64
+	tickDelta time.Duration
 	geoM      ebiten.GeoM
 }
 
 // NewClient creates new client.
-func NewClient() (*Client, error) {
+func NewClient(useRenderer bool) (*Client, error) {
 	c := &Client{}
+
+	c.useRenderer = useRenderer
 
 	websocketConn, err := connect()
 	if err != nil {
@@ -39,7 +44,7 @@ func NewClient() (*Client, error) {
 
 	c.conn = conn
 	c.world = game.NewWorld()
-	c.tickDelta = 1.0 / ebiten.DefaultTPS
+	c.tickDelta = time.Second / ebiten.DefaultTPS
 
 	err = conn.SetHandlers(handler.Generate(c, c.world))
 	if err != nil {
@@ -86,7 +91,20 @@ func (c *Client) Run() error {
 	ebiten.SetWindowSize(640, 480)
 	ebiten.SetWindowTitle("Marsettler")
 	ebiten.SetRunnableOnUnfocused(true)
-	return ebiten.RunGame(c)
+
+	if c.useRenderer {
+		return ebiten.RunGame(c)
+	} else {
+		ticker := time.NewTicker(c.tickDelta)
+
+		for range ticker.C {
+			err := c.Tick(c.tickDelta.Seconds())
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
 }
 
 // Draw implements ebiten.Game.Draw.
@@ -119,9 +137,9 @@ func (c *Client) Layout(_, _ int) (screenWidth, screenHeight int) {
 	return 320, 240
 }
 
-// Update implements ebiten.Game.Update.
-func (c *Client) Update(_ *ebiten.Image) error {
-	err := c.world.Tick(c.tickDelta)
+// Tick updates actor periodically.
+func (c *Client) Tick(delta float64) error {
+	err := c.world.Tick(delta)
 	if err != nil {
 		return err
 	}
@@ -152,6 +170,11 @@ func (c *Client) Update(_ *ebiten.Image) error {
 	}
 
 	return nil
+}
+
+// Update implements ebiten.Game.Update.
+func (c *Client) Update(_ *ebiten.Image) error {
+	return c.Tick(c.tickDelta.Seconds())
 }
 
 func connect() (*websocket.Conn, error) {

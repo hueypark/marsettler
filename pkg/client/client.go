@@ -159,6 +159,17 @@ func (c *Client) Tick(delta float64) error {
 		}
 	}
 
+	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+		x, y := ebiten.CursorPosition()
+		moveToPosition := &message.MoveToPositionRequest{
+			Position: &message.Vector{X: float64(x), Y: -float64(y)},
+		}
+		err := c.conn.Write(moveToPosition)
+		if err != nil {
+			return err
+		}
+	}
+
 	err = c.updateMoveStickRequest()
 	if err != nil {
 		return err

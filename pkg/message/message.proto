@@ -40,6 +40,10 @@ message MoveStickRequest {
   Vector direction = 1;
 }
 
+message MoveToPositionRequest {
+  Vector position = 1;
+}
+
 enum ResponseCode {
   Success = 0;
   ActorIsNil = 1;

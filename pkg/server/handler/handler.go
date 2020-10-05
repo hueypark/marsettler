@@ -16,6 +16,9 @@ func Generate(user *user.User, world *game.World) net.HandlerFuncs {
 		message.MoveStickRequestID: func(conn *net.Conn, m *message.MoveStickRequest) error {
 			return OnMoveStick(conn, m, user)
 		},
+		message.MoveToPositionRequestID: func(conn *net.Conn, m *message.MoveToPositionRequest) error {
+			return OnMoveToPositionRequest(conn, m, user)
+		},
 		message.SignInRequestID: func(conn *net.Conn, m *message.SignInRequest) error {
 			return OnSignIn(conn, m, user, world)
 		},

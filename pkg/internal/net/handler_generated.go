@@ -21,6 +21,7 @@ type Handler struct {
 	actorMovesPushHandler func(*Conn, *message.ActorMovesPush) error
 	actorsPushHandler func(*Conn, *message.ActorsPush) error
 	moveStickRequestHandler func(*Conn, *message.MoveStickRequest) error
+	moveToPositionRequestHandler func(*Conn, *message.MoveToPositionRequest) error
 	signInRequestHandler func(*Conn, *message.SignInRequest) error
 	signInResponseHandler func(*Conn, *message.SignInResponse) error
 	vectorHandler func(*Conn, *message.Vector) error
@@ -98,6 +99,13 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 			}
 
 			h.moveStickRequestHandler = v
+		case message.MoveToPositionRequestID:
+			v, ok := handler.(func(*Conn, *message.MoveToPositionRequest) error)
+			if !ok {
+				return nil, errors.New("handler does not handles MoveToPositionRequest")
+			}
+
+			h.moveToPositionRequestHandler = v
 		case message.SignInRequestID:
 			v, ok := handler.(func(*Conn, *message.SignInRequest) error)
 			if !ok {
@@ -236,6 +244,18 @@ func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 		}
 
 		return h.moveStickRequestHandler(conn, m)
+	case message.MoveToPositionRequestID:
+		m := &message.MoveToPositionRequest{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.moveToPositionRequestHandler == nil {
+			return nil
+		}
+
+		return h.moveToPositionRequestHandler(conn, m)
 	case message.SignInRequestID:
 		m := &message.SignInRequest{}
 		err := proto.Unmarshal(bytes, m)

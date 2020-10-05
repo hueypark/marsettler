@@ -16,9 +16,10 @@ const (
 	ActorMovesPushID ID = 6
 	ActorsPushID ID = 7
 	MoveStickRequestID ID = 8
-	SignInRequestID ID = 9
-	SignInResponseID ID = 10
-	VectorID ID = 11
+	MoveToPositionRequestID ID = 9
+	SignInRequestID ID = 10
+	SignInResponseID ID = 11
+	VectorID ID = 12
 )
 
 // Message represents message.
@@ -36,6 +37,7 @@ func (m *ActorMove) ID() ID { return ActorMoveID }
 func (m *ActorMovesPush) ID() ID { return ActorMovesPushID }
 func (m *ActorsPush) ID() ID { return ActorsPushID }
 func (m *MoveStickRequest) ID() ID { return MoveStickRequestID }
+func (m *MoveToPositionRequest) ID() ID { return MoveToPositionRequestID }
 func (m *SignInRequest) ID() ID { return SignInRequestID }
 func (m *SignInResponse) ID() ID { return SignInResponseID }
 func (m *Vector) ID() ID { return VectorID }

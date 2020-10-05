@@ -12,14 +12,13 @@ import (
 type Actor struct {
 	*game.Actor
 	moveStickDirection *math2d.Vector
+	moveToPosition     *math2d.Vector
 	moved              bool
 }
 
 // NewActor Creates new actor.
 func NewActor(id int64) *Actor {
-	a := &Actor{
-		moveStickDirection: &math2d.Vector{},
-	}
+	a := &Actor{}
 
 	a.Actor = game.NewActor(
 		id,
@@ -49,6 +48,15 @@ func (a *Actor) Message() *message.Actor {
 func (a *Actor) MoveStick(direction math2d.Vector) {
 	a.moveStickDirection = &direction
 	a.moveStickDirection.Normalize()
+
+	a.moveToPosition = nil
+}
+
+// SetMoveToPosition sets the position where it will move and arrive.
+func (a *Actor) SetMoveToPosition(position math2d.Vector) {
+	a.moveToPosition = &position
+
+	a.moveStickDirection = nil
 }
 
 // String implements fmt.Stringer.
@@ -58,10 +66,30 @@ func (a *Actor) String() string {
 
 // Tick updates actor periodically.
 func (a *Actor) Tick(world *World, delta float64) error {
-	if !a.moveStickDirection.Zero() {
+	if a.moveStickDirection != nil {
 		position := a.Position()
 		position.AddScaledVector(a.moveStickDirection, delta*a.Speed())
+
 		a.SetPosition(position)
+
+		a.moved = true
+	} else if a.moveToPosition != nil {
+		position := a.Position()
+
+		moveStickDirection := math2d.Sub(a.moveToPosition, position)
+
+		moveDistance := delta * a.Speed()
+		if moveDistance*moveDistance <= moveStickDirection.SizeSquare() {
+			moveStickDirection.Normalize()
+			position.AddScaledVector(moveStickDirection, moveDistance)
+		} else {
+			position.Set(a.moveToPosition)
+
+			a.moveToPosition = nil
+		}
+
+		a.SetPosition(position)
+
 		a.moved = true
 	}
 

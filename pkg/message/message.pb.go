@@ -6,10 +6,13 @@ package message
 import (
 	encoding_binary "encoding/binary"
 	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
+	proto "github.com/gogo/protobuf/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
+	reflect "reflect"
+	strconv "strconv"
+	strings "strings"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -21,14 +24,14 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type ResponseCode int32
 
 const (
-	ResponseCode_Success     ResponseCode = 0
-	ResponseCode_ActorIsNil  ResponseCode = 1
-	ResponseCode_TargetIsNil ResponseCode = 2
+	Success     ResponseCode = 0
+	ActorIsNil  ResponseCode = 1
+	TargetIsNil ResponseCode = 2
 )
 
 var ResponseCode_name = map[int32]string{
@@ -43,24 +46,16 @@ var ResponseCode_value = map[string]int32{
 	"TargetIsNil": 2,
 }
 
-func (x ResponseCode) String() string {
-	return proto.EnumName(ResponseCode_name, int32(x))
-}
-
 func (ResponseCode) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{0}
 }
 
 type ActResponse struct {
-	ResponseCode         ResponseCode `protobuf:"varint,1,opt,name=responseCode,proto3,enum=message.ResponseCode" json:"responseCode,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `json:"-"`
-	XXX_sizecache        int32        `json:"-"`
+	ResponseCode ResponseCode `protobuf:"varint,1,opt,name=responseCode,proto3,enum=message.ResponseCode" json:"responseCode,omitempty"`
 }
 
-func (m *ActResponse) Reset()         { *m = ActResponse{} }
-func (m *ActResponse) String() string { return proto.CompactTextString(m) }
-func (*ActResponse) ProtoMessage()    {}
+func (m *ActResponse) Reset()      { *m = ActResponse{} }
+func (*ActResponse) ProtoMessage() {}
 func (*ActResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{0}
 }
@@ -95,19 +90,15 @@ func (m *ActResponse) GetResponseCode() ResponseCode {
 	if m != nil {
 		return m.ResponseCode
 	}
-	return ResponseCode_Success
+	return Success
 }
 
 type ActRequest struct {
-	TargetId             int64    `protobuf:"varint,1,opt,name=targetId,proto3" json:"targetId,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	TargetId int64 `protobuf:"varint,1,opt,name=targetId,proto3" json:"targetId,omitempty"`
 }
 
-func (m *ActRequest) Reset()         { *m = ActRequest{} }
-func (m *ActRequest) String() string { return proto.CompactTextString(m) }
-func (*ActRequest) ProtoMessage()    {}
+func (m *ActRequest) Reset()      { *m = ActRequest{} }
+func (*ActRequest) ProtoMessage() {}
 func (*ActRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{1}
 }
@@ -146,16 +137,12 @@ func (m *ActRequest) GetTargetId() int64 {
 }
 
 type Actor struct {
-	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Position             *Vector  `protobuf:"bytes,2,opt,name=position,proto3" json:"position,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Id       int64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Position *Vector `protobuf:"bytes,2,opt,name=position,proto3" json:"position,omitempty"`
 }
 
-func (m *Actor) Reset()         { *m = Actor{} }
-func (m *Actor) String() string { return proto.CompactTextString(m) }
-func (*Actor) ProtoMessage()    {}
+func (m *Actor) Reset()      { *m = Actor{} }
+func (*Actor) ProtoMessage() {}
 func (*Actor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{2}
 }
@@ -201,15 +188,11 @@ func (m *Actor) GetPosition() *Vector {
 }
 
 type ActorDisappear struct {
-	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *ActorDisappear) Reset()         { *m = ActorDisappear{} }
-func (m *ActorDisappear) String() string { return proto.CompactTextString(m) }
-func (*ActorDisappear) ProtoMessage()    {}
+func (m *ActorDisappear) Reset()      { *m = ActorDisappear{} }
+func (*ActorDisappear) ProtoMessage() {}
 func (*ActorDisappear) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{3}
 }
@@ -248,15 +231,11 @@ func (m *ActorDisappear) GetId() int64 {
 }
 
 type ActorDisappearsPush struct {
-	Disappears           []*ActorDisappear `protobuf:"bytes,1,rep,name=disappears,proto3" json:"disappears,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
-	XXX_unrecognized     []byte            `json:"-"`
-	XXX_sizecache        int32             `json:"-"`
+	Disappears []*ActorDisappear `protobuf:"bytes,1,rep,name=disappears,proto3" json:"disappears,omitempty"`
 }
 
-func (m *ActorDisappearsPush) Reset()         { *m = ActorDisappearsPush{} }
-func (m *ActorDisappearsPush) String() string { return proto.CompactTextString(m) }
-func (*ActorDisappearsPush) ProtoMessage()    {}
+func (m *ActorDisappearsPush) Reset()      { *m = ActorDisappearsPush{} }
+func (*ActorDisappearsPush) ProtoMessage() {}
 func (*ActorDisappearsPush) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{4}
 }
@@ -295,16 +274,12 @@ func (m *ActorDisappearsPush) GetDisappears() []*ActorDisappear {
 }
 
 type ActorMove struct {
-	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Position             *Vector  `protobuf:"bytes,2,opt,name=position,proto3" json:"position,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Id       int64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Position *Vector `protobuf:"bytes,2,opt,name=position,proto3" json:"position,omitempty"`
 }
 
-func (m *ActorMove) Reset()         { *m = ActorMove{} }
-func (m *ActorMove) String() string { return proto.CompactTextString(m) }
-func (*ActorMove) ProtoMessage()    {}
+func (m *ActorMove) Reset()      { *m = ActorMove{} }
+func (*ActorMove) ProtoMessage() {}
 func (*ActorMove) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{5}
 }
@@ -350,15 +325,11 @@ func (m *ActorMove) GetPosition() *Vector {
 }
 
 type ActorMovesPush struct {
-	Moves                []*ActorMove `protobuf:"bytes,1,rep,name=moves,proto3" json:"moves,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `json:"-"`
-	XXX_sizecache        int32        `json:"-"`
+	Moves []*ActorMove `protobuf:"bytes,1,rep,name=moves,proto3" json:"moves,omitempty"`
 }
 
-func (m *ActorMovesPush) Reset()         { *m = ActorMovesPush{} }
-func (m *ActorMovesPush) String() string { return proto.CompactTextString(m) }
-func (*ActorMovesPush) ProtoMessage()    {}
+func (m *ActorMovesPush) Reset()      { *m = ActorMovesPush{} }
+func (*ActorMovesPush) ProtoMessage() {}
 func (*ActorMovesPush) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{6}
 }
@@ -397,15 +368,11 @@ func (m *ActorMovesPush) GetMoves() []*ActorMove {
 }
 
 type ActorsPush struct {
-	Actors               []*Actor `protobuf:"bytes,1,rep,name=actors,proto3" json:"actors,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Actors []*Actor `protobuf:"bytes,1,rep,name=actors,proto3" json:"actors,omitempty"`
 }
 
-func (m *ActorsPush) Reset()         { *m = ActorsPush{} }
-func (m *ActorsPush) String() string { return proto.CompactTextString(m) }
-func (*ActorsPush) ProtoMessage()    {}
+func (m *ActorsPush) Reset()      { *m = ActorsPush{} }
+func (*ActorsPush) ProtoMessage() {}
 func (*ActorsPush) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{7}
 }
@@ -444,15 +411,11 @@ func (m *ActorsPush) GetActors() []*Actor {
 }
 
 type MoveStickRequest struct {
-	Direction            *Vector  `protobuf:"bytes,1,opt,name=direction,proto3" json:"direction,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Direction *Vector `protobuf:"bytes,1,opt,name=direction,proto3" json:"direction,omitempty"`
 }
 
-func (m *MoveStickRequest) Reset()         { *m = MoveStickRequest{} }
-func (m *MoveStickRequest) String() string { return proto.CompactTextString(m) }
-func (*MoveStickRequest) ProtoMessage()    {}
+func (m *MoveStickRequest) Reset()      { *m = MoveStickRequest{} }
+func (*MoveStickRequest) ProtoMessage() {}
 func (*MoveStickRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{8}
 }
@@ -491,15 +454,11 @@ func (m *MoveStickRequest) GetDirection() *Vector {
 }
 
 type MoveToPositionRequest struct {
-	Position             *Vector  `protobuf:"bytes,1,opt,name=position,proto3" json:"position,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Position *Vector `protobuf:"bytes,1,opt,name=position,proto3" json:"position,omitempty"`
 }
 
-func (m *MoveToPositionRequest) Reset()         { *m = MoveToPositionRequest{} }
-func (m *MoveToPositionRequest) String() string { return proto.CompactTextString(m) }
-func (*MoveToPositionRequest) ProtoMessage()    {}
+func (m *MoveToPositionRequest) Reset()      { *m = MoveToPositionRequest{} }
+func (*MoveToPositionRequest) ProtoMessage() {}
 func (*MoveToPositionRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{9}
 }
@@ -538,14 +497,10 @@ func (m *MoveToPositionRequest) GetPosition() *Vector {
 }
 
 type SignInRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *SignInRequest) Reset()         { *m = SignInRequest{} }
-func (m *SignInRequest) String() string { return proto.CompactTextString(m) }
-func (*SignInRequest) ProtoMessage()    {}
+func (m *SignInRequest) Reset()      { *m = SignInRequest{} }
+func (*SignInRequest) ProtoMessage() {}
 func (*SignInRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{10}
 }
@@ -577,16 +532,12 @@ func (m *SignInRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_SignInRequest proto.InternalMessageInfo
 
 type SignInResponse struct {
-	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Actor                *Actor   `protobuf:"bytes,2,opt,name=actor,proto3" json:"actor,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Id    int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Actor *Actor `protobuf:"bytes,2,opt,name=actor,proto3" json:"actor,omitempty"`
 }
 
-func (m *SignInResponse) Reset()         { *m = SignInResponse{} }
-func (m *SignInResponse) String() string { return proto.CompactTextString(m) }
-func (*SignInResponse) ProtoMessage()    {}
+func (m *SignInResponse) Reset()      { *m = SignInResponse{} }
+func (*SignInResponse) ProtoMessage() {}
 func (*SignInResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{11}
 }
@@ -632,16 +583,12 @@ func (m *SignInResponse) GetActor() *Actor {
 }
 
 type Vector struct {
-	X                    float64  `protobuf:"fixed64,1,opt,name=X,proto3" json:"X,omitempty"`
-	Y                    float64  `protobuf:"fixed64,2,opt,name=Y,proto3" json:"Y,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	X float64 `protobuf:"fixed64,1,opt,name=X,proto3" json:"X,omitempty"`
+	Y float64 `protobuf:"fixed64,2,opt,name=Y,proto3" json:"Y,omitempty"`
 }
 
-func (m *Vector) Reset()         { *m = Vector{} }
-func (m *Vector) String() string { return proto.CompactTextString(m) }
-func (*Vector) ProtoMessage()    {}
+func (m *Vector) Reset()      { *m = Vector{} }
+func (*Vector) ProtoMessage() {}
 func (*Vector) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{12}
 }
@@ -706,36 +653,538 @@ func init() {
 func init() { proto.RegisterFile("message.proto", fileDescriptor_33c57e4bae7b9afd) }
 
 var fileDescriptor_33c57e4bae7b9afd = []byte{
-	// 421 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x53, 0x4f, 0xef, 0xd2, 0x40,
-	0x10, 0x65, 0x4b, 0xf8, 0x37, 0x85, 0xd2, 0xac, 0x21, 0x12, 0x0f, 0x4d, 0xb3, 0x21, 0xa6, 0xd1,
-	0xc8, 0x01, 0x4d, 0x8c, 0xc6, 0x0b, 0x4a, 0x0c, 0x1c, 0x24, 0x64, 0x21, 0x06, 0x8e, 0xb5, 0xdd,
-	0xe0, 0x46, 0x61, 0x6b, 0x77, 0xf1, 0xb3, 0xf8, 0x91, 0x3c, 0xfa, 0x11, 0x0c, 0x7e, 0x11, 0xd3,
-	0xed, 0xb6, 0xb6, 0x68, 0xe2, 0xe1, 0x77, 0x63, 0x76, 0xde, 0x7b, 0xf3, 0xde, 0x30, 0x85, 0xc1,
-	0x89, 0x49, 0x19, 0x1e, 0xd9, 0x34, 0x49, 0x85, 0x12, 0xb8, 0x63, 0x4a, 0xb2, 0x04, 0x7b, 0x1e,
-	0x29, 0xca, 0x64, 0x22, 0xce, 0x92, 0xe1, 0x17, 0xd0, 0x4f, 0xcd, 0xef, 0x37, 0x22, 0x66, 0x63,
-	0xe4, 0xa3, 0xc0, 0x99, 0x8d, 0xa6, 0x05, 0x9b, 0x56, 0x9a, 0xb4, 0x06, 0x25, 0x01, 0x80, 0x56,
-	0xfa, 0x72, 0x61, 0x52, 0xe1, 0x07, 0xd0, 0x55, 0x61, 0x7a, 0x64, 0x6a, 0x15, 0x6b, 0x91, 0x26,
-	0x2d, 0x6b, 0xb2, 0x80, 0xd6, 0x3c, 0x52, 0x22, 0xc5, 0x0e, 0x58, 0xbc, 0x68, 0x5b, 0x3c, 0xc6,
-	0x8f, 0xa1, 0x9b, 0x08, 0xc9, 0x15, 0x17, 0xe7, 0xb1, 0xe5, 0xa3, 0xc0, 0x9e, 0x0d, 0xcb, 0xc9,
-	0xef, 0x59, 0x46, 0xa1, 0x25, 0x80, 0xf8, 0xe0, 0x68, 0x95, 0x05, 0x97, 0x61, 0x92, 0xb0, 0xf0,
-	0x2f, 0x39, 0xb2, 0x86, 0x7b, 0x75, 0x84, 0xdc, 0x5c, 0xe4, 0x47, 0xfc, 0x1c, 0x20, 0x2e, 0x5f,
-	0xc6, 0xc8, 0x6f, 0x06, 0xf6, 0xec, 0x7e, 0x39, 0xa7, 0xce, 0xa0, 0x15, 0x28, 0x59, 0x42, 0x4f,
-	0x77, 0xdf, 0x89, 0xaf, 0xec, 0x6e, 0xde, 0x5f, 0x1a, 0xef, 0x99, 0x52, 0x6e, 0x2a, 0x80, 0xd6,
-	0x29, 0x2b, 0x8c, 0x1f, 0x5c, 0xf7, 0x93, 0xe1, 0x68, 0x0e, 0x20, 0xcf, 0xf4, 0x9e, 0x85, 0x09,
-	0xf3, 0x10, 0xda, 0xa1, 0xae, 0x0c, 0xd1, 0xa9, 0x13, 0xa9, 0xe9, 0x92, 0x39, 0xb8, 0x99, 0xc8,
-	0x56, 0xf1, 0xe8, 0x53, 0xf1, 0x1f, 0x3d, 0x81, 0x5e, 0xcc, 0x53, 0x16, 0x69, 0xcf, 0xe8, 0xdf,
-	0x9e, 0xff, 0x20, 0xc8, 0x02, 0x46, 0x99, 0xc4, 0x4e, 0x6c, 0x4c, 0x8c, 0x42, 0xa7, 0x1a, 0x1d,
-	0xfd, 0x2f, 0xfa, 0x10, 0x06, 0x5b, 0x7e, 0x3c, 0xaf, 0x0a, 0x36, 0x79, 0x0b, 0x4e, 0xf1, 0x60,
-	0x8e, 0xf0, 0x76, 0xb5, 0x13, 0x68, 0xe9, 0x14, 0x66, 0xaf, 0xb7, 0x11, 0xf3, 0x26, 0x99, 0x40,
-	0x3b, 0x1f, 0x86, 0xfb, 0x80, 0xf6, 0x9a, 0x8e, 0x28, 0xda, 0x67, 0xd5, 0x41, 0x33, 0x11, 0x45,
-	0x87, 0x47, 0xaf, 0xa0, 0x5f, 0xbd, 0x61, 0x6c, 0x43, 0x67, 0x7b, 0x89, 0x22, 0x26, 0xa5, 0xdb,
-	0xc0, 0x8e, 0x59, 0xed, 0x4a, 0xae, 0xf9, 0x67, 0x17, 0xe1, 0x21, 0xd8, 0xbb, 0xfc, 0x68, 0xf5,
-	0x83, 0xf5, 0xda, 0xfd, 0x7e, 0xf5, 0xd0, 0x8f, 0xab, 0x87, 0x7e, 0x5e, 0x3d, 0xf4, 0xed, 0x97,
-	0xd7, 0xf8, 0xd0, 0xd6, 0xdf, 0xd3, 0xd3, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff, 0xca, 0xab, 0x3e,
-	0x40, 0x60, 0x03, 0x00, 0x00,
+	// 461 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x53, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0xf5, 0xa4, 0x4a, 0xda, 0x8e, 0x53, 0x27, 0x5a, 0x54, 0x11, 0x71, 0x58, 0x45, 0xab, 0x0a,
+	0x59, 0x20, 0x7a, 0x08, 0x95, 0x10, 0x88, 0x4b, 0x20, 0x42, 0xcd, 0x81, 0xaa, 0xda, 0x54, 0xa8,
+	0x3d, 0x1a, 0x7b, 0x15, 0x56, 0xd0, 0xac, 0xf1, 0x3a, 0x9c, 0xf9, 0x04, 0x3e, 0x83, 0x4f, 0xe1,
+	0x98, 0x63, 0x8f, 0xc4, 0xb9, 0x70, 0xec, 0x27, 0x20, 0xaf, 0xd7, 0xc6, 0x0e, 0x48, 0x1c, 0x7a,
+	0xcb, 0xec, 0xbc, 0xf7, 0xe6, 0xbd, 0xc9, 0x18, 0x0f, 0xae, 0x85, 0xd6, 0xc1, 0x5c, 0x1c, 0xc7,
+	0x89, 0x4a, 0x15, 0xd9, 0xb5, 0x25, 0x3b, 0x45, 0x77, 0x1c, 0xa6, 0x5c, 0xe8, 0x58, 0x2d, 0xb4,
+	0x20, 0xcf, 0xb1, 0x9b, 0xd8, 0xdf, 0xaf, 0x55, 0x24, 0x06, 0x30, 0x04, 0xdf, 0x1b, 0x1d, 0x1e,
+	0x97, 0x6c, 0x5e, 0x6b, 0xf2, 0x06, 0x94, 0xf9, 0x88, 0x46, 0xe9, 0xf3, 0x52, 0xe8, 0x94, 0x3c,
+	0xc0, 0xbd, 0x34, 0x48, 0xe6, 0x22, 0x9d, 0x46, 0x46, 0x64, 0x87, 0x57, 0x35, 0x9b, 0x60, 0x7b,
+	0x1c, 0xa6, 0x2a, 0x21, 0x1e, 0xb6, 0x64, 0xd9, 0x6e, 0xc9, 0x88, 0x3c, 0xc6, 0xbd, 0x58, 0x69,
+	0x99, 0x4a, 0xb5, 0x18, 0xb4, 0x86, 0xe0, 0xbb, 0xa3, 0x5e, 0x35, 0xf9, 0x9d, 0xc8, 0x29, 0xbc,
+	0x02, 0xb0, 0x21, 0x7a, 0x46, 0x65, 0x22, 0x75, 0x10, 0xc7, 0x22, 0xf8, 0x4b, 0x8e, 0x9d, 0xe1,
+	0xbd, 0x26, 0x42, 0x9f, 0x2f, 0xf5, 0x07, 0xf2, 0x0c, 0x31, 0xaa, 0x5e, 0x06, 0x30, 0xdc, 0xf1,
+	0xdd, 0xd1, 0xfd, 0x6a, 0x4e, 0x93, 0xc1, 0x6b, 0x50, 0x76, 0x8a, 0xfb, 0xa6, 0xfb, 0x56, 0x7d,
+	0x11, 0x77, 0xf3, 0xfe, 0xc2, 0x7a, 0xcf, 0x95, 0x0a, 0x53, 0x3e, 0xb6, 0xaf, 0xf3, 0xc2, 0xfa,
+	0x21, 0x4d, 0x3f, 0x39, 0x8e, 0x17, 0x00, 0x76, 0x62, 0xf6, 0xac, 0x6c, 0x98, 0x87, 0xd8, 0x09,
+	0x4c, 0x65, 0x89, 0x5e, 0x93, 0xc8, 0x6d, 0x97, 0x8d, 0xb1, 0x9f, 0x8b, 0xcc, 0x52, 0x19, 0x7e,
+	0x2c, 0xff, 0xa3, 0x27, 0xb8, 0x1f, 0xc9, 0x44, 0x84, 0xc6, 0x33, 0xfc, 0xdb, 0xf3, 0x1f, 0x04,
+	0x9b, 0xe0, 0x61, 0x2e, 0x71, 0xa1, 0xce, 0x6d, 0x8c, 0x52, 0xa7, 0x1e, 0x1d, 0xfe, 0x17, 0xbd,
+	0x87, 0x07, 0x33, 0x39, 0x5f, 0x4c, 0x4b, 0x36, 0x7b, 0x83, 0x5e, 0xf9, 0x60, 0x8f, 0x70, 0x7b,
+	0xb5, 0x47, 0xd8, 0x36, 0x29, 0xec, 0x5e, 0xb7, 0x23, 0x16, 0x4d, 0x76, 0x84, 0x9d, 0x62, 0x18,
+	0xe9, 0x22, 0x5c, 0x1a, 0x3a, 0x70, 0xb8, 0xcc, 0xab, 0x2b, 0xc3, 0x04, 0x0e, 0x57, 0x8f, 0x5e,
+	0x62, 0xb7, 0x7e, 0xc3, 0xc4, 0xc5, 0xdd, 0xd9, 0x32, 0x0c, 0x85, 0xd6, 0x7d, 0x87, 0x78, 0x76,
+	0xb5, 0x53, 0x7d, 0x26, 0x3f, 0xf5, 0x81, 0xf4, 0xd0, 0xbd, 0x28, 0x8e, 0xd6, 0x3c, 0xb4, 0x5e,
+	0x9d, 0xac, 0xd6, 0xd4, 0xb9, 0x59, 0x53, 0xe7, 0x76, 0x4d, 0xe1, 0x6b, 0x46, 0xe1, 0x7b, 0x46,
+	0xe1, 0x47, 0x46, 0x61, 0x95, 0x51, 0xf8, 0x99, 0x51, 0xf8, 0x95, 0x51, 0xe7, 0x36, 0xa3, 0xf0,
+	0x6d, 0x43, 0x9d, 0xd5, 0x86, 0x3a, 0x37, 0x1b, 0xea, 0xbc, 0xef, 0x98, 0x6f, 0xee, 0xe9, 0xef,
+	0x00, 0x00, 0x00, 0xff, 0xff, 0x8e, 0x72, 0x52, 0x04, 0x84, 0x03, 0x00, 0x00,
 }
 
+func (x ResponseCode) String() string {
+	s, ok := ResponseCode_name[int32(x)]
+	if ok {
+		return s
+	}
+	return strconv.Itoa(int(x))
+}
+func (this *ActResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ActResponse)
+	if !ok {
+		that2, ok := that.(ActResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.ResponseCode != that1.ResponseCode {
+		return false
+	}
+	return true
+}
+func (this *ActRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ActRequest)
+	if !ok {
+		that2, ok := that.(ActRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.TargetId != that1.TargetId {
+		return false
+	}
+	return true
+}
+func (this *Actor) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Actor)
+	if !ok {
+		that2, ok := that.(Actor)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	if !this.Position.Equal(that1.Position) {
+		return false
+	}
+	return true
+}
+func (this *ActorDisappear) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ActorDisappear)
+	if !ok {
+		that2, ok := that.(ActorDisappear)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	return true
+}
+func (this *ActorDisappearsPush) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ActorDisappearsPush)
+	if !ok {
+		that2, ok := that.(ActorDisappearsPush)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Disappears) != len(that1.Disappears) {
+		return false
+	}
+	for i := range this.Disappears {
+		if !this.Disappears[i].Equal(that1.Disappears[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *ActorMove) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ActorMove)
+	if !ok {
+		that2, ok := that.(ActorMove)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	if !this.Position.Equal(that1.Position) {
+		return false
+	}
+	return true
+}
+func (this *ActorMovesPush) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ActorMovesPush)
+	if !ok {
+		that2, ok := that.(ActorMovesPush)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Moves) != len(that1.Moves) {
+		return false
+	}
+	for i := range this.Moves {
+		if !this.Moves[i].Equal(that1.Moves[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *ActorsPush) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ActorsPush)
+	if !ok {
+		that2, ok := that.(ActorsPush)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Actors) != len(that1.Actors) {
+		return false
+	}
+	for i := range this.Actors {
+		if !this.Actors[i].Equal(that1.Actors[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *MoveStickRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MoveStickRequest)
+	if !ok {
+		that2, ok := that.(MoveStickRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Direction.Equal(that1.Direction) {
+		return false
+	}
+	return true
+}
+func (this *MoveToPositionRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MoveToPositionRequest)
+	if !ok {
+		that2, ok := that.(MoveToPositionRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Position.Equal(that1.Position) {
+		return false
+	}
+	return true
+}
+func (this *SignInRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*SignInRequest)
+	if !ok {
+		that2, ok := that.(SignInRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *SignInResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*SignInResponse)
+	if !ok {
+		that2, ok := that.(SignInResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	if !this.Actor.Equal(that1.Actor) {
+		return false
+	}
+	return true
+}
+func (this *Vector) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Vector)
+	if !ok {
+		that2, ok := that.(Vector)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.X != that1.X {
+		return false
+	}
+	if this.Y != that1.Y {
+		return false
+	}
+	return true
+}
+func (this *ActResponse) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&message.ActResponse{")
+	s = append(s, "ResponseCode: "+fmt.Sprintf("%#v", this.ResponseCode)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ActRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&message.ActRequest{")
+	s = append(s, "TargetId: "+fmt.Sprintf("%#v", this.TargetId)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Actor) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&message.Actor{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	if this.Position != nil {
+		s = append(s, "Position: "+fmt.Sprintf("%#v", this.Position)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ActorDisappear) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&message.ActorDisappear{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ActorDisappearsPush) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&message.ActorDisappearsPush{")
+	if this.Disappears != nil {
+		s = append(s, "Disappears: "+fmt.Sprintf("%#v", this.Disappears)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ActorMove) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&message.ActorMove{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	if this.Position != nil {
+		s = append(s, "Position: "+fmt.Sprintf("%#v", this.Position)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ActorMovesPush) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&message.ActorMovesPush{")
+	if this.Moves != nil {
+		s = append(s, "Moves: "+fmt.Sprintf("%#v", this.Moves)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ActorsPush) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&message.ActorsPush{")
+	if this.Actors != nil {
+		s = append(s, "Actors: "+fmt.Sprintf("%#v", this.Actors)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *MoveStickRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&message.MoveStickRequest{")
+	if this.Direction != nil {
+		s = append(s, "Direction: "+fmt.Sprintf("%#v", this.Direction)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *MoveToPositionRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&message.MoveToPositionRequest{")
+	if this.Position != nil {
+		s = append(s, "Position: "+fmt.Sprintf("%#v", this.Position)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *SignInRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 4)
+	s = append(s, "&message.SignInRequest{")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *SignInResponse) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&message.SignInResponse{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	if this.Actor != nil {
+		s = append(s, "Actor: "+fmt.Sprintf("%#v", this.Actor)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Vector) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&message.Vector{")
+	s = append(s, "X: "+fmt.Sprintf("%#v", this.X)+",\n")
+	s = append(s, "Y: "+fmt.Sprintf("%#v", this.Y)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func valueToGoStringMessage(v interface{}, typ string) string {
+	rv := reflect.ValueOf(v)
+	if rv.IsNil() {
+		return "nil"
+	}
+	pv := reflect.Indirect(rv).Interface()
+	return fmt.Sprintf("func(v %v) *%v { return &v } ( %#v )", typ, typ, pv)
+}
 func (m *ActResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -756,10 +1205,6 @@ func (m *ActResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.ResponseCode != 0 {
 		i = encodeVarintMessage(dAtA, i, uint64(m.ResponseCode))
 		i--
@@ -788,10 +1233,6 @@ func (m *ActRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.TargetId != 0 {
 		i = encodeVarintMessage(dAtA, i, uint64(m.TargetId))
 		i--
@@ -820,10 +1261,6 @@ func (m *Actor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Position != nil {
 		{
 			size, err := m.Position.MarshalToSizedBuffer(dAtA[:i])
@@ -864,10 +1301,6 @@ func (m *ActorDisappear) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Id != 0 {
 		i = encodeVarintMessage(dAtA, i, uint64(m.Id))
 		i--
@@ -896,10 +1329,6 @@ func (m *ActorDisappearsPush) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Disappears) > 0 {
 		for iNdEx := len(m.Disappears) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -937,10 +1366,6 @@ func (m *ActorMove) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Position != nil {
 		{
 			size, err := m.Position.MarshalToSizedBuffer(dAtA[:i])
@@ -981,10 +1406,6 @@ func (m *ActorMovesPush) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Moves) > 0 {
 		for iNdEx := len(m.Moves) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -1022,10 +1443,6 @@ func (m *ActorsPush) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if len(m.Actors) > 0 {
 		for iNdEx := len(m.Actors) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -1063,10 +1480,6 @@ func (m *MoveStickRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Direction != nil {
 		{
 			size, err := m.Direction.MarshalToSizedBuffer(dAtA[:i])
@@ -1102,10 +1515,6 @@ func (m *MoveToPositionRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Position != nil {
 		{
 			size, err := m.Position.MarshalToSizedBuffer(dAtA[:i])
@@ -1141,10 +1550,6 @@ func (m *SignInRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	return len(dAtA) - i, nil
 }
 
@@ -1168,10 +1573,6 @@ func (m *SignInResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Actor != nil {
 		{
 			size, err := m.Actor.MarshalToSizedBuffer(dAtA[:i])
@@ -1212,10 +1613,6 @@ func (m *Vector) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		i -= len(m.XXX_unrecognized)
-		copy(dAtA[i:], m.XXX_unrecognized)
-	}
 	if m.Y != 0 {
 		i -= 8
 		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Y))))
@@ -1251,9 +1648,6 @@ func (m *ActResponse) Size() (n int) {
 	if m.ResponseCode != 0 {
 		n += 1 + sovMessage(uint64(m.ResponseCode))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1265,9 +1659,6 @@ func (m *ActRequest) Size() (n int) {
 	_ = l
 	if m.TargetId != 0 {
 		n += 1 + sovMessage(uint64(m.TargetId))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1285,9 +1676,6 @@ func (m *Actor) Size() (n int) {
 		l = m.Position.Size()
 		n += 1 + l + sovMessage(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1299,9 +1687,6 @@ func (m *ActorDisappear) Size() (n int) {
 	_ = l
 	if m.Id != 0 {
 		n += 1 + sovMessage(uint64(m.Id))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1317,9 +1702,6 @@ func (m *ActorDisappearsPush) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovMessage(uint64(l))
 		}
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1337,9 +1719,6 @@ func (m *ActorMove) Size() (n int) {
 		l = m.Position.Size()
 		n += 1 + l + sovMessage(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1354,9 +1733,6 @@ func (m *ActorMovesPush) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovMessage(uint64(l))
 		}
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1373,9 +1749,6 @@ func (m *ActorsPush) Size() (n int) {
 			n += 1 + l + sovMessage(uint64(l))
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1388,9 +1761,6 @@ func (m *MoveStickRequest) Size() (n int) {
 	if m.Direction != nil {
 		l = m.Direction.Size()
 		n += 1 + l + sovMessage(uint64(l))
-	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
@@ -1405,9 +1775,6 @@ func (m *MoveToPositionRequest) Size() (n int) {
 		l = m.Position.Size()
 		n += 1 + l + sovMessage(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1417,9 +1784,6 @@ func (m *SignInRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1436,9 +1800,6 @@ func (m *SignInResponse) Size() (n int) {
 		l = m.Actor.Size()
 		n += 1 + l + sovMessage(uint64(l))
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1454,9 +1815,6 @@ func (m *Vector) Size() (n int) {
 	if m.Y != 0 {
 		n += 9
 	}
-	if m.XXX_unrecognized != nil {
-		n += len(m.XXX_unrecognized)
-	}
 	return n
 }
 
@@ -1465,6 +1823,162 @@ func sovMessage(x uint64) (n int) {
 }
 func sozMessage(x uint64) (n int) {
 	return sovMessage(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (this *ActResponse) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ActResponse{`,
+		`ResponseCode:` + fmt.Sprintf("%v", this.ResponseCode) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ActRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ActRequest{`,
+		`TargetId:` + fmt.Sprintf("%v", this.TargetId) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Actor) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Actor{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`Position:` + strings.Replace(this.Position.String(), "Vector", "Vector", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ActorDisappear) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ActorDisappear{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ActorDisappearsPush) String() string {
+	if this == nil {
+		return "nil"
+	}
+	repeatedStringForDisappears := "[]*ActorDisappear{"
+	for _, f := range this.Disappears {
+		repeatedStringForDisappears += strings.Replace(f.String(), "ActorDisappear", "ActorDisappear", 1) + ","
+	}
+	repeatedStringForDisappears += "}"
+	s := strings.Join([]string{`&ActorDisappearsPush{`,
+		`Disappears:` + repeatedStringForDisappears + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ActorMove) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ActorMove{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`Position:` + strings.Replace(this.Position.String(), "Vector", "Vector", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ActorMovesPush) String() string {
+	if this == nil {
+		return "nil"
+	}
+	repeatedStringForMoves := "[]*ActorMove{"
+	for _, f := range this.Moves {
+		repeatedStringForMoves += strings.Replace(f.String(), "ActorMove", "ActorMove", 1) + ","
+	}
+	repeatedStringForMoves += "}"
+	s := strings.Join([]string{`&ActorMovesPush{`,
+		`Moves:` + repeatedStringForMoves + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ActorsPush) String() string {
+	if this == nil {
+		return "nil"
+	}
+	repeatedStringForActors := "[]*Actor{"
+	for _, f := range this.Actors {
+		repeatedStringForActors += strings.Replace(f.String(), "Actor", "Actor", 1) + ","
+	}
+	repeatedStringForActors += "}"
+	s := strings.Join([]string{`&ActorsPush{`,
+		`Actors:` + repeatedStringForActors + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *MoveStickRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&MoveStickRequest{`,
+		`Direction:` + strings.Replace(this.Direction.String(), "Vector", "Vector", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *MoveToPositionRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&MoveToPositionRequest{`,
+		`Position:` + strings.Replace(this.Position.String(), "Vector", "Vector", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *SignInRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&SignInRequest{`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *SignInResponse) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&SignInResponse{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`Actor:` + strings.Replace(this.Actor.String(), "Actor", "Actor", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Vector) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Vector{`,
+		`X:` + fmt.Sprintf("%v", this.X) + `,`,
+		`Y:` + fmt.Sprintf("%v", this.Y) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func valueToStringMessage(v interface{}) string {
+	rv := reflect.ValueOf(v)
+	if rv.IsNil() {
+		return "nil"
+	}
+	pv := reflect.Indirect(rv).Interface()
+	return fmt.Sprintf("*%v", pv)
 }
 func (m *ActResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -1529,7 +2043,6 @@ func (m *ActResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -1602,7 +2115,6 @@ func (m *ActRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -1711,7 +2223,6 @@ func (m *Actor) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -1784,7 +2295,6 @@ func (m *ActorDisappear) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -1872,7 +2382,6 @@ func (m *ActorDisappearsPush) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -1981,7 +2490,6 @@ func (m *ActorMove) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2069,7 +2577,6 @@ func (m *ActorMovesPush) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2157,7 +2664,6 @@ func (m *ActorsPush) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2247,7 +2753,6 @@ func (m *MoveStickRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2337,7 +2842,6 @@ func (m *MoveToPositionRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2391,7 +2895,6 @@ func (m *SignInRequest) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2500,7 +3003,6 @@ func (m *SignInResponse) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}
@@ -2576,7 +3078,6 @@ func (m *Vector) Unmarshal(dAtA []byte) error {
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
 			iNdEx += skippy
 		}
 	}

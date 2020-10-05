@@ -13,13 +13,13 @@ func OnActRequest(conn *net.Conn, m *message.ActRequest, user *user.User, world 
 
 	actor := user.Actor()
 	if actor == nil {
-		response.ResponseCode = message.ResponseCode_ActorIsNil
+		response.ResponseCode = message.ActorIsNil
 		return conn.Write(response)
 	}
 
 	target := world.Actor(m.TargetId)
 	if target == nil {
-		response.ResponseCode = message.ResponseCode_TargetIsNil
+		response.ResponseCode = message.TargetIsNil
 		return conn.Write(response)
 	}
 

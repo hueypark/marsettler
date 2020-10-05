@@ -10,7 +10,7 @@ func generateMessage(root string) {
 
 	cmd := exec.Command(
 		"protoc",
-		"--gofast_out="+root+"/pkg/message",
+		"--gogoslick_out="+root+"/pkg/message",
 		root+"/pkg/message/message.proto",
 		"--proto_path="+root+"/pkg/message",
 	)

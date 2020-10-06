@@ -1,6 +1,9 @@
 package physics
 
-import "sync"
+import (
+	"log"
+	"sync"
+)
 
 // World represents physics world.
 type World struct {
@@ -22,8 +25,15 @@ func (w *World) Tick(delta float64) {
 
 	contacts := w.broadPhase()
 	for _, c := range contacts {
-		c.DetectCollision()
-		c.SolveCollision()
+		occured, err := c.DetectCollision()
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		if occured {
+			c.SolveCollision()
+		}
 	}
 
 	for _, b := range w.bodys {
@@ -45,7 +55,12 @@ func (w *World) broadPhase() []*Contact {
 				continue
 			}
 
-			contacts = append(contacts, New(lhs, rhs))
+			contact := New(lhs, rhs)
+			if contact.lhs.Shape.Type() > contact.rhs.Shape.Type() {
+				contact.swap()
+			}
+
+			contacts = append(contacts, contact)
 		}
 	}
 

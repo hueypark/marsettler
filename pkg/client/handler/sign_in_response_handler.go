@@ -11,8 +11,8 @@ import (
 func SignInResponseHandler(
 	_ *net.Conn, m *message.SignInResponse, c client, world *game.World,
 ) error {
-	c.SetID(m.Id)
-	_ = world.NewActor(m.Actor.Id, &math2d.Vector{X: m.Actor.Position.X, Y: m.Actor.Position.Y})
+	actor := world.NewActor(m.Actor.Id, &math2d.Vector{X: m.Actor.Position.X, Y: m.Actor.Position.Y})
+	c.SetMyActor(actor)
 
 	return nil
 }

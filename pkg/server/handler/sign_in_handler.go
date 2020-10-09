@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/internal/net"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/server/game"
@@ -14,7 +15,7 @@ import (
 func OnSignIn(conn *net.Conn, m *message.SignInRequest, user *user.User, world *game.World) error {
 	response := &message.SignInResponse{}
 
-	actor, err := world.NewActor(user.ID())
+	actor, err := world.NewActor(user.ID(), &math2d.Vector{})
 	if err != nil {
 		return err
 	}

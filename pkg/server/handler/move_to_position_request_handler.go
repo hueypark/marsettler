@@ -21,7 +21,7 @@ func OnMoveToPositionRequest(_ *net.Conn, m *message.MoveToPositionRequest, user
 		return errors.New(fmt.Sprintf("position is nil [user: %v]", user))
 	}
 
-	actor.SetMoveToPosition(math2d.Vector{X: m.Position.X, Y: m.Position.Y})
+	actor.SetMoveToPosition(&math2d.Vector{X: m.Position.X, Y: m.Position.Y})
 
 	return nil
 }

@@ -17,11 +17,12 @@ type Actor struct {
 }
 
 // NewActor Creates new actor.
-func NewActor(id int64) *Actor {
+func NewActor(id int64, position *math2d.Vector) *Actor {
 	a := &Actor{}
 
 	a.Actor = game.NewActor(
 		id,
+		position,
 		func(position *math2d.Vector) {
 			a.moved = true
 		})
@@ -53,8 +54,12 @@ func (a *Actor) MoveStick(direction math2d.Vector) {
 }
 
 // SetMoveToPosition sets the position where it will move and arrive.
-func (a *Actor) SetMoveToPosition(position math2d.Vector) {
-	a.moveToPosition = &position
+func (a *Actor) SetMoveToPosition(position *math2d.Vector) {
+	if a.moveToPosition == nil {
+		a.moveToPosition = position.Clone()
+	} else {
+		a.moveToPosition.Set(position)
+	}
 
 	a.moveStickDirection = nil
 }

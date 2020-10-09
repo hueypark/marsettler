@@ -24,6 +24,8 @@ type Handler struct {
 	moveToPositionRequestHandler func(*Conn, *message.MoveToPositionRequest) error
 	signInRequestHandler func(*Conn, *message.SignInRequest) error
 	signInResponseHandler func(*Conn, *message.SignInResponse) error
+	skillUseRequestHandler func(*Conn, *message.SkillUseRequest) error
+	skillUseResponseHandler func(*Conn, *message.SkillUseResponse) error
 	vectorHandler func(*Conn, *message.Vector) error
 }
 
@@ -120,6 +122,20 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 			}
 
 			h.signInResponseHandler = v
+		case message.SkillUseRequestID:
+			v, ok := handler.(func(*Conn, *message.SkillUseRequest) error)
+			if !ok {
+				return nil, errors.New("handler does not handles SkillUseRequest")
+			}
+
+			h.skillUseRequestHandler = v
+		case message.SkillUseResponseID:
+			v, ok := handler.(func(*Conn, *message.SkillUseResponse) error)
+			if !ok {
+				return nil, errors.New("handler does not handles SkillUseResponse")
+			}
+
+			h.skillUseResponseHandler = v
 		case message.VectorID:
 			v, ok := handler.(func(*Conn, *message.Vector) error)
 			if !ok {
@@ -280,6 +296,30 @@ func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 		}
 
 		return h.signInResponseHandler(conn, m)
+	case message.SkillUseRequestID:
+		m := &message.SkillUseRequest{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.skillUseRequestHandler == nil {
+			return nil
+		}
+
+		return h.skillUseRequestHandler(conn, m)
+	case message.SkillUseResponseID:
+		m := &message.SkillUseResponse{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.skillUseResponseHandler == nil {
+			return nil
+		}
+
+		return h.skillUseResponseHandler(conn, m)
 	case message.VectorID:
 		m := &message.Vector{}
 		err := proto.Unmarshal(bytes, m)

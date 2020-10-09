@@ -1,6 +1,7 @@
 package client
 
 import (
+	"errors"
 	"log"
 	"net/url"
 	"time"
@@ -19,11 +20,13 @@ import (
 type Client struct {
 	useRenderer bool
 
-	id        int64
 	conn      *net.Conn
 	world     *game.World
 	tickDelta time.Duration
 	geoM      ebiten.GeoM
+
+	myActor     *game.Actor
+	targetActor *game.Actor
 }
 
 // NewClient creates new client.
@@ -60,11 +63,12 @@ func NewClient(useRenderer bool) (*Client, error) {
 func (c *Client) Act() error {
 	m := &message.ActRequest{}
 
-	var err error
-	m.TargetId, err = c.world.NearestActorId(c.id)
+	target, err := c.world.NearestActor(c.myActor.ID())
 	if err != nil {
 		return err
 	}
+
+	m.TargetId = target.ID()
 
 	err = c.conn.Write(m)
 	if err != nil {
@@ -98,10 +102,7 @@ func (c *Client) Run() error {
 		ticker := time.NewTicker(c.tickDelta)
 
 		for range ticker.C {
-			err := c.Tick(c.tickDelta.Seconds())
-			if err != nil {
-				return err
-			}
+			c.Tick(c.tickDelta.Seconds())
 		}
 		return nil
 	}
@@ -127,9 +128,9 @@ func (c *Client) Draw(screen *ebiten.Image) {
 	}
 }
 
-// SetID sets id.
-func (c *Client) SetID(id int64) {
-	c.id = id
+// SetMyActor sets my actor.
+func (c *Client) SetMyActor(actor *game.Actor) {
+	c.myActor = actor
 }
 
 // Layout implements ebiten.Game.Layout.
@@ -138,24 +139,28 @@ func (c *Client) Layout(_, _ int) (screenWidth, screenHeight int) {
 }
 
 // Tick updates actor periodically.
-func (c *Client) Tick(delta float64) error {
+func (c *Client) Tick(delta float64) {
+	if c.myActor != nil {
+		log.Println(c.myActor.Position())
+	}
+
 	err := c.world.Tick(delta)
 	if err != nil {
-		return err
+		log.Println(err)
 	}
 
 	if inpututil.IsKeyJustReleased(ebiten.KeyEnter) {
 		signIn := &message.SignInRequest{}
 		err := c.conn.Write(signIn)
 		if err != nil {
-			return err
+			log.Println(err)
 		}
 	}
 
 	if inpututil.IsKeyJustReleased(ebiten.KeySpace) {
-		err := c.Act()
+		err := c.useSkill()
 		if err != nil {
-			return err
+			log.Println(err)
 		}
 	}
 
@@ -166,26 +171,26 @@ func (c *Client) Tick(delta float64) error {
 		}
 		err := c.conn.Write(moveToPosition)
 		if err != nil {
-			return err
+			log.Println(err)
 		}
 	}
 
 	err = c.updateMoveStickRequest()
 	if err != nil {
-		return err
+		log.Println(err)
 	}
 
 	err = c.conn.Consume()
 	if err != nil {
-		return err
+		log.Println(err)
 	}
-
-	return nil
 }
 
 // Update implements ebiten.Game.Update.
 func (c *Client) Update(_ *ebiten.Image) error {
-	return c.Tick(c.tickDelta.Seconds())
+	c.Tick(c.tickDelta.Seconds())
+
+	return nil
 }
 
 func connect() (*websocket.Conn, error) {
@@ -240,4 +245,31 @@ func (c *Client) updateMoveStickRequest() error {
 	}
 
 	return nil
+}
+
+func (c *Client) useSkill() error {
+	if c.myActor == nil {
+		return errors.New("my actor is nil")
+	}
+
+	if c.targetActor == nil {
+		var err error
+		c.targetActor, err = c.world.NearestActor(c.myActor.ID())
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	var dir *math2d.Vector
+	if c.targetActor == nil {
+		dir = &math2d.Vector{}
+	} else {
+		dir = math2d.Sub(c.targetActor.Position(), c.myActor.Position())
+	}
+
+	m := &message.SkillUseRequest{
+		Direction: &message.Vector{X: dir.X, Y: dir.Y},
+	}
+
+	return c.conn.Write(m)
 }

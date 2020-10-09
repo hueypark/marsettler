@@ -37,7 +37,6 @@ func (w *World) DeleteActor(id int64) error {
 // NewActor creates new actor.
 func (w *World) NewActor(id int64, position *math2d.Vector) *Actor {
 	a := NewActor(id, position)
-	a.SetPosition(position)
 
 	w.actors[a.ID()] = a
 
@@ -60,11 +59,11 @@ func (w *World) Draw(screen *ebiten.Image, cameraFunc func(*Actor) ebiten.GeoM) 
 	return nil
 }
 
-// NearestActorId returns the nearest actor id from the given actor.
-func (w *World) NearestActorId(givenActorID int64) (actorID int64, err error) {
+// NearestActor returns the nearest actor from the given actor.
+func (w *World) NearestActor(givenActorID int64) (actor *Actor, err error) {
 	givenActor := w.Actor(givenActorID)
 	if givenActor == nil {
-		return 0, errors.New(fmt.Sprintf("actor is nil. [givenActorId: %v]", givenActorID))
+		return nil, errors.New(fmt.Sprintf("actor is nil. [givenActorId: %v]", givenActorID))
 	}
 
 	var nearestActor *Actor
@@ -82,10 +81,10 @@ func (w *World) NearestActorId(givenActorID int64) (actorID int64, err error) {
 	}
 
 	if nearestActor == nil {
-		return 0, errors.New("there is no nearest actor")
+		return nil, errors.New("there is no nearest actor")
 	}
 
-	return nearestActor.ID(), nil
+	return nearestActor, nil
 }
 
 // Tick updates world periodically.

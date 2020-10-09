@@ -1,5 +1,7 @@
 package handler
 
+import "github.com/hueypark/marsettler/pkg/client/game"
+
 type client interface {
-	SetID(id int64)
+	SetMyActor(actor *game.Actor)
 }

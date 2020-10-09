@@ -58,6 +58,13 @@ message SignInResponse {
   Actor actor = 2;
 }
 
+message SkillUseRequest {
+  Vector direction = 1;
+}
+message SkillUseResponse {
+  ResponseCode responseCode = 1;
+}
+
 message Vector {
   double X = 1;
   double Y = 2;

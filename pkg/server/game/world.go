@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/internal/physics"
 	"github.com/hueypark/marsettler/pkg/message"
 )
@@ -66,8 +67,8 @@ func (w *World) DeleteActor(actorID int64) error {
 }
 
 // NewActor creates new actor.
-func (w *World) NewActor(id int64) (*Actor, error) {
-	a := NewActor(id)
+func (w *World) NewActor(id int64, position *math2d.Vector) (*Actor, error) {
+	a := NewActor(id, position)
 
 	_, ok := w.actors[a.ID()]
 	if ok {

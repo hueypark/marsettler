@@ -19,7 +19,9 @@ const (
 	MoveToPositionRequestID ID = 9
 	SignInRequestID ID = 10
 	SignInResponseID ID = 11
-	VectorID ID = 12
+	SkillUseRequestID ID = 12
+	SkillUseResponseID ID = 13
+	VectorID ID = 14
 )
 
 // Message represents message.
@@ -40,4 +42,6 @@ func (m *MoveStickRequest) ID() ID { return MoveStickRequestID }
 func (m *MoveToPositionRequest) ID() ID { return MoveToPositionRequestID }
 func (m *SignInRequest) ID() ID { return SignInRequestID }
 func (m *SignInResponse) ID() ID { return SignInResponseID }
+func (m *SkillUseRequest) ID() ID { return SkillUseRequestID }
+func (m *SkillUseResponse) ID() ID { return SkillUseResponseID }
 func (m *Vector) ID() ID { return VectorID }

@@ -22,5 +22,8 @@ func Generate(user *user.User, world *game.World) net.HandlerFuncs {
 		message.SignInRequestID: func(conn *net.Conn, m *message.SignInRequest) error {
 			return OnSignIn(conn, m, user, world)
 		},
+		message.SkillUseRequestID: func(conn *net.Conn, m *message.SkillUseRequest) error {
+			return onSkillUseRequest(conn, m, user, world)
+		},
 	}
 }

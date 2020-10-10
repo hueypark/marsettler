@@ -1,7 +1,6 @@
 package client
 
 import (
-	"errors"
 	"log"
 	"net/url"
 	"time"
@@ -157,19 +156,8 @@ func (c *Client) Tick(delta float64) {
 		}
 	}
 
-	if inpututil.IsKeyJustReleased(ebiten.KeySpace) {
-		err := c.useSkill()
-		if err != nil {
-			log.Println(err)
-		}
-	}
-
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-		x, y := ebiten.CursorPosition()
-		moveToPosition := &message.MoveToPositionRequest{
-			Position: &message.Vector{X: float64(x), Y: -float64(y)},
-		}
-		err := c.conn.Write(moveToPosition)
+		err := c.useSkill()
 		if err != nil {
 			log.Println(err)
 		}
@@ -248,24 +236,9 @@ func (c *Client) updateMoveStickRequest() error {
 }
 
 func (c *Client) useSkill() error {
-	if c.myActor == nil {
-		return errors.New("my actor is nil")
-	}
-
-	if c.targetActor == nil {
-		var err error
-		c.targetActor, err = c.world.NearestActor(c.myActor.ID())
-		if err != nil {
-			log.Println(err)
-		}
-	}
-
-	var dir *math2d.Vector
-	if c.targetActor == nil {
-		dir = &math2d.Vector{}
-	} else {
-		dir = math2d.Sub(c.targetActor.Position(), c.myActor.Position())
-	}
+	x, y := ebiten.CursorPosition()
+	dir := math2d.Sub(&math2d.
+		Vector{X: float64(x), Y: -float64(y)}, c.myActor.Position())
 
 	m := &message.SkillUseRequest{
 		Direction: &message.Vector{X: dir.X, Y: dir.Y},

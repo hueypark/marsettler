@@ -1,6 +1,6 @@
 package data
 
-import "github.com/hueypark/marsettler/data/ai"
+import "github.com/hueypark/marsettler/pkg/data/ai"
 
 type ActorID int
 

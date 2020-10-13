@@ -6,6 +6,7 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hueypark/marsettler/pkg/data"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 )
 
@@ -35,12 +36,15 @@ func (w *World) DeleteActor(id int64) error {
 }
 
 // NewActor creates new actor.
-func (w *World) NewActor(id int64, position *math2d.Vector) *Actor {
-	a := NewActor(id, position)
+func (w *World) NewActor(id int64, dataID data.ActorID, position *math2d.Vector) (*Actor, error) {
+	a, err := NewActor(id, dataID, position)
+	if err != nil {
+		return nil, err
+	}
 
 	w.actors[a.ID()] = a
 
-	return a
+	return a, nil
 }
 
 func (w *World) Actor(id int64) *Actor {

@@ -1,28 +1,26 @@
 package data
 
-import "github.com/hueypark/marsettler/pkg/data/ai"
-
-type ActorID int
+type ActorID int32
 
 const (
-	Hero ActorID = iota
-	Tree
+	UserID ActorID = iota
+	SwordSkillID
 )
 
 var actors map[ActorID]*ActorData
 
 func init() {
 	actors = map[ActorID]*ActorData{
-		Hero: newActor(
-			"Hero",
-			"/asset/figures/hero.png",
-			ai.Hero,
-		),
-		Tree: newActor(
-			"Tree",
-			"/asset/tiles_forest_conifer_dense_clear_green/0.png",
-			ai.Tree,
-		),
+		UserID: {
+			"User",
+			"circle",
+			25,
+		},
+		SwordSkillID: {
+			"SwordSkill",
+			"circle",
+			2,
+		},
 	}
 
 }
@@ -32,17 +30,7 @@ func Actor(id ActorID) *ActorData {
 }
 
 type ActorData struct {
-	Name         string
-	Image        string
-	BehaviorTree string
-}
-
-func newActor(name string, image string, bt string) *ActorData {
-	data := &ActorData{
-		Name:         name,
-		Image:        image,
-		BehaviorTree: bt,
-	}
-
-	return data
+	Name   string
+	Image  string
+	Radius float64
 }

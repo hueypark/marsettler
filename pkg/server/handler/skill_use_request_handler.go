@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hueypark/marsettler/pkg/data"
 	"github.com/hueypark/marsettler/pkg/global"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/internal/net"
@@ -30,7 +31,7 @@ func onSkillUseRequest(
 
 	pos := actor.Position()
 
-	skillActor, err := world.NewActor(global.IdGenerator.Generate().Int64(), pos)
+	skillActor, err := world.NewActor(global.IdGenerator.Generate().Int64(), data.SwordSkillID, pos)
 	if err != nil {
 		return err
 	}

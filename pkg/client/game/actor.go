@@ -3,6 +3,7 @@ package game
 import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hueypark/marsettler/pkg/asset"
+	"github.com/hueypark/marsettler/pkg/data"
 	"github.com/hueypark/marsettler/pkg/internal/game"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 )
@@ -15,18 +16,22 @@ type Actor struct {
 }
 
 // NewActor Creates new actor.
-func NewActor(id int64, position *math2d.Vector) *Actor {
-	a := &Actor{
-		Actor:          game.NewActor(id, position, nil),
-		clientPosition: &math2d.Vector{},
+func NewActor(id int64, dataID data.ActorID, position *math2d.Vector) (*Actor, error) {
+	internalActor, err := game.NewActor(id, dataID, position, nil)
+	if err != nil {
+		return nil, err
 	}
 
+	a := &Actor{
+		Actor:          internalActor,
+		clientPosition: &math2d.Vector{},
+	}
 	a.clientPosition.Set(position)
 	a.SetPosition(position)
 
 	a.image = asset.Image("circle")
 
-	return a
+	return a, nil
 }
 
 // Draw implements ebiten.Game.Draw.

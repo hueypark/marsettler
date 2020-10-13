@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/hueypark/marsettler/pkg/data"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/internal/physics"
 	"github.com/hueypark/marsettler/pkg/message"
@@ -67,8 +68,11 @@ func (w *World) DeleteActor(actorID int64) error {
 }
 
 // NewActor creates new actor.
-func (w *World) NewActor(id int64, position *math2d.Vector) (*Actor, error) {
-	a := NewActor(id, position)
+func (w *World) NewActor(id int64, dataID data.ActorID, position *math2d.Vector) (*Actor, error) {
+	a, err := NewActor(id, dataID, position)
+	if err != nil {
+		return nil, err
+	}
 
 	_, ok := w.actors[a.ID()]
 	if ok {
@@ -81,7 +85,7 @@ func (w *World) NewActor(id int64, position *math2d.Vector) (*Actor, error) {
 	m := &message.ActorsPush{}
 	m.Actors = append(m.Actors, a.Message())
 
-	err := w.broadcast(m)
+	err = w.broadcast(m)
 	if err != nil {
 		log.Println(err)
 	}

@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 
+	"github.com/hueypark/marsettler/pkg/data"
 	"github.com/hueypark/marsettler/pkg/internal/game"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/message"
@@ -17,17 +18,22 @@ type Actor struct {
 }
 
 // NewActor Creates new actor.
-func NewActor(id int64, position *math2d.Vector) *Actor {
+func NewActor(id int64, dataID data.ActorID, position *math2d.Vector) (*Actor, error) {
 	a := &Actor{}
 
-	a.Actor = game.NewActor(
+	var err error
+	a.Actor, err = game.NewActor(
 		id,
+		dataID,
 		position,
 		func(position *math2d.Vector) {
 			a.moved = true
 		})
+	if err != nil {
+		return nil, err
+	}
 
-	return a
+	return a, nil
 }
 
 // Act acts to target.
@@ -40,6 +46,7 @@ func (a *Actor) Message() *message.Actor {
 	m := &message.Actor{
 		Id:       a.ID(),
 		Position: &message.Vector{X: a.Position().X, Y: a.Position().Y},
+		DataID:   int32(a.DataID()),
 	}
 
 	return m

@@ -13,6 +13,7 @@ message ActRequest {
 message Actor {
   int64 id = 1;
   Vector position = 2;
+  int32 dataID = 3;
 }
 
 message ActorDisappear {

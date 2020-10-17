@@ -43,10 +43,7 @@ func (w *World) ActorsPush() *message.ActorsPush {
 	for _, actor := range w.actors {
 		m.Actors = append(
 			m.Actors,
-			&message.Actor{
-				Id:       actor.ID(),
-				Position: &message.Vector{X: actor.Position().X, Y: actor.Position().Y},
-			})
+			actor.Message())
 	}
 
 	return m

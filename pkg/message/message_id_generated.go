@@ -21,7 +21,8 @@ const (
 	SignInResponseID ID = 11
 	SkillUseRequestID ID = 12
 	SkillUseResponseID ID = 13
-	VectorID ID = 14
+	StatID ID = 14
+	VectorID ID = 15
 )
 
 // Message represents message.
@@ -44,4 +45,5 @@ func (m *SignInRequest) ID() ID { return SignInRequestID }
 func (m *SignInResponse) ID() ID { return SignInResponseID }
 func (m *SkillUseRequest) ID() ID { return SkillUseRequestID }
 func (m *SkillUseResponse) ID() ID { return SkillUseResponseID }
+func (m *Stat) ID() ID { return StatID }
 func (m *Vector) ID() ID { return VectorID }

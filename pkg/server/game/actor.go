@@ -7,6 +7,7 @@ import (
 	"github.com/hueypark/marsettler/pkg/internal/game"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/pkg/message"
+	"github.com/pkg/errors"
 )
 
 // Actor is basic object in world.
@@ -15,11 +16,22 @@ type Actor struct {
 	moveStickDirection *math2d.Vector
 	moveToPosition     *math2d.Vector
 	moved              bool
+
+	hp    int32
+	maxHP int32
 }
 
 // NewActor Creates new actor.
 func NewActor(id int64, dataID data.ActorID, position *math2d.Vector) (*Actor, error) {
-	a := &Actor{}
+	actorData := data.Actor(dataID)
+	if actorData == nil {
+		return nil, errors.Wrap(errNil, "actorData is nil")
+	}
+
+	a := &Actor{
+		hp:    actorData.MaxHP,
+		maxHP: actorData.MaxHP,
+	}
 
 	var err error
 	a.Actor, err = game.NewActor(
@@ -41,6 +53,16 @@ func (a *Actor) Act(world *World, target *Actor) error {
 	return world.DeleteActor(target.ID())
 }
 
+// HP returns hp.
+func (a *Actor) HP() int32 {
+	return a.hp
+}
+
+// MaxHP returns max hp.
+func (a *Actor) MaxHP() int32 {
+	return a.maxHP
+}
+
 // Message returns message.Actor.
 func (a *Actor) Message() *message.Actor {
 	m := &message.Actor{
@@ -48,6 +70,9 @@ func (a *Actor) Message() *message.Actor {
 		Position: &message.Vector{X: a.Position().X, Y: a.Position().Y},
 		DataID:   int32(a.DataID()),
 	}
+
+	m.Stats = append(m.Stats, &message.Stat{Type: message.StatTypeHP, Val: a.hp})
+	m.Stats = append(m.Stats, &message.Stat{Type: message.StatTypeMaxHP, Val: a.maxHP})
 
 	return m
 }

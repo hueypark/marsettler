@@ -139,10 +139,6 @@ func (c *Client) Layout(_, _ int) (screenWidth, screenHeight int) {
 
 // Tick updates actor periodically.
 func (c *Client) Tick(delta float64) {
-	if c.myActor != nil {
-		log.Println(c.myActor.Position())
-	}
-
 	err := c.world.Tick(delta)
 	if err != nil {
 		log.Println(err)

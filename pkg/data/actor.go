@@ -15,11 +15,13 @@ func init() {
 			"User",
 			"circle",
 			25,
+			100,
 		},
 		SwordSkillID: {
 			"SwordSkill",
 			"circle",
 			2,
+			0,
 		},
 	}
 
@@ -33,4 +35,6 @@ type ActorData struct {
 	Name   string
 	Image  string
 	Radius float64
+
+	MaxHP int32
 }

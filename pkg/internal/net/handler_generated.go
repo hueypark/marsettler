@@ -26,6 +26,7 @@ type Handler struct {
 	signInResponseHandler func(*Conn, *message.SignInResponse) error
 	skillUseRequestHandler func(*Conn, *message.SkillUseRequest) error
 	skillUseResponseHandler func(*Conn, *message.SkillUseResponse) error
+	statHandler func(*Conn, *message.Stat) error
 	vectorHandler func(*Conn, *message.Vector) error
 }
 
@@ -136,6 +137,13 @@ func NewHandler(handlers HandlerFuncs) (*Handler, error) {
 			}
 
 			h.skillUseResponseHandler = v
+		case message.StatID:
+			v, ok := handler.(func(*Conn, *message.Stat) error)
+			if !ok {
+				return nil, errors.New("handler does not handles Stat")
+			}
+
+			h.statHandler = v
 		case message.VectorID:
 			v, ok := handler.(func(*Conn, *message.Vector) error)
 			if !ok {
@@ -320,6 +328,18 @@ func (h *Handler) Handle(conn *Conn, id message.ID, bytes []byte) error {
 		}
 
 		return h.skillUseResponseHandler(conn, m)
+	case message.StatID:
+		m := &message.Stat{}
+		err := proto.Unmarshal(bytes, m)
+		if err != nil {
+			return err
+		}
+
+		if h.statHandler == nil {
+			return nil
+		}
+
+		return h.statHandler(conn, m)
 	case message.VectorID:
 		m := &message.Vector{}
 		err := proto.Unmarshal(bytes, m)

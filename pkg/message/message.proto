@@ -14,6 +14,7 @@ message Actor {
   int64 id = 1;
   Vector position = 2;
   int32 dataID = 3;
+  repeated Stat stats = 4;
 }
 
 message ActorDisappear {
@@ -62,8 +63,19 @@ message SignInResponse {
 message SkillUseRequest {
   Vector direction = 1;
 }
+
 message SkillUseResponse {
   ResponseCode responseCode = 1;
+}
+
+message Stat {
+  StatType type = 1;
+  int32 val = 2;
+}
+
+enum StatType {
+  StatTypeHP = 0;
+  StatTypeMaxHP = 1;
 }
 
 message Vector {

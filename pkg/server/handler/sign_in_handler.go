@@ -24,13 +24,7 @@ func OnSignIn(conn *net.Conn, m *message.SignInRequest, user *user.User, world *
 	user.SetActor(actor)
 
 	response.Id = actor.ID()
-	response.Actor = &message.Actor{
-		Id: actor.ID(),
-		Position: &message.Vector{
-			X: actor.Position().X,
-			Y: actor.Position().Y,
-		},
-	}
+	response.Actor = actor.Message()
 
 	err = conn.Write(world.ActorsPush())
 	if err != nil {

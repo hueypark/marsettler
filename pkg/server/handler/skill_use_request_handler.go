@@ -36,6 +36,8 @@ func onSkillUseRequest(
 		return err
 	}
 
+	skillActor.SetUsePhysics(false)
+
 	dir := &math2d.Vector{X: m.Direction.X, Y: m.Direction.Y}
 	dir.Normalize()
 	dir.Mul(100)

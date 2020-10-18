@@ -17,6 +17,8 @@ type Body struct {
 	inverseMass     float64
 	inverseInertia  float64
 	forceSum        *math2d.Vector
+
+	usePhysics bool
 }
 
 // NewBody creates new shape.
@@ -27,6 +29,7 @@ func NewBody(id int64, position *math2d.Vector, onSetPosition func(position *mat
 		onSetPosition: onSetPosition,
 		Velocity:      &math2d.Vector{},
 		forceSum:      &math2d.Vector{},
+		usePhysics:    true,
 	}
 	return &r
 }
@@ -49,6 +52,11 @@ func (r *Body) SetPosition(position *math2d.Vector) {
 	if r.onSetPosition != nil {
 		r.onSetPosition(position)
 	}
+}
+
+// SetUsePhysics sets usePhysics.
+func (r *Body) SetUsePhysics(usePhysics bool) {
+	r.usePhysics = usePhysics
 }
 
 func (r *Body) SetVelocity(velovity *math2d.Vector) {
@@ -82,6 +90,11 @@ func (r *Body) Tick(delta float64) {
 	r.forceSum.Clear()
 
 	r.rotation.AddScaled(r.angularVelocity, delta)
+}
+
+// UsePhysics returns whether physical effects are used.
+func (r *Body) UsePhysics() bool {
+	return r.usePhysics
 }
 
 func (r *Body) SetMass(mass float64) {

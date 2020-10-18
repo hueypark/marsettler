@@ -32,7 +32,9 @@ func (w *World) Tick(delta float64) {
 		}
 
 		if occured {
-			c.SolveCollision()
+			if c.lhs.UsePhysics() && c.rhs.UsePhysics() {
+				c.SolveCollision()
+			}
 		}
 	}
 

@@ -53,6 +53,7 @@ enum ResponseCode {
 }
 
 message SignInRequest {
+  int64 id = 1;
 }
 
 message SignInResponse {

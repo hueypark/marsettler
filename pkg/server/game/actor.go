@@ -13,6 +13,9 @@ import (
 // Actor is basic object in world.
 type Actor struct {
 	*game.Actor
+
+	writer func(message message.Message) error
+
 	moveStickDirection *math2d.Vector
 	moveToPosition     *math2d.Vector
 	moved              bool
@@ -96,6 +99,11 @@ func (a *Actor) SetMoveToPosition(position *math2d.Vector) {
 	a.moveStickDirection = nil
 }
 
+// SetWriter sets writer function.
+func (a *Actor) SetWriter(writer func(message message.Message) error) {
+	a.writer = writer
+}
+
 // String implements fmt.Stringer.
 func (a *Actor) String() string {
 	return fmt.Sprintf("id: %v, position: %v", a.ID(), a.Position())
@@ -136,4 +144,13 @@ func (a *Actor) Tick(world *World, delta float64) error {
 	}
 
 	return nil
+}
+
+// Write writes message.
+func (a *Actor) Write(m message.Message) error {
+	if a.writer == nil {
+		return nil
+	}
+
+	return a.writer(m)
 }

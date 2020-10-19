@@ -2,7 +2,6 @@ package net
 
 import (
 	"encoding/binary"
-	"errors"
 	"log"
 	"sync"
 
@@ -14,6 +13,7 @@ import (
 // Conn reprents a connection.
 type Conn struct {
 	closeChan chan bool
+	closed    bool
 	conn      *websocket.Conn
 	handlers  *Handler
 	messages  []rawMessage
@@ -38,7 +38,13 @@ func NewConn(conn *websocket.Conn) (*Conn, error) {
 // Close closes connection.
 func (c *Conn) Close() {
 	c.closeChan <- true
+	c.closed = true
 	_ = c.conn.Close()
+}
+
+// Closed return close state.
+func (c *Conn) Closed() bool {
+	return c.closed
 }
 
 // Consume consumes messages.
@@ -46,16 +52,11 @@ func (c *Conn) Consume() error {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 
-	select {
-	case <-c.closeChan:
-		return errors.New("closed connection")
-	default:
-		for _, m := range c.messages {
-			err := c.handlers.Handle(c, m.ID, m.Bytes)
-			if err != nil {
-				// TODO(jaewan): Send error message to client.
-				log.Println(err)
-			}
+	for _, m := range c.messages {
+		err := c.handlers.Handle(c, m.ID, m.Bytes)
+		if err != nil {
+			// TODO(jaewan): Send error message to client.
+			log.Printf("%+v", err)
 		}
 	}
 

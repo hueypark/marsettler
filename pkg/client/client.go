@@ -34,24 +34,7 @@ func NewClient(useRenderer bool) (*Client, error) {
 
 	c.useRenderer = useRenderer
 
-	websocketConn, err := connect()
-	if err != nil {
-		return nil, err
-	}
-
-	conn, err := net.NewConn(websocketConn)
-	if err != nil {
-		return nil, err
-	}
-
-	c.conn = conn
-	c.world = game.NewWorld()
 	c.tickDelta = time.Second / ebiten.DefaultTPS
-
-	err = conn.SetHandlers(handler.Generate(c, c.world))
-	if err != nil {
-		return nil, err
-	}
 
 	c.geoM.Scale(1, -1)
 
@@ -84,13 +67,6 @@ func (c *Client) Close() {
 
 // Run runs client.
 func (c *Client) Run() error {
-	go func() {
-		err := c.conn.Run()
-		if err != nil {
-			log.Println(err)
-		}
-	}()
-
 	ebiten.SetWindowSize(640, 480)
 	ebiten.SetWindowTitle("Marsettler")
 	ebiten.SetRunnableOnUnfocused(true)
@@ -109,21 +85,23 @@ func (c *Client) Run() error {
 
 // Draw implements ebiten.Game.Draw.
 func (c *Client) Draw(screen *ebiten.Image) {
-	err := c.world.Draw(
-		screen,
-		func(a *game.Actor) ebiten.GeoM {
-			m := ebiten.GeoM{}
+	if c.world != nil {
+		err := c.world.Draw(
+			screen,
+			func(a *game.Actor) ebiten.GeoM {
+				m := ebiten.GeoM{}
 
-			m.Scale(1, -1)
+				m.Scale(1, -1)
 
-			m.Translate(a.Position().X, a.Position().Y)
+				m.Translate(a.Position().X, a.Position().Y)
 
-			m.Scale(1, -1)
+				m.Scale(1, -1)
 
-			return m
-		})
-	if err != nil {
-		log.Println(err)
+				return m
+			})
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
 
@@ -139,14 +117,15 @@ func (c *Client) Layout(_, _ int) (screenWidth, screenHeight int) {
 
 // Tick updates actor periodically.
 func (c *Client) Tick(delta float64) {
-	err := c.world.Tick(delta)
-	if err != nil {
-		log.Println(err)
+	if c.world != nil {
+		err := c.world.Tick(delta)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	if inpututil.IsKeyJustReleased(ebiten.KeyEnter) {
-		signIn := &message.SignInRequest{}
-		err := c.conn.Write(signIn)
+		err := c.connect()
 		if err != nil {
 			log.Println(err)
 		}
@@ -159,14 +138,16 @@ func (c *Client) Tick(delta float64) {
 		}
 	}
 
-	err = c.updateMoveStickRequest()
+	err := c.updateMoveStickRequest()
 	if err != nil {
 		log.Println(err)
 	}
 
-	err = c.conn.Consume()
-	if err != nil {
-		log.Println(err)
+	if c.conn != nil {
+		err = c.conn.Consume()
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
 
@@ -177,14 +158,42 @@ func (c *Client) Update(_ *ebiten.Image) error {
 	return nil
 }
 
-func connect() (*websocket.Conn, error) {
+func (c *Client) connect() error {
 	u := url.URL{Scheme: "ws", Host: "localhost:8080", Path: "/ws"}
-	conn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	websocketConn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return conn, nil
+	c.conn, err = net.NewConn(websocketConn)
+	if err != nil {
+		return err
+	}
+
+	c.world = game.NewWorld()
+
+	err = c.conn.SetHandlers(handler.Generate(c, c.world))
+	if err != nil {
+		return err
+	}
+
+	signIn := &message.SignInRequest{}
+	if c.myActor != nil {
+		signIn.Id = c.myActor.ID()
+	}
+	err = c.conn.Write(signIn)
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		err := c.conn.Run()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
+
+	return nil
 }
 
 func (c *Client) updateMoveStickRequest() error {

@@ -3,12 +3,12 @@ package server
 import (
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/hueypark/marsettler/pkg/internal/net"
-	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/hueypark/marsettler/pkg/server/game"
 	"github.com/hueypark/marsettler/pkg/server/handler"
 	"github.com/hueypark/marsettler/pkg/server/user"
@@ -19,7 +19,8 @@ type Server struct {
 	gin      *gin.Engine
 	upgrader websocket.Upgrader
 	world    *game.World
-	users    map[int64]*user.User
+	users    []*user.User
+	mux      sync.Mutex
 }
 
 // NewServer creates new server.
@@ -28,17 +29,7 @@ func NewServer() *Server {
 		gin:      gin.Default(),
 		upgrader: websocket.Upgrader{},
 	}
-	s.users = make(map[int64]*user.User)
-	s.world = game.NewWorld(func(m message.Message) error {
-		for _, user := range s.users {
-			err := user.Write(m)
-			if err != nil {
-				return err
-			}
-		}
-
-		return nil
-	})
+	s.world = game.NewWorld()
 
 	s.gin.GET(
 		"/ws",
@@ -51,6 +42,17 @@ func NewServer() *Server {
 		})
 
 	return s
+}
+
+// NewUser creates new user.
+func (s *Server) NewUser(conn *net.Conn) *user.User {
+	u := user.New(conn)
+
+	s.mux.Lock()
+	s.users = append(s.users, u)
+	s.mux.Unlock()
+
+	return u
 }
 
 // Run runs server.
@@ -69,6 +71,15 @@ func (s *Server) Run() error {
 			case <-quit:
 				return
 			default:
+				s.mux.Lock()
+				for _, user := range s.users {
+					err := user.Consume()
+					if err != nil {
+						log.Printf("+%v", err)
+					}
+				}
+				s.mux.Unlock()
+
 				err := s.world.Tick(delta.Seconds())
 				if err != nil {
 					log.Println(err)
@@ -93,37 +104,24 @@ func (s *Server) upgrade(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	user := user.NewUser(conn)
+	u := s.NewUser(conn)
 
-	s.users[user.ID()] = user
-	defer delete(s.users, user.ID())
-
-	err = conn.SetHandlers(handler.Generate(user, s.world))
+	err = conn.SetHandlers(
+		handler.Generate(
+			u,
+			s.world,
+		))
 	if err != nil {
 		return err
 	}
 
 	go func() {
 		err := conn.Run()
-		defer func() {
-			user.Close()
-		}()
-
 		if err != nil {
-			log.Println(err)
+			log.Printf("+%v", err)
 			return
 		}
 	}()
-
-	for {
-		err := conn.Consume()
-		if err != nil {
-			log.Println(err)
-			break
-		}
-	}
-
-	delete(s.users, user.ID())
 
 	return nil
 }

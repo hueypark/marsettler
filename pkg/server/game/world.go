@@ -16,15 +16,13 @@ type World struct {
 	actors                     map[int64]*Actor
 	physicsWorld               *physics.World
 	messageActorMovesPushCache message.ActorMovesPush
-	broadcast                  func(m message.Message) error
 }
 
 // NewWorld creates world.
-func NewWorld(broadcast func(m message.Message) error) *World {
+func NewWorld() *World {
 	w := &World{}
 	w.actors = make(map[int64]*Actor)
 	w.physicsWorld = physics.NewWorld()
-	w.broadcast = broadcast
 
 	return w
 }
@@ -107,6 +105,18 @@ func (w *World) Tick(delta float64) error {
 	w.physicsWorld.Tick(delta)
 
 	w.flushActorMovePush()
+
+	return nil
+}
+
+// broadcast sends messages to all actor.
+func (w *World) broadcast(m message.Message) error {
+	for _, a := range w.actors {
+		err := a.Write(m)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

@@ -4,24 +4,28 @@ import (
 	"fmt"
 
 	"github.com/hueypark/marsettler/pkg/data"
-	"github.com/hueypark/marsettler/pkg/internal/game"
 	"github.com/hueypark/marsettler/pkg/internal/math2d"
+	"github.com/hueypark/marsettler/pkg/internal/physics"
+	"github.com/hueypark/marsettler/pkg/internal/physics/shape"
 	"github.com/hueypark/marsettler/pkg/message"
 	"github.com/pkg/errors"
 )
 
 // Actor is basic object in world.
 type Actor struct {
-	*game.Actor
+	*physics.Body
 
-	writer func(message message.Message) error
+	dataID	data.ActorID
+	speed	float64
 
-	moveStickDirection *math2d.Vector
-	moveToPosition     *math2d.Vector
-	moved              bool
+	writer	func(message message.Message) error
 
-	hp    int32
-	maxHP int32
+	moveStickDirection	*math2d.Vector
+	moveToPosition		*math2d.Vector
+	moved			bool
+
+	hp	int32
+	maxHP	int32
 }
 
 // NewActor Creates new actor.
@@ -32,21 +36,21 @@ func NewActor(id int64, dataID data.ActorID, position *math2d.Vector) (*Actor, e
 	}
 
 	a := &Actor{
-		hp:    actorData.MaxHP,
-		maxHP: actorData.MaxHP,
+		hp:	actorData.MaxHP,
+		maxHP:	actorData.MaxHP,
+		dataID:	dataID,
+		speed:	100,
 	}
 
-	var err error
-	a.Actor, err = game.NewActor(
+	a.Body = physics.NewBody(
 		id,
-		dataID,
 		position,
 		func(position *math2d.Vector) {
 			a.moved = true
 		})
-	if err != nil {
-		return nil, err
-	}
+
+	a.Body.SetShape(shape.NewCircle(actorData.Radius))
+	a.Body.SetMass(10)
 
 	return a, nil
 }
@@ -54,6 +58,11 @@ func NewActor(id int64, dataID data.ActorID, position *math2d.Vector) (*Actor, e
 // Act acts to target.
 func (a *Actor) Act(world *World, target *Actor) error {
 	return world.DeleteActor(target.ID())
+}
+
+// DataID returns data id.
+func (a *Actor) DataID() data.ActorID {
+	return a.dataID
 }
 
 // HP returns hp.
@@ -69,9 +78,9 @@ func (a *Actor) MaxHP() int32 {
 // Message returns message.Actor.
 func (a *Actor) Message() *message.Actor {
 	m := &message.Actor{
-		Id:       a.ID(),
-		Position: &message.Vector{X: a.Position().X, Y: a.Position().Y},
-		DataID:   int32(a.DataID()),
+		Id:		a.ID(),
+		Position:	&message.Vector{X: a.Position().X, Y: a.Position().Y},
+		DataID:		int32(a.DataID()),
 	}
 
 	m.Stats = append(m.Stats, &message.Stat{Type: message.StatTypeHP, Val: a.hp})
@@ -102,6 +111,11 @@ func (a *Actor) SetMoveToPosition(position *math2d.Vector) {
 // SetWriter sets writer function.
 func (a *Actor) SetWriter(writer func(message message.Message) error) {
 	a.writer = writer
+}
+
+// Speed returns speed of actor.
+func (a *Actor) Speed() float64 {
+	return a.speed
 }
 
 // String implements fmt.Stringer.

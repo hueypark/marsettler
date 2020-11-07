@@ -1,0 +1,7 @@
+namespace fbs;
+
+table SignInRequest {
+    id:int64;
+}
+
+root_type SignInRequest;

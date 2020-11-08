@@ -2,7 +2,7 @@ package user
 
 import (
 	"github.com/hueypark/marsettler/server/pkg/internal/net"
-	"github.com/hueypark/marsettler/server/pkg/message"
+	"github.com/hueypark/marsettler/server/pkg/message/fbs"
 	"github.com/hueypark/marsettler/server/pkg/server/game"
 )
 
@@ -56,7 +56,7 @@ func (u *User) SetActor(actor *game.Actor) {
 	u.actor = actor
 
 	u.actor.SetWriter(
-		func(message message.Message) error {
+		func(message fbs.Message) error {
 			return u.Write(message)
 		})
 }
@@ -67,6 +67,6 @@ func (u *User) SetID(id int64) {
 }
 
 // Write writes message.
-func (u *User) Write(message message.Message) error {
+func (u *User) Write(message fbs.Message) error {
 	return u.conn.Write(message)
 }

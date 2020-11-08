@@ -7,7 +7,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
-	"github.com/hueypark/marsettler/server/pkg/message"
+	"github.com/hueypark/marsettler/server/pkg/message/fbs"
 )
 
 // Conn reprents a connection.
@@ -21,7 +21,7 @@ type Conn struct {
 }
 
 type rawMessage struct {
-	ID	message.ID
+	ID	fbs.ID
 	Bytes	[]byte
 }
 
@@ -82,7 +82,7 @@ func (c *Conn) Run() error {
 				return err
 			}
 
-			id := message.ID(binary.LittleEndian.Uint32(idBytes))
+			id := fbs.ID(binary.LittleEndian.Uint32(idBytes))
 
 			c.mux.Lock()
 			c.messages = append(c.messages, rawMessage{id, bytes})
@@ -104,7 +104,7 @@ func (c *Conn) SetHandlers(handlerFuncs HandlerFuncs) error {
 }
 
 // Send sends message.
-func (c *Conn) Write(message message.Message) error {
+func (c *Conn) Write(message fbs.Message) error {
 	bytes, err := proto.Marshal(message)
 	if err != nil {
 		return err

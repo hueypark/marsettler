@@ -8,6 +8,7 @@ import (
 	"github.com/hueypark/marsettler/server/pkg/internal/physics"
 	"github.com/hueypark/marsettler/server/pkg/internal/physics/shape"
 	"github.com/hueypark/marsettler/server/pkg/message"
+	"github.com/hueypark/marsettler/server/pkg/message/fbs"
 	"github.com/pkg/errors"
 )
 
@@ -18,7 +19,7 @@ type Actor struct {
 	dataID	data.ActorID
 	speed	float64
 
-	writer	func(message message.Message) error
+	writer	func(message fbs.Message) error
 
 	moveStickDirection	*math2d.Vector
 	moveToPosition		*math2d.Vector
@@ -109,7 +110,7 @@ func (a *Actor) SetMoveToPosition(position *math2d.Vector) {
 }
 
 // SetWriter sets writer function.
-func (a *Actor) SetWriter(writer func(message message.Message) error) {
+func (a *Actor) SetWriter(writer func(message fbs.Message) error) {
 	a.writer = writer
 }
 
@@ -161,7 +162,7 @@ func (a *Actor) Tick(world *World, delta float64) error {
 }
 
 // Write writes message.
-func (a *Actor) Write(m message.Message) error {
+func (a *Actor) Write(m fbs.Message) error {
 	if a.writer == nil {
 		return nil
 	}

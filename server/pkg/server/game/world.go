@@ -9,6 +9,7 @@ import (
 	"github.com/hueypark/marsettler/server/pkg/internal/math2d"
 	"github.com/hueypark/marsettler/server/pkg/internal/physics"
 	"github.com/hueypark/marsettler/server/pkg/message"
+	"github.com/hueypark/marsettler/server/pkg/message/fbs"
 )
 
 // World is an area where fewer than 2,000 users can play at the same time.
@@ -110,7 +111,7 @@ func (w *World) Tick(delta float64) error {
 }
 
 // broadcast sends messages to all actor.
-func (w *World) broadcast(m message.Message) error {
+func (w *World) broadcast(m fbs.Message) error {
 	for _, a := range w.actors {
 		err := a.Write(m)
 		if err != nil {

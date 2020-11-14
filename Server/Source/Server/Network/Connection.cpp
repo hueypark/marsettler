@@ -1,7 +1,7 @@
 #include "Connection.h"
 
+#include <Message/Header_generated.h>
 #include <Message/Message.h>
-#include <Message/header_generated.h>
 
 #include <boost/asio.hpp>
 #include <iostream>

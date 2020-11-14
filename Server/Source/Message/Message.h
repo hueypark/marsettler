@@ -1,3 +1,5 @@
+#include "MessageID.h"
+
 #include <cinttypes>
 #include <vector>
 
@@ -6,7 +8,7 @@ class Message
 {
 public:
 	// 생성자
-	Message(const int32_t& id, const int32_t& size);
+	Message(const MessageID& id, const int32_t& size);
 
 	// Data 는 데이터 포인터를 반환합니다.
 	uint8_t* Data();
@@ -15,6 +17,6 @@ public:
 	const int32_t Size();
 
 private:
-	int32_t m_id;
+	MessageID m_id;
 	std::vector<uint8_t> m_body;
 };

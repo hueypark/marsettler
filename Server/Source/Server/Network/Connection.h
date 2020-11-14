@@ -1,28 +1,36 @@
+#pragma once
+
 #include <boost/asio.hpp>
 #include <boost/lockfree/queue.hpp>
 
 class Message;
+class MessageHandler;
+enum class MessageID;
 
-// Connection Àº Å¬¶óÀÌ¾ğÆ®¿ÍÀÇ ¿¬°áÀ» Ç¥ÇöÇÕ´Ï´Ù.
+// Connection ì€ í´ë¼ì´ì–¸íŠ¸ì™€ì˜ ì—°ê²°ì„ í‘œí˜„í•©ë‹ˆë‹¤.
 class Connection
 {
 public:
+	// ìƒì„±ì
 	Connection(boost::asio::io_context& io_context, const int32_t& headerSize);
 
-	// Socket Àº ¼ÒÄÏÀ» ¹İÈ¯ÇÕ´Ï´Ù.
+	// ì†Œë©¸ì
+	virtual ~Connection();
+
+	// Socket ì€ ì†Œì¼“ì„ ë°˜í™˜í•©ë‹ˆë‹¤.
 	boost::asio::ip::tcp::socket& Socket();
 
-	// Start ´Â ¿¬°áÀ» ½ÃÀÛÇÕ´Ï´Ù.
+	// Start ëŠ” ì—°ê²°ì„ ì‹œì‘í•©ë‹ˆë‹¤.
 	void Start();
 
-	// Tick Àº ÁÖ±âÀûÀ¸·Î ½ÇÇàµÇ¸ç ¿¬°áÀ» Ã³¸®ÇÕ´Ï´Ù.
+	// Tick ì€ ì£¼ê¸°ì ìœ¼ë¡œ ì‹¤í–‰ë˜ë©° ì—°ê²°ì„ ì²˜ë¦¬í•©ë‹ˆë‹¤.
 	void Tick();
 
 private:
-	// _ReadBody ´Â ¹Ùµğ¸¦ ÀĞ½À´Ï´Ù.
-	void _ReadBody(const int32_t& id, const int32_t& size);
+	// _ReadBody ëŠ” ë°”ë””ë¥¼ ì½ìŠµë‹ˆë‹¤.
+	void _ReadBody(const MessageID& id, const int32_t& size);
 
-	// _ReadHeader ´Â Çì´õ¸¦ ÀĞ½À´Ï´Ù.
+	// _ReadHeader ëŠ” í—¤ë”ë¥¼ ì½ìŠµë‹ˆë‹¤.
 	void _ReadHeader();
 
 private:
@@ -32,4 +40,6 @@ private:
 
 	Message* m_messageTemp;
 	boost::lockfree::queue<const Message*> m_messages;
+
+	MessageHandler* m_messageHandler;
 };

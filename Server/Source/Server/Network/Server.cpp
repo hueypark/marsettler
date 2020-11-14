@@ -4,7 +4,9 @@
 
 #include <Message/header_generated.h>
 
+#include <chrono>
 #include <iostream>
+#include <thread>
 
 Server::Server()
 	: m_acceptor(m_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8080)), m_state(_State::Running)
@@ -25,6 +27,8 @@ void Server::Start()
 		while (true)
 		{
 			_Tick();
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	});
 

@@ -1,0 +1,8 @@
+namespace fbs;
+
+table Header {
+	id:int32;
+	size:int32;
+}
+
+root_type Header;

@@ -69,7 +69,8 @@ IncludeCategories:
   - Regex:           '^<.*>'
     Priority:        4
 IncludeIsMainRegex: '([-_](test|unittest))?$'
-IndentCaseLabels: true
+IndentCaseBlocks: true
+IndentCaseLabels: false
 IndentPPDirectives: None
 IndentWidth:     4
 IndentWrappedFunctionNames: false

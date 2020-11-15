@@ -1,8 +1,8 @@
-Build/
-Package/boost_1_74_0/b2.exe
-Package/boost_1_74_0/bin.v2/
-Package/boost_1_74_0/bootstrap.log
-Package/boost_1_74_0/project-config.jam
-Package/boost_1_74_0/stage/
+/Build/
+/Package/boost_1_74_0/b2.exe
+/Package/boost_1_74_0/bin.v2/
+/Package/boost_1_74_0/bootstrap.log
+/Package/boost_1_74_0/project-config.jam
+/Package/boost_1_74_0/stage/
 *.obj
 *.obj.rsp

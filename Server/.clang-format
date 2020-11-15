@@ -64,7 +64,7 @@ IncludeCategories:
     Priority:        -1
   - Regex:           '".*"'
     Priority:        1
-  - Regex:           '^<.*\.(h)>'
+  - Regex:           '^<.*\.(h|hpp)>'
     Priority:        3
   - Regex:           '^<.*>'
     Priority:        4

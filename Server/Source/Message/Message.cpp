@@ -10,7 +10,17 @@ uint8_t* Message::Data()
 	return m_body.data();
 }
 
-const int32_t Message::Size()
+const uint8_t* Message::Data() const
+{
+	return m_body.data();
+}
+
+MessageID Message::ID() const
+{
+	return MessageID();
+}
+
+const int32_t Message::Size() const
 {
 	return m_body.size();
 }

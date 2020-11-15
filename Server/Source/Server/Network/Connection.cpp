@@ -10,7 +10,7 @@
 #include <iostream>
 
 Connection::Connection(boost::asio::io_context& io_context, const int32_t& headerSize)
-	: m_socket(io_context), m_messageTemp(nullptr), m_messages(0), m_messageHandler(new MessageHandler)
+	: m_socket(io_context), m_messageTemp(nullptr), m_messages(0)
 {
 	m_headerBuf.resize(headerSize);
 
@@ -19,7 +19,6 @@ Connection::Connection(boost::asio::io_context& io_context, const int32_t& heade
 
 Connection::~Connection()
 {
-	delete m_messageHandler;
 }
 
 boost::asio::ip::tcp::socket& Connection::Socket()
@@ -37,7 +36,7 @@ void Connection::Tick()
 	m_messages.consume_all(
 		[this](const Message* message)
 		{
-			m_messageHandler->Handle(message);
+			MessageHandler::Handle(this, message);
 
 			delete message;
 		});
@@ -64,6 +63,8 @@ void Connection::_ReadBody(const MessageID& id, const int32_t& size)
 			}
 
 			m_messageTemp = nullptr;
+
+			_ReadHeader();
 		});
 }
 
@@ -90,5 +91,7 @@ void Connection::_ReadHeader()
 
 				return;
 			}
+
+			_ReadBody(MessageID(header->ID()), header->Size());
 		});
 }

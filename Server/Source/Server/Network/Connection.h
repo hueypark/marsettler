@@ -40,6 +40,4 @@ private:
 
 	Message* m_messageTemp;
 	boost::lockfree::queue<const Message*> m_messages;
-
-	MessageHandler* m_messageHandler;
 };

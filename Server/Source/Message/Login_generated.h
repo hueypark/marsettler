@@ -16,7 +16,7 @@ struct Login FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ID = 4
   };
-  int64_t id() const {
+  int64_t ID() const {
     return GetField<int64_t>(VT_ID, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
@@ -30,8 +30,8 @@ struct LoginBuilder {
   typedef Login Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_id(int64_t id) {
-    fbb_.AddElement<int64_t>(Login::VT_ID, id, 0);
+  void add_ID(int64_t ID) {
+    fbb_.AddElement<int64_t>(Login::VT_ID, ID, 0);
   }
   explicit LoginBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -47,9 +47,9 @@ struct LoginBuilder {
 
 inline flatbuffers::Offset<Login> CreateLogin(
     flatbuffers::FlatBufferBuilder &_fbb,
-    int64_t id = 0) {
+    int64_t ID = 0) {
   LoginBuilder builder_(_fbb);
-  builder_.add_id(id);
+  builder_.add_ID(ID);
   return builder_.Finish();
 }
 

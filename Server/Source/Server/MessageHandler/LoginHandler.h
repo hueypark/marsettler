@@ -2,9 +2,8 @@
 
 class Connection;
 class Message;
-enum class MessageID;
 
-class MessageHandler
+class LoginHandler
 {
 public:
 	// Handle 은 메시지를 처리합니다.

@@ -1,8 +1,8 @@
 #pragma once
 
-// MessageID ´Â ¸Ş½ÃÁöÀÇ °íÀ¯ÇÑ ½Äº°ÀÚ¸¦ ÀÇ¹ÌÇÕ´Ï´Ù.
+// MessageID ëŠ” ê³ ìœ í•œ ë©”ì‹œì§€ì˜ ID ì…ë‹ˆë‹¤.
 enum class MessageID
 {
-	LoginResponse = 0,
-	LoginRequest = 1,
+	Login = 0,
+	LoginResponse = 1,
 };

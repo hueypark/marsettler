@@ -3,18 +3,24 @@
 #include <cinttypes>
 #include <vector>
 
-// Message ´Â ¸Ş½ÃÁö¸¦ Ç¥ÇöÇÕ´Ï´Ù.
+// Message ëŠ” ë©”ì‹œì§€ë¥¼ í‘œí˜„í•©ë‹ˆë‹¤.
 class Message
 {
 public:
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	Message(const MessageID& id, const int32_t& size);
 
-	// Data ´Â µ¥ÀÌÅÍ Æ÷ÀÎÅÍ¸¦ ¹İÈ¯ÇÕ´Ï´Ù.
+	// Data ëŠ” ë°ì´í„°ë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
 	uint8_t* Data();
 
-	// Size ´Â µ¥ÀÌÅÍÀÇ Å©±â¸¦ ¹İÈ¯ÇÕ´Ï´Ù.
-	const int32_t Size();
+	// Data ëŠ” ë°ì´í„°ë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
+	const uint8_t* Data() const;
+
+	// ID ëŠ” ë©”ì‹œì§€ IDë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
+	MessageID ID() const;
+
+	// Size ëŠ” ë°ì´í„°ì˜ í¬ê¸°ë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
+	const int32_t Size() const;
 
 private:
 	MessageID m_id;

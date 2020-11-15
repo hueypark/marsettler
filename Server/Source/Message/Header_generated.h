@@ -17,10 +17,10 @@ struct Header FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_ID = 4,
     VT_SIZE = 6
   };
-  int32_t id() const {
+  int32_t ID() const {
     return GetField<int32_t>(VT_ID, 0);
   }
-  int32_t size() const {
+  int32_t Size() const {
     return GetField<int32_t>(VT_SIZE, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
@@ -35,11 +35,11 @@ struct HeaderBuilder {
   typedef Header Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_id(int32_t id) {
-    fbb_.AddElement<int32_t>(Header::VT_ID, id, 0);
+  void add_ID(int32_t ID) {
+    fbb_.AddElement<int32_t>(Header::VT_ID, ID, 0);
   }
-  void add_size(int32_t size) {
-    fbb_.AddElement<int32_t>(Header::VT_SIZE, size, 0);
+  void add_Size(int32_t Size) {
+    fbb_.AddElement<int32_t>(Header::VT_SIZE, Size, 0);
   }
   explicit HeaderBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -55,11 +55,11 @@ struct HeaderBuilder {
 
 inline flatbuffers::Offset<Header> CreateHeader(
     flatbuffers::FlatBufferBuilder &_fbb,
-    int32_t id = 0,
-    int32_t size = 0) {
+    int32_t ID = 0,
+    int32_t Size = 0) {
   HeaderBuilder builder_(_fbb);
-  builder_.add_size(size);
-  builder_.add_id(id);
+  builder_.add_Size(Size);
+  builder_.add_ID(ID);
   return builder_.Finish();
 }
 

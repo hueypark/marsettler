@@ -34,11 +34,13 @@ void Connection::Start()
 
 void Connection::Tick()
 {
-	m_messages.consume_all([this](const Message* message) {
-		m_messageHandler->Handle(message);
+	m_messages.consume_all(
+		[this](const Message* message)
+		{
+			m_messageHandler->Handle(message);
 
-		delete message;
-	});
+			delete message;
+		});
 }
 
 void Connection::_ReadBody(const MessageID& id, const int32_t& size)
@@ -46,7 +48,8 @@ void Connection::_ReadBody(const MessageID& id, const int32_t& size)
 	m_messageTemp = new Message(id, size);
 
 	boost::asio::async_read(m_socket, boost::asio::buffer(m_messageTemp->Data(), m_messageTemp->Size()),
-		[this](std::error_code ec, std::size_t length) {
+		[this](std::error_code ec, std::size_t length)
+		{
 			if (!ec)
 			{
 				std::cout << ec.message() << std::endl;
@@ -66,8 +69,9 @@ void Connection::_ReadBody(const MessageID& id, const int32_t& size)
 
 void Connection::_ReadHeader()
 {
-	boost::asio::async_read(
-		m_socket, boost::asio::buffer(m_headerBuf.data(), m_headerBuf.size()), [this](std::error_code ec, std::size_t length) {
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_headerBuf.data(), m_headerBuf.size()),
+		[this](std::error_code ec, std::size_t length)
+		{
 			if (!ec)
 			{
 				std::cout << ec.message() << std::endl;

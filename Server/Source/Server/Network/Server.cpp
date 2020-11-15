@@ -23,14 +23,16 @@ void Server::Start()
 {
 	_StartAccept();
 
-	std::thread serverThread([this]() {
-		while (true)
+	std::thread serverThread(
+		[this]()
 		{
-			_Tick();
+			while (true)
+			{
+				_Tick();
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
-	});
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
+		});
 
 	serverThread.detach();
 
@@ -57,19 +59,21 @@ void Server::_StartAccept()
 {
 	std::shared_ptr<Connection> connection = std::make_shared<Connection>(m_ioContext, m_headerSize);
 
-	m_acceptor.async_accept(connection->Socket(), [this, connection](const boost::system::error_code& error) {
-		if (!error)
+	m_acceptor.async_accept(connection->Socket(),
+		[this, connection](const boost::system::error_code& error)
 		{
-			connection->Start();
-		}
+			if (!error)
+			{
+				connection->Start();
+			}
 
-		static int64_t connectionID = 0;
-		++connectionID;
+			static int64_t connectionID = 0;
+			++connectionID;
 
-		m_connections.emplace(connectionID, connection);
+			m_connections.emplace(connectionID, connection);
 
-		_StartAccept();
-	});
+			_StartAccept();
+		});
 }
 
 void Server::_Tick()

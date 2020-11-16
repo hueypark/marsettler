@@ -1,3 +1,5 @@
+#pragma once
+
 #include "MessageID.h"
 
 #include <cinttypes>

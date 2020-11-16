@@ -5,14 +5,19 @@
 #include <Message/Header_generated.h>
 #include <Message/Message.h>
 #include <Message/MessageID.h>
-
 #include <boost/asio.hpp>
+
 #include <iostream>
 
-Connection::Connection(boost::asio::io_context& io_context, const int32_t& headerSize)
-	: m_socket(io_context), m_messageTemp(nullptr), m_messages(0)
+Connection::Connection(boost::asio::io_context& ioContext, const int32_t& headerSize)
+	: m_socket(ioContext)
+	, m_ioContext(ioContext)
+	, m_messageOutHeaderBuilder(headerSize)
+	, m_messageIns(0)
+	, m_messageOutTemp(nullptr)
+	, m_messageOutBuilders(0)
 {
-	m_headerBuf.resize(headerSize);
+	m_messageInHeaderBuf.resize(headerSize);
 
 	_ReadHeader();
 }
@@ -29,11 +34,17 @@ boost::asio::ip::tcp::socket& Connection::Socket()
 void Connection::Start()
 {
 	_ReadHeader();
+
+	boost::asio::post(m_ioContext,
+		[this]()
+		{
+			_WriteHeader();
+		});
 }
 
 void Connection::Tick()
 {
-	m_messages.consume_all(
+	m_messageIns.consume_all(
 		[this](const Message* message)
 		{
 			MessageHandler::Handle(this, message);
@@ -42,11 +53,19 @@ void Connection::Tick()
 		});
 }
 
+void Connection::Write(_MessageBuilder messageBuilder)
+{
+	auto func = new _MessageBuilder(messageBuilder);
+	while (!m_messageOutBuilders.push(func))
+	{
+	}
+}
+
 void Connection::_ReadBody(const MessageID& id, const int32_t& size)
 {
-	m_messageTemp = new Message(id, size);
+	m_messageInTemp = new Message(id, size);
 
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_messageTemp->Data(), m_messageTemp->Size()),
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_messageInTemp->Data(), m_messageInTemp->Size()),
 		[this](std::error_code ec, std::size_t length)
 		{
 			if (!ec)
@@ -58,11 +77,9 @@ void Connection::_ReadBody(const MessageID& id, const int32_t& size)
 				return;
 			}
 
-			while (!m_messages.push(m_messageTemp))
+			while (!m_messageIns.push(m_messageInTemp))
 			{
 			}
-
-			m_messageTemp = nullptr;
 
 			_ReadHeader();
 		});
@@ -70,19 +87,19 @@ void Connection::_ReadBody(const MessageID& id, const int32_t& size)
 
 void Connection::_ReadHeader()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_headerBuf.data(), m_headerBuf.size()),
+	boost::asio::async_read(m_socket, boost::asio::buffer(m_messageInHeaderBuf.data(), m_messageInHeaderBuf.size()),
 		[this](std::error_code ec, std::size_t length)
 		{
 			if (!ec)
 			{
-				std::cout << ec.message() << std::endl;
+				std::cerr << ec.message() << std::endl;
 
 				m_socket.close();
 
 				return;
 			}
 
-			const fbs::Header* header = fbs::GetHeader(m_headerBuf.data());
+			const fbs::Header* header = fbs::GetHeader(m_messageInHeaderBuf.data());
 			if (!header)
 			{
 				std::cout << "Header is null." << std::endl;
@@ -93,5 +110,64 @@ void Connection::_ReadHeader()
 			}
 
 			_ReadBody(MessageID(header->ID()), header->Size());
+		});
+}
+
+void Connection::_WriteBody()
+{
+	boost::asio::async_write(m_socket, boost::asio::buffer(m_messageOutTemp->Data(), m_messageOutTemp->Size()),
+		[this](std::error_code ec, std::size_t length)
+		{
+			delete m_messageOutTemp;
+
+			if (!ec)
+			{
+				std::cerr << ec.message() << std::endl;
+
+				m_socket.close();
+
+				return;
+			}
+
+			_WriteHeader();
+		});
+}
+
+void Connection::_WriteHeader()
+{
+	_MessageBuilder* builder = nullptr;
+	while (true)
+	{
+		if (m_messageOutBuilders.pop(builder))
+		{
+			break;
+		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+
+	m_messageOutTemp = (*builder)(m_messageOutBodyBuilder);
+
+	delete builder;
+
+	auto header = fbs::CreateHeader(m_messageOutHeaderBuilder, int32_t(m_messageOutTemp->ID()), m_messageOutTemp->Size());
+	m_messageOutHeaderBuilder.Finish(header);
+
+	boost::asio::async_write(m_socket,
+		boost::asio::buffer(m_messageOutHeaderBuilder.GetBufferPointer(), m_messageOutHeaderBuilder.GetSize()),
+		[this](std::error_code ec, std::size_t length)
+		{
+			if (!ec)
+			{
+				std::cerr << ec.message() << std::endl;
+
+				m_socket.close();
+
+				delete m_messageOutTemp;
+
+				return;
+			}
+
+			_WriteBody();
 		});
 }

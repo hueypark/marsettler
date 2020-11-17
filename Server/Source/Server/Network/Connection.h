@@ -37,11 +37,8 @@ private:
 	// _ReadHeader 는 헤더를 읽습니다.
 	void _ReadHeader();
 
-	// 바디를 씁니다.
-	void _WriteBody();
-
-	// _WriteHeader 는 헤더를 씁니다.
-	void _WriteHeader();
+	// _Write 는 메시지를 씁니다.
+	void _Write();
 
 private:
 	// 메시지 빌더

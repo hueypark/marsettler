@@ -38,7 +38,7 @@ void Connection::Start()
 	boost::asio::post(m_ioContext,
 		[this]()
 		{
-			_WriteHeader();
+			_Write();
 		});
 }
 
@@ -113,27 +113,7 @@ void Connection::_ReadHeader()
 		});
 }
 
-void Connection::_WriteBody()
-{
-	boost::asio::async_write(m_socket, boost::asio::buffer(m_messageOutTemp->Data(), m_messageOutTemp->Size()),
-		[this](std::error_code ec, std::size_t length)
-		{
-			delete m_messageOutTemp;
-
-			if (!ec)
-			{
-				std::cerr << ec.message() << std::endl;
-
-				m_socket.close();
-
-				return;
-			}
-
-			_WriteHeader();
-		});
-}
-
-void Connection::_WriteHeader()
+void Connection::_Write()
 {
 	_MessageBuilder* builder = nullptr;
 	while (true)
@@ -154,20 +134,22 @@ void Connection::_WriteHeader()
 	m_messageOutHeaderBuilder.Finish(header);
 
 	boost::asio::async_write(m_socket,
-		boost::asio::buffer(m_messageOutHeaderBuilder.GetBufferPointer(), m_messageOutHeaderBuilder.GetSize()),
+		boost::array<boost::asio::const_buffer, 2>{
+			boost::asio::buffer(m_messageOutHeaderBuilder.GetBufferPointer(), m_messageOutHeaderBuilder.GetSize()),
+			boost::asio::buffer(m_messageOutTemp->Data(), m_messageOutTemp->Size())},
 		[this](std::error_code ec, std::size_t length)
 		{
+			delete m_messageOutTemp;
+
 			if (!ec)
 			{
 				std::cerr << ec.message() << std::endl;
 
 				m_socket.close();
 
-				delete m_messageOutTemp;
-
 				return;
 			}
 
-			_WriteBody();
+			_Write();
 		});
 }

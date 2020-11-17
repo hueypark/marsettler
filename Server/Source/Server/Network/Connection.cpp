@@ -10,12 +10,7 @@
 #include <iostream>
 
 Connection::Connection(boost::asio::io_context& ioContext, const int32_t& headerSize)
-	: m_socket(ioContext)
-	, m_ioContext(ioContext)
-	, m_messageOutHeaderBuilder(headerSize)
-	, m_messageIns(0)
-	, m_messageOutTemp(nullptr)
-	, m_messageOutBuilders(0)
+	: m_socket(ioContext), m_ioContext(ioContext), m_messageOutHeaderBuilder(headerSize), m_messageIns(0)
 {
 	m_messageInHeaderBuf.resize(headerSize);
 
@@ -53,12 +48,11 @@ void Connection::Tick()
 		});
 }
 
-void Connection::Write(_MessageBuilder messageBuilder)
+void Connection::Write(const MessageBuilder& builder)
 {
-	auto func = new _MessageBuilder(messageBuilder);
-	while (!m_messageOutBuilders.push(func))
-	{
-	}
+	m_messageOutMux.lock();
+	m_messageOutBuilders.emplace(builder.Clone());
+	m_messageOutMux.unlock();
 }
 
 void Connection::_ReadBody(const MessageID& id, const int32_t& size)
@@ -115,32 +109,22 @@ void Connection::_ReadHeader()
 
 void Connection::_Write()
 {
-	_MessageBuilder* builder = nullptr;
-	while (true)
-	{
-		if (m_messageOutBuilders.pop(builder))
-		{
-			break;
-		}
+	m_messageOutMux.lock();
+	std::unique_ptr<MessageBuilder> builder = std::move(m_messageOutBuilders.front());
+	m_messageOutBuilders.pop();
+	m_messageOutMux.unlock();
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
+	builder->Build(m_messageOutBodyBuilder);
 
-	m_messageOutTemp = (*builder)(m_messageOutBodyBuilder);
-
-	delete builder;
-
-	auto header = fbs::CreateHeader(m_messageOutHeaderBuilder, int32_t(m_messageOutTemp->ID()), m_messageOutTemp->Size());
+	auto header = fbs::CreateHeader(m_messageOutHeaderBuilder, int32_t(builder->MessageID()), m_messageOutBodyBuilder.GetSize());
 	m_messageOutHeaderBuilder.Finish(header);
 
 	boost::asio::async_write(m_socket,
 		boost::array<boost::asio::const_buffer, 2>{
 			boost::asio::buffer(m_messageOutHeaderBuilder.GetBufferPointer(), m_messageOutHeaderBuilder.GetSize()),
-			boost::asio::buffer(m_messageOutTemp->Data(), m_messageOutTemp->Size())},
+			boost::asio::buffer(m_messageOutBodyBuilder.GetBufferPointer(), m_messageOutBodyBuilder.GetSize())},
 		[this](std::error_code ec, std::size_t length)
 		{
-			delete m_messageOutTemp;
-
 			if (!ec)
 			{
 				std::cerr << ec.message() << std::endl;

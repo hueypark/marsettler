@@ -1,8 +1,12 @@
 #pragma once
 
+#include <Message/MessageBuilder.h>
 #include <boost/asio.hpp>
 #include <boost/lockfree/queue.hpp>
 #include <flatbuffers/flatbuffers.h>
+
+#include <mutex>
+#include <queue>
 
 class Message;
 class MessageHandler;
@@ -28,7 +32,7 @@ public:
 	void Tick();
 
 	// Write 는 메시지를 씁니다.
-	void Write(std::function<Message*(flatbuffers::FlatBufferBuilder& builder)> newMessage);
+	void Write(const MessageBuilder& builder);
 
 private:
 	// _ReadBody 는 바디를 읽습니다.
@@ -41,10 +45,6 @@ private:
 	void _Write();
 
 private:
-	// 메시지 빌더
-	using _MessageBuilder = std::function<Message*(flatbuffers::FlatBufferBuilder& builder)>;
-
-private:
 	boost::asio::ip::tcp::socket m_socket;
 	boost::asio::io_context& m_ioContext;
 
@@ -52,8 +52,8 @@ private:
 	Message* m_messageInTemp;
 	boost::lockfree::queue<const Message*> m_messageIns;
 
+	std::mutex m_messageOutMux;
 	flatbuffers::FlatBufferBuilder m_messageOutHeaderBuilder;
 	flatbuffers::FlatBufferBuilder m_messageOutBodyBuilder;
-	Message* m_messageOutTemp;
-	boost::lockfree::queue<_MessageBuilder*> m_messageOutBuilders;
+	std::queue<std::unique_ptr<MessageBuilder>> m_messageOutBuilders;
 };

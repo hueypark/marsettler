@@ -7,5 +7,5 @@ class LoginHandler
 {
 public:
 	// Handle 은 메시지를 처리합니다.
-	static void Handle(const Connection* conn, const Message* message);
+	static void Handle(Connection* conn, const Message* message);
 };

@@ -15,5 +15,5 @@ public:
 	virtual std::unique_ptr<MessageBuilder> Clone() const = 0;
 
 	// MessageID 는 메시지 아이디를 반환합니다.
-	virtual MessageID MessageID() const = 0;
+	virtual MessageID ID() const = 0;
 };

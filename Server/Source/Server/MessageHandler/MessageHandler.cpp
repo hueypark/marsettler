@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-void MessageHandler::Handle(const Connection* conn, const Message* message)
+void MessageHandler::Handle(Connection* conn, const Message* message)
 {
 	// 플랫버퍼 내부에서 발생하는 예외를 잡기위해 try 문 추가했습니다.
 	try

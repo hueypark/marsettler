@@ -2,11 +2,11 @@
 
 #include "Network/Connection.h"
 
-#include <Message/LoginResponse_generated.h>
+#include <Message/LoginResponseBuilder_generated.h>
 #include <Message/Login_generated.h>
 #include <Message/Message.h>
 
-void LoginHandler::Handle(const Connection* conn, const Message* message)
+void LoginHandler::Handle(Connection* conn, const Message* message)
 {
 	const fbs::Login* login = fbs::GetLogin(message->Data());
 	if (!login)
@@ -32,4 +32,6 @@ void LoginHandler::Handle(const Connection* conn, const Message* message)
 	// TODO(jaewan): 액터 생성 혹은 기존 액터 연결
 
 	// TODO(jaewan): 결과 메시지 전달
+	LoginResponseBuilder loginResponse(id);
+	conn->Write(loginResponse);
 }

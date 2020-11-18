@@ -116,7 +116,7 @@ void Connection::_Write()
 
 	builder->Build(m_messageOutBodyBuilder);
 
-	auto header = fbs::CreateHeader(m_messageOutHeaderBuilder, int32_t(builder->MessageID()), m_messageOutBodyBuilder.GetSize());
+	auto header = fbs::CreateHeader(m_messageOutHeaderBuilder, int32_t(builder->ID()), m_messageOutBodyBuilder.GetSize());
 	m_messageOutHeaderBuilder.Finish(header);
 
 	boost::asio::async_write(m_socket,

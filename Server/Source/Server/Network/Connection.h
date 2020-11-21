@@ -53,6 +53,7 @@ private:
 	boost::lockfree::queue<const Message*> m_messageIns;
 
 	std::mutex m_messageOutMux;
+	std::atomic_bool m_messageOutFlag;
 	flatbuffers::FlatBufferBuilder m_messageOutHeaderBuilder;
 	flatbuffers::FlatBufferBuilder m_messageOutBodyBuilder;
 	std::queue<std::unique_ptr<MessageBuilder>> m_messageOutBuilders;

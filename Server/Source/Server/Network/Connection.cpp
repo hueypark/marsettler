@@ -10,11 +10,14 @@
 #include <iostream>
 
 Connection::Connection(boost::asio::io_context& ioContext, const int32_t& headerSize)
-	: m_socket(ioContext), m_ioContext(ioContext), m_messageOutHeaderBuilder(headerSize), m_messageIns(0)
+	: m_socket(ioContext)
+	, m_ioContext(ioContext)
+	, m_messageInTemp(nullptr)
+	, m_messageIns(0)
+	, m_messageOutFlag(true)
+	, m_messageOutHeaderBuilder(headerSize)
 {
 	m_messageInHeaderBuf.resize(headerSize);
-
-	_ReadHeader();
 }
 
 Connection::~Connection()
@@ -29,12 +32,6 @@ boost::asio::ip::tcp::socket& Connection::Socket()
 void Connection::Start()
 {
 	_ReadHeader();
-
-	boost::asio::post(m_ioContext,
-		[this]()
-		{
-			_Write();
-		});
 }
 
 void Connection::Tick()
@@ -46,6 +43,11 @@ void Connection::Tick()
 
 			delete message;
 		});
+
+	if (!m_messageOutFlag.load())
+	{
+		_Write();
+	}
 }
 
 void Connection::Write(const MessageBuilder& builder)
@@ -109,9 +111,22 @@ void Connection::_ReadHeader()
 
 void Connection::_Write()
 {
+	std::unique_ptr<MessageBuilder> builder = nullptr;
+
 	m_messageOutMux.lock();
-	std::unique_ptr<MessageBuilder> builder = std::move(m_messageOutBuilders.front());
-	m_messageOutBuilders.pop();
+	if (m_messageOutBuilders.empty())
+	{
+		m_messageOutFlag.store(false);
+
+		m_messageOutMux.unlock();
+
+		return;
+	}
+	else
+	{
+		builder = std::move(m_messageOutBuilders.front());
+		m_messageOutBuilders.pop();
+	}
 	m_messageOutMux.unlock();
 
 	builder->Build(m_messageOutBodyBuilder);

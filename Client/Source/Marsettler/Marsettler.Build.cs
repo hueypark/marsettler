@@ -8,6 +8,15 @@ public class Marsettler : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "NavigationSystem", "AIModule" });
-    }
+		PublicDependencyModuleNames.AddRange(new string[] {
+			"AIModule",
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"HeadMountedDisplay",
+			"InputCore",
+			"NavigationSystem",
+			"Networking",
+			"Sockets" });
+	}
 }

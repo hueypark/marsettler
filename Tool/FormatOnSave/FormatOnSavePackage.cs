@@ -3,6 +3,8 @@ using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.IO;
+using System.Text;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Task = System.Threading.Tasks.Task;
@@ -51,21 +53,63 @@ namespace FormatOnSave
 			// Do any initialization that requires the UI thread after switching to the UI thread.
 			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-			Dte = await GetServiceAsync(typeof(DTE)) as DTE;
-			Assumes.Present(Dte);
-			DocumentEvents = Dte.Events.DocumentEvents;
-			DocumentEvents.DocumentSaved += DocumentEvents_DocumentSaved;
+			m_dte = await GetServiceAsync(typeof(DTE)) as DTE;
+			Assumes.Present(m_dte);
+			m_documentEvents = m_dte.Events.DocumentEvents;
+			m_documentEvents.DocumentSaved += DocumentEvents_DocumentSaved;
 		}
 
-		private void DocumentEvents_DocumentSaved(Document Document)
+		private void DocumentEvents_DocumentSaved(Document document)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
+			try
+			{
+				ThreadHelper.ThrowIfNotOnUIThread();
 
-			Dte.ExecuteCommand("Edit.FormatDocument");
+				m_dte.ExecuteCommand("Edit.FormatDocument");
+
+				var stream = new FileStream(document.FullName, FileMode.Open);
+				var reader = new StreamReader(stream, Encoding.Default, true);
+				reader.Read();
+
+				if (reader.CurrentEncoding.EncodingName == Encoding.UTF8.EncodingName &&
+					reader.CurrentEncoding.GetPreamble().Length != 0)
+				{
+					stream.Close();
+				}
+				else
+				{
+					try
+					{
+						stream.Position = 0;
+						reader = new StreamReader(stream, new UTF8Encoding(false, true));
+						string text = reader.ReadToEnd();
+						stream.Close();
+						File.WriteAllText(document.FullName, text, new UTF8Encoding(false));
+					}
+					catch (DecoderFallbackException)
+					{
+						stream.Position = 0;
+						reader = new StreamReader(stream, Encoding.Default);
+						string text = reader.ReadToEnd();
+						stream.Close();
+						File.WriteAllText(document.FullName, text, new UTF8Encoding(false));
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				var outputWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+
+				var paneGuid = Microsoft.VisualStudio.VSConstants.OutputWindowPaneGuid.GeneralPane_guid;
+				outputWindow.CreatePane(paneGuid, "Mine!", 1, 0);
+				outputWindow.GetPane(paneGuid, out IVsOutputWindowPane pane);
+
+				pane.OutputString($"Exception occured. [document: {document.FullName}, exception: {e}]");
+			}
 		}
 
-		private DTE Dte;
-		private DocumentEvents DocumentEvents;
+		private DTE m_dte;
+		private DocumentEvents m_documentEvents;
 
 		#endregion
 	}

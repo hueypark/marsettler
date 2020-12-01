@@ -47,7 +47,8 @@ void UNetworkComponent::TickComponent(
 		}
 
 		int32 bytesRead = 0;
-		if (!m_socket->Recv(m_messageInHeaderBuf.data() + bytesReadAll,
+		if (!m_socket->Recv(
+				m_messageInHeaderBuf.data() + bytesReadAll,
 				m_messageInHeaderBuf.size() - bytesReadAll, bytesRead))
 		{
 			_CloseFromServer();

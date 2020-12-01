@@ -17,7 +17,7 @@ class Connection
 {
 public:
 	// 생성자
-	Connection(boost::asio::io_context& ioContext, const int32_t& headerSize);
+	Connection(boost::asio::io_context& ioContext);
 
 	// 소멸자
 	virtual ~Connection();
@@ -54,7 +54,7 @@ private:
 
 	std::mutex m_messageOutMux;
 	std::atomic_bool m_messageOutFlag;
-	flatbuffers::FlatBufferBuilder m_messageOutHeaderBuilder;
-	flatbuffers::FlatBufferBuilder m_messageOutBodyBuilder;
+	std::vector<uint8_t> m_messageOutHeaderBuf;
+	flatbuffers::FlatBufferBuilder m_messageOutBuilder;
 	std::queue<std::unique_ptr<MessageBuilder>> m_messageOutBuilders;
 };

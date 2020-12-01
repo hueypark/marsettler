@@ -1,10 +1,13 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
 #include "MarsettlerCharacter.generated.h"
+
+class UNetworkComponent;
 
 UCLASS(Blueprintable)
 class AMarsettlerCharacter : public ACharacter
@@ -18,11 +21,20 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	/** Returns TopDownCameraComponent subobject **/
-	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
+	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const
+	{
+		return TopDownCameraComponent;
+	}
 	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const
+	{
+		return CameraBoom;
+	}
 	/** Returns CursorToWorld subobject **/
-	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
+	FORCEINLINE class UDecalComponent* GetCursorToWorld()
+	{
+		return CursorToWorld;
+	}
 
 private:
 	/** Top down camera */
@@ -36,5 +48,7 @@ private:
 	/** A decal that projects to the cursor location. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
-};
 
+	// 네트워크 컴포넌트
+	UNetworkComponent* m_networkComponent;
+};

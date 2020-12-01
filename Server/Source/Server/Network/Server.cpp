@@ -11,12 +11,6 @@
 Server::Server()
 	: m_acceptor(m_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8080)), m_state(_State::Running)
 {
-	flatbuffers::FlatBufferBuilder builder(1024);
-
-	auto header = fbs::CreateHeader(builder, 0, 0);
-	builder.Finish(header);
-
-	m_headerSize = builder.GetSize();
 }
 
 void Server::Start()
@@ -57,7 +51,7 @@ void Server::Stop()
 
 void Server::_StartAccept()
 {
-	std::shared_ptr<Connection> connection = std::make_shared<Connection>(m_ioContext, m_headerSize);
+	std::shared_ptr<Connection> connection = std::make_shared<Connection>(m_ioContext);
 
 	m_acceptor.async_accept(connection->Socket(),
 		[this, connection](const boost::system::error_code& error)

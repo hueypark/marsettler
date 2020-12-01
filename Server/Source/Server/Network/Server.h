@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/asio.hpp>
+
 #include <unordered_map>
 
 class Connection;
@@ -39,8 +40,6 @@ private:
 	boost::asio::ip::tcp::acceptor m_acceptor;
 
 	std::atomic<_State> m_state;
-
-	int32_t m_headerSize;
 
 	std::unordered_map<int64_t, std::shared_ptr<Connection> > m_connections;
 };

@@ -9,15 +9,15 @@
 
 #include <iostream>
 
-Connection::Connection(boost::asio::io_context& ioContext, const int32_t& headerSize)
+Connection::Connection(boost::asio::io_context& ioContext)
 	: m_socket(ioContext)
 	, m_ioContext(ioContext)
+	, m_messageInHeaderBuf(8)
 	, m_messageInTemp(nullptr)
 	, m_messageIns(0)
-	, m_messageOutFlag(true)
-	, m_messageOutHeaderBuilder(headerSize)
+	, m_messageOutFlag(false)
+	, m_messageOutHeaderBuf(8)
 {
-	m_messageInHeaderBuf.resize(headerSize);
 }
 
 Connection::~Connection()
@@ -39,12 +39,39 @@ void Connection::Tick()
 	m_messageIns.consume_all(
 		[this](const Message* message)
 		{
-			MessageHandler::Handle(this, message);
+			try
+			{
+				MessageHandler::Handle(this, message);
+			}
+			catch (const std::exception& e)
+			{
+				std::cout << e.what() << std::endl;
+
+				m_socket.close();
+
+				return;
+			}
+			catch (const std::string& e)
+			{
+				std::cout << e << std::endl;
+
+				m_socket.close();
+
+				return;
+			}
+			catch (...)
+			{
+				std::cout << "Something wrong." << std::endl;
+
+				m_socket.close();
+
+				return;
+			}
 
 			delete message;
 		});
 
-	if (!m_messageOutFlag.load())
+	if (m_messageOutFlag.load())
 	{
 		_Write();
 	}
@@ -54,6 +81,7 @@ void Connection::Write(const MessageBuilder& builder)
 {
 	m_messageOutMux.lock();
 	m_messageOutBuilders.emplace(builder.Clone());
+	m_messageOutFlag.store(true);
 	m_messageOutMux.unlock();
 }
 
@@ -64,7 +92,7 @@ void Connection::_ReadBody(const MessageID& id, const int32_t& size)
 	boost::asio::async_read(m_socket, boost::asio::buffer(m_messageInTemp->Data(), m_messageInTemp->Size()),
 		[this](std::error_code ec, std::size_t length)
 		{
-			if (!ec)
+			if (ec)
 			{
 				std::cout << ec.message() << std::endl;
 
@@ -86,7 +114,7 @@ void Connection::_ReadHeader()
 	boost::asio::async_read(m_socket, boost::asio::buffer(m_messageInHeaderBuf.data(), m_messageInHeaderBuf.size()),
 		[this](std::error_code ec, std::size_t length)
 		{
-			if (!ec)
+			if (ec)
 			{
 				std::cerr << ec.message() << std::endl;
 
@@ -95,17 +123,13 @@ void Connection::_ReadHeader()
 				return;
 			}
 
-			const fbs::Header* header = fbs::GetHeader(m_messageInHeaderBuf.data());
-			if (!header)
-			{
-				std::cout << "Header is null." << std::endl;
+			MessageID messageID;
+			std::memcpy(&messageID, &m_messageInHeaderBuf[0], 4);
 
-				m_socket.close();
+			int32_t messageSize;
+			std::memcpy(&messageSize, &m_messageInHeaderBuf[4], 4);
 
-				return;
-			}
-
-			_ReadBody(MessageID(header->ID()), header->Size());
+			_ReadBody(messageID, messageSize);
 		});
 }
 
@@ -129,18 +153,20 @@ void Connection::_Write()
 	}
 	m_messageOutMux.unlock();
 
-	builder->Build(m_messageOutBodyBuilder);
+	builder->Build(m_messageOutBuilder);
 
-	auto header = fbs::CreateHeader(m_messageOutHeaderBuilder, int32_t(builder->ID()), m_messageOutBodyBuilder.GetSize());
-	m_messageOutHeaderBuilder.Finish(header);
+	MessageID messageID = builder->ID();
+	std::memcpy(&m_messageOutHeaderBuf[0], &messageID, 4);
+
+	int32_t messageSize = m_messageOutBuilder.GetSize();
+	std::memcpy(&m_messageOutHeaderBuf[4], &messageSize, 4);
 
 	boost::asio::async_write(m_socket,
-		boost::array<boost::asio::const_buffer, 2>{
-			boost::asio::buffer(m_messageOutHeaderBuilder.GetBufferPointer(), m_messageOutHeaderBuilder.GetSize()),
-			boost::asio::buffer(m_messageOutBodyBuilder.GetBufferPointer(), m_messageOutBodyBuilder.GetSize())},
+		boost::array<boost::asio::const_buffer, 2>{boost::asio::buffer(m_messageOutHeaderBuf.data(), m_messageOutHeaderBuf.size()),
+			boost::asio::buffer(m_messageOutBuilder.GetBufferPointer(), messageSize)},
 		[this](std::error_code ec, std::size_t length)
 		{
-			if (!ec)
+			if (ec)
 			{
 				std::cerr << ec.message() << std::endl;
 

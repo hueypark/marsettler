@@ -18,5 +18,7 @@ public class Marsettler : ModuleRules
 			"NavigationSystem",
 			"Networking",
 			"Sockets" });
+
+		PublicIncludePaths.Add("Marsettler");
 	}
 }

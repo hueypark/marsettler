@@ -2,7 +2,7 @@
 
 #include "Networking.h"
 
-#include <Marsettler/Message/LoginBuilder_generated.h>
+#include <Message/LoginBuilder_generated.h>
 
 UNetworkComponent::UNetworkComponent() : m_messageInHeaderBuf(8), m_messageOutHeaderBuf(8)
 {

@@ -2,7 +2,6 @@
 
 #include "MessageHandler/MessageHandler.h"
 
-#include <Message/Header_generated.h>
 #include <Message/Message.h>
 #include <Message/MessageID.h>
 #include <boost/asio.hpp>
@@ -89,7 +88,8 @@ void Connection::_ReadBody(const MessageID& id, const int32_t& size)
 {
 	m_messageInTemp = new Message(id, size);
 
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_messageInTemp->Data(), m_messageInTemp->Size()),
+	boost::asio::async_read(
+		m_socket, boost::asio::buffer(m_messageInTemp->Data(), m_messageInTemp->Size()),
 		[this](std::error_code ec, std::size_t length)
 		{
 			if (ec)
@@ -111,7 +111,8 @@ void Connection::_ReadBody(const MessageID& id, const int32_t& size)
 
 void Connection::_ReadHeader()
 {
-	boost::asio::async_read(m_socket, boost::asio::buffer(m_messageInHeaderBuf.data(), m_messageInHeaderBuf.size()),
+	boost::asio::async_read(
+		m_socket, boost::asio::buffer(m_messageInHeaderBuf.data(), m_messageInHeaderBuf.size()),
 		[this](std::error_code ec, std::size_t length)
 		{
 			if (ec)
@@ -161,8 +162,10 @@ void Connection::_Write()
 	int32_t messageSize = m_messageOutBuilder.GetSize();
 	std::memcpy(&m_messageOutHeaderBuf[4], &messageSize, 4);
 
-	boost::asio::async_write(m_socket,
-		boost::array<boost::asio::const_buffer, 2>{boost::asio::buffer(m_messageOutHeaderBuf.data(), m_messageOutHeaderBuf.size()),
+	boost::asio::async_write(
+		m_socket,
+		boost::array<boost::asio::const_buffer, 2>{
+			boost::asio::buffer(m_messageOutHeaderBuf.data(), m_messageOutHeaderBuf.size()),
 			boost::asio::buffer(m_messageOutBuilder.GetBufferPointer(), messageSize)},
 		[this](std::error_code ec, std::size_t length)
 		{

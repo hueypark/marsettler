@@ -42,12 +42,12 @@ func main() {
 
 		clientBuilderHeaderFile := clinetBuilderFile + ".h"
 		if _, err := os.Stat(clientBuilderHeaderFile); os.IsNotExist(err) {
-			log.Println("Header is not exist: " + clientBuilderHeaderFile)
+			// TODO: 빌더 헤더 생성
 		}
 
 		clientBuilderSourceFile := clinetBuilderFile + ".h"
 		if _, err := os.Stat(clientBuilderSourceFile); os.IsNotExist(err) {
-			log.Println("Source is not exist: " + clientBuilderSourceFile)
+			// TODO: 빌더 소스 생성
 		}
 
 		return nil
@@ -55,7 +55,6 @@ func main() {
 }
 
 func copyFile(srcPath, dstPath string) error {
-	log.Println(srcPath)
 	src, err := os.Open(srcPath)
 	if err != nil {
 		return err

@@ -22,7 +22,7 @@ public:
 	MessageID ID() const;
 
 	// Size 는 데이터의 크기를 반환합니다.
-	const int32_t Size() const;
+	const int32 Size() const;
 
 private:
 	MessageID m_id;

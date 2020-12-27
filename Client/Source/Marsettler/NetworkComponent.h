@@ -28,7 +28,8 @@ protected:
 
 public:
 	// 매 프레임 호출됩니다.
-	virtual void TickComponent(float DeltaTime,
+	virtual void TickComponent(
+		float DeltaTime,
 		ELevelTick TickType,
 		FActorComponentTickFunction* ThisTickFunction) override;
 

@@ -3,6 +3,8 @@
 #include "Networking.h"
 
 #include <Message/LoginBuilder_generated.h>
+#include <Message/Message.h>
+#include <MessageHandler/MessageHandlers.h>
 
 UNetworkComponent::UNetworkComponent() : m_messageInHeaderBuf(8), m_messageOutHeaderBuf(8)
 {
@@ -64,6 +66,29 @@ void UNetworkComponent::TickComponent(
 
 	int32 messageSize;
 	std::memcpy(&messageSize, &m_messageInHeaderBuf[4], 4);
+
+	bytesReadAll = 0;
+	Message message(messageID, messageSize);
+	while (true)
+	{
+		if (bytesReadAll == messageSize)
+		{
+			break;
+		}
+
+		int32 bytesRead = 0;
+		if (!m_socket->Recv(
+				message.Data() + bytesReadAll, message.Size() - bytesReadAll, bytesRead))
+		{
+			_CloseFromServer();
+
+			return;
+		}
+
+		bytesReadAll += bytesRead;
+	}
+
+	MessageHandlers::Handle(&message);
 }
 
 void UNetworkComponent::WriteMessage(const MessageBuilder& builder)

@@ -1,0 +1,6 @@
+namespace fbs;
+
+struct Vector {
+	X:float32;
+	Y:float32;
+}

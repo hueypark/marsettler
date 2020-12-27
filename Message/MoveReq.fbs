@@ -1,0 +1,10 @@
+include "Vector.fbs";
+
+namespace fbs;
+
+table MoveReq {
+	ID:int64;
+	Pos:Vector;
+}
+
+root_type MoveReq;

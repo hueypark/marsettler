@@ -17,7 +17,7 @@ const uint8_t* Message::Data() const
 
 MessageID Message::ID() const
 {
-	return MessageID();
+	return m_id;
 }
 
 const int32_t Message::Size() const

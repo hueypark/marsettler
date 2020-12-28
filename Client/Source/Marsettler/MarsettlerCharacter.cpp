@@ -58,12 +58,32 @@ AMarsettlerCharacter::AMarsettlerCharacter()
 	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 
-	// 네트워크 컴포너트 추가
-	m_networkComponent = CreateDefaultSubobject<UNetworkComponent>(TEXT("NetworkComponent"));
+	m_networkComponent = nullptr;
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+}
+
+void AMarsettlerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// 네트워크 컴포너트 추가
+	m_networkComponent = new UNetworkComponent;
+}
+
+void AMarsettlerCharacter::EndPlay(const EEndPlayReason::Type endPlayReason)
+{
+	Super::EndPlay(endPlayReason);
+
+	if (m_networkComponent)
+	{
+		m_networkComponent->Stop();
+
+		delete m_networkComponent;
+		m_networkComponent = nullptr;
+	}
 }
 
 void AMarsettlerCharacter::Tick(float DeltaSeconds)

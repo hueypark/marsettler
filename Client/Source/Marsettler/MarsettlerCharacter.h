@@ -17,6 +17,12 @@ class AMarsettlerCharacter : public ACharacter
 public:
 	AMarsettlerCharacter();
 
+	// 게임 시작시 호출됩니다.
+	virtual void BeginPlay() override;
+
+	// 게임 종료시 호출됩니다.
+	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
+
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -38,15 +44,18 @@ public:
 
 private:
 	/** Top down camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(
+		VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
 
 	/** Camera boom positioning the camera above the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(
+		VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
 	/** A decal that projects to the cursor location. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(
+		VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
 
 	// 네트워크 컴포넌트

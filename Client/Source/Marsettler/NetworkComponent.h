@@ -1,37 +1,27 @@
 ﻿#pragma once
 
-#include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
 
 #include <flatbuffers/flatbuffers.h>
 
-#include "NetworkComponent.generated.h"
-
 class MessageBuilder;
+class FRunnableThread;
 class FSocket;
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class MARSETTLER_API UNetworkComponent : public UActorComponent
+class MARSETTLER_API UNetworkComponent : public FRunnable
 {
-	GENERATED_BODY()
-
 public:
 	// 생성자
 	UNetworkComponent();
 
-protected:
-	// 게임 시작시 호출됩니다.
-	virtual void BeginPlay() override;
+	// 소멸자
+	virtual ~UNetworkComponent();
 
-	// 게임 종료시 호출됩니다.
-	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
+	// 실행한다.
+	virtual uint32 Run() override;
 
-public:
-	// 매 프레임 호출됩니다.
-	virtual void TickComponent(
-		float DeltaTime,
-		ELevelTick TickType,
-		FActorComponentTickFunction* ThisTickFunction) override;
+	// 중단한다.
+	virtual void Stop();
 
 	// 메시지를 씁니다.
 	void WriteMessage(const MessageBuilder& builder);
@@ -43,10 +33,17 @@ private:
 	// 서버에 연결합니다.
 	bool _ConnectToServer();
 
+	// 매 프레임 호출됩니다.
+	void _Tick();
+
 	// _WriteLogin 은 로그인 메시지를 보냅니다.
 	void _WriteLogin();
 
 private:
+	FRunnableThread* m_thread;
+
+	bool m_stop;
+
 	FSocket* m_socket;
 
 	std::vector<uint8> m_messageInHeaderBuf;

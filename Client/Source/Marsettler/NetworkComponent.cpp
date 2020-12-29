@@ -6,8 +6,7 @@
 #include "MessageHandler/MessageHandlers.h"
 #include "Networking.h"
 
-UNetworkComponent::UNetworkComponent()
-	: m_stop(false), m_messageInHeaderBuf(8), m_messageOutHeaderBuf(8)
+UNetworkComponent::UNetworkComponent() : m_stop(false), m_messageInHeaderBuf(8), m_messageOutHeaderBuf(8)
 {
 	m_socket = nullptr;
 
@@ -63,8 +62,7 @@ void UNetworkComponent::WriteMessage(const MessageBuilder& builder)
 	std::memcpy(&m_messageOutHeaderBuf[4], &messageSize, 4);
 
 	int32 bytesSent;
-	bool result =
-		m_socket->Send(m_messageOutHeaderBuf.data(), m_messageOutHeaderBuf.size(), bytesSent);
+	bool result = m_socket->Send(m_messageOutHeaderBuf.data(), m_messageOutHeaderBuf.size(), bytesSent);
 	if (!result)
 	{
 		_CloseFromServer();
@@ -95,11 +93,9 @@ void UNetworkComponent::_CloseFromServer()
 
 bool UNetworkComponent::_ConnectToServer()
 {
-	m_socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)
-				   ->CreateSocket(NAME_Stream, TEXT("Socket"), false);
+	m_socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("Socket"), false);
 
-	TSharedRef<FInternetAddr> addr =
-		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	TSharedRef<FInternetAddr> addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 	addr->SetIp(FIPv4Address(127, 0, 0, 1).Value);
 	addr->SetPort(8080);
 
@@ -131,8 +127,7 @@ void UNetworkComponent::_Tick()
 
 		int32 bytesRead = 0;
 		if (!m_socket->Recv(
-				m_messageInHeaderBuf.data() + bytesReadAll,
-				m_messageInHeaderBuf.size() - bytesReadAll, bytesRead))
+				m_messageInHeaderBuf.data() + bytesReadAll, m_messageInHeaderBuf.size() - bytesReadAll, bytesRead))
 		{
 			_CloseFromServer();
 
@@ -170,8 +165,7 @@ void UNetworkComponent::_Tick()
 		}
 
 		int32 bytesRead = 0;
-		if (!m_socket->Recv(
-				message.Data() + bytesReadAll, message.Size() - bytesReadAll, bytesRead))
+		if (!m_socket->Recv(message.Data() + bytesReadAll, message.Size() - bytesReadAll, bytesRead))
 		{
 			_CloseFromServer();
 
@@ -191,6 +185,6 @@ void UNetworkComponent::_Tick()
 
 void UNetworkComponent::_WriteLogin()
 {
-	LoginBuilder loginBuilder(7);
+	LoginBuilder loginBuilder(0);
 	WriteMessage(loginBuilder);
 }

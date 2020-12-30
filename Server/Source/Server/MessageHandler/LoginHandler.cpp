@@ -1,10 +1,11 @@
 #include "LoginHandler.h"
 
+#include "Context.h"
+#include "Engine/World/World.h"
+#include "Message/LoginResponseBuilder_generated.h"
+#include "Message/Login_generated.h"
+#include "Message/Message.h"
 #include "Network/Connection.h"
-
-#include <Message/LoginResponseBuilder_generated.h>
-#include <Message/Login_generated.h>
-#include <Message/Message.h>
 
 void LoginHandler::Handle(Connection* conn, const Message* message)
 {
@@ -29,7 +30,7 @@ void LoginHandler::Handle(Connection* conn, const Message* message)
 		id = newID;
 	}
 
-	// TODO(jaewan): 액터 생성 혹은 기존 액터 연결
+	std::shared_ptr<Actor> actor = Context::Instance.GameWorld->GetOrNewActor(id);
 
 	// TODO(jaewan): 결과 메시지 전달
 	LoginResponseBuilder loginResponse(id);

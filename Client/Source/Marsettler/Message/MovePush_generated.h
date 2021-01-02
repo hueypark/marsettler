@@ -6,7 +6,7 @@
 
 #include "flatbuffers/flatbuffers.h"
 
-#include "Vector_generated.h"
+#include "MsgVector_generated.h"
 
 namespace fbs {
 
@@ -15,8 +15,20 @@ struct MovePushBuilder;
 
 struct MovePush FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef MovePushBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_ID = 4,
+    VT_POS = 6
+  };
+  int64_t ID() const {
+    return GetField<int64_t>(VT_ID, 0);
+  }
+  const fbs::MsgVector *Pos() const {
+    return GetStruct<const fbs::MsgVector *>(VT_POS);
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyField<int64_t>(verifier, VT_ID) &&
+           VerifyField<fbs::MsgVector>(verifier, VT_POS) &&
            verifier.EndTable();
   }
 };
@@ -25,6 +37,12 @@ struct MovePushBuilder {
   typedef MovePush Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
+  void add_ID(int64_t ID) {
+    fbb_.AddElement<int64_t>(MovePush::VT_ID, ID, 0);
+  }
+  void add_Pos(const fbs::MsgVector *Pos) {
+    fbb_.AddStruct(MovePush::VT_POS, Pos);
+  }
   explicit MovePushBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -38,8 +56,12 @@ struct MovePushBuilder {
 };
 
 inline flatbuffers::Offset<MovePush> CreateMovePush(
-    flatbuffers::FlatBufferBuilder &_fbb) {
+    flatbuffers::FlatBufferBuilder &_fbb,
+    int64_t ID = 0,
+    const fbs::MsgVector *Pos = 0) {
   MovePushBuilder builder_(_fbb);
+  builder_.add_ID(ID);
+  builder_.add_Pos(Pos);
   return builder_.Finish();
 }
 

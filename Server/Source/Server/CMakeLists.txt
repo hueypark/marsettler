@@ -11,4 +11,4 @@ link_directories(../../Package/boost_1_74_0/stage/lib)
 file(GLOB_RECURSE ServerSrc "*.cpp" "*.h")
 
 add_executable(Server ${ServerSrc})
-target_link_libraries (Server Message)
+target_link_libraries (Server Engine Message)

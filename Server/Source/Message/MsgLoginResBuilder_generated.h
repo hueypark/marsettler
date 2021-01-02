@@ -1,13 +1,14 @@
 #pragma once
 
+#include "Engine/Math/Vector.h"
 #include "MessageBuilder.h"
 
-// LoginBuilder 는 로그인 메시지 빌더입니다.
-class LoginBuilder : public MessageBuilder
+// MsgLoginResBuilder 는 로그인 결과 메시지 빌더입니다.
+class MsgLoginResBuilder : public MessageBuilder
 {
 public:
 	// 생성자
-	LoginBuilder(const int64_t id);
+	MsgLoginResBuilder(const int64_t id, const Vector& position);
 
 	// Build 는 FlatBuffers 메시지를 만듭니다.
 	virtual void Build(flatbuffers::FlatBufferBuilder& builder) const override;
@@ -19,6 +20,9 @@ public:
 	virtual MessageID ID() const override;
 
 private:
-	// id 는 고유한 아이디입니다.
+	// ID
 	int64_t m_id;
+
+	// 위치
+	Vector m_position;
 };

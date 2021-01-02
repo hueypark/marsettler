@@ -1,8 +1,8 @@
-﻿#include "NetworkComponent.h"
+#include "NetworkComponent.h"
 
 #include "Log/Log.h"
-#include "Message/LoginBuilder_generated.h"
 #include "Message/Message.h"
+#include "Message/MsgLoginReqBuilder_generated.h"
 #include "MessageHandler/MessageHandlers.h"
 #include "Networking.h"
 
@@ -185,6 +185,6 @@ void UNetworkComponent::_Tick()
 
 void UNetworkComponent::_WriteLogin()
 {
-	LoginBuilder loginBuilder(0);
-	WriteMessage(loginBuilder);
+	MsgLoginReqBuilder loginReq(0);
+	WriteMessage(loginReq);
 }

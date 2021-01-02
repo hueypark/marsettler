@@ -2,12 +2,12 @@
 
 #include "MessageBuilder.h"
 
-// LoginResponseBuilder 는 로그인 결과 메시지 빌더입니다.
-class LoginResponseBuilder : public MessageBuilder
+// MsgLoginReqBuilder 는 로그인 메시지 빌더입니다.
+class MsgLoginReqBuilder : public MessageBuilder
 {
 public:
 	// 생성자
-	LoginResponseBuilder(const int64_t id);
+	MsgLoginReqBuilder(const int64_t id);
 
 	// Build 는 FlatBuffers 메시지를 만듭니다.
 	virtual void Build(flatbuffers::FlatBufferBuilder& builder) const override;

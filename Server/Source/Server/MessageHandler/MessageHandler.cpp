@@ -12,7 +12,7 @@ void MessageHandler::Handle(Connection* conn, const Message* message)
 	{
 		switch (message->ID())
 		{
-		case MessageID::Login:
+		case MessageID::LoginReq:
 			{
 				LoginHandler::Handle(conn, message);
 			}

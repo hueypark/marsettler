@@ -1,16 +1,17 @@
 #include "LoginHandler.h"
 
 #include "Context.h"
+#include "Engine/World/Actor.h"
 #include "Engine/World/World.h"
-#include "Message/LoginResponseBuilder_generated.h"
-#include "Message/Login_generated.h"
 #include "Message/Message.h"
+#include "Message/MsgLoginReq_generated.h"
+#include "Message/MsgLoginResBuilder_generated.h"
 #include "Network/Connection.h"
 
 void LoginHandler::Handle(Connection* conn, const Message* message)
 {
-	const fbs::Login* login = fbs::GetLogin(message->Data());
-	if (!login)
+	const fbs::MsgLoginReq* loginReq = fbs::GetMsgLoginReq(message->Data());
+	if (!loginReq)
 	{
 		// TODO(jaewan): 로그 기록
 
@@ -19,7 +20,7 @@ void LoginHandler::Handle(Connection* conn, const Message* message)
 
 	// TODO(jeawan): 인증 추가
 
-	int64_t id = login->ID();
+	int64_t id = loginReq->ID();
 
 	if (!id)
 	{
@@ -32,7 +33,6 @@ void LoginHandler::Handle(Connection* conn, const Message* message)
 
 	std::shared_ptr<Actor> actor = Context::Instance.GameWorld->GetOrNewActor(id);
 
-	// TODO(jaewan): 결과 메시지 전달
-	LoginResponseBuilder loginResponse(id);
-	conn->Write(loginResponse);
+	MsgLoginResBuilder loginRes(id, actor->Position());
+	conn->Write(loginRes);
 }

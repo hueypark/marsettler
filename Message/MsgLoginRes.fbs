@@ -1,0 +1,9 @@
+include "MsgActor.fbs";
+
+namespace fbs;
+
+table MsgLoginRes {
+	Actor:MsgActor;
+}
+
+root_type MsgLoginRes;

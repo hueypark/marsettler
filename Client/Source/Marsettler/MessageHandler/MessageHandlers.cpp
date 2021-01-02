@@ -8,7 +8,7 @@ void MessageHandlers::Handle(const Message* message)
 {
 	switch (message->ID())
 	{
-	case MessageID::LoginResponse:
+	case MessageID::LoginRes:
 		LoginResponseHandler::Handle(message);
 		break;
 	default:

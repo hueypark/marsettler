@@ -1,7 +1,0 @@
-namespace fbs;
-
-table Login {
-	ID:int64;
-}
-
-root_type Login;

@@ -2,9 +2,9 @@ include "MsgVector.fbs";
 
 namespace fbs;
 
-table MovePush {
+table MsgActor {
 	ID:int64;
 	Pos:MsgVector;
 }
 
-root_type MovePush;
+root_type MsgActor;

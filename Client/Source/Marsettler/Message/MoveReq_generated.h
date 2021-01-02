@@ -6,7 +6,7 @@
 
 #include "flatbuffers/flatbuffers.h"
 
-#include "Vector_generated.h"
+#include "MsgVector_generated.h"
 
 namespace fbs {
 
@@ -22,13 +22,13 @@ struct MoveReq FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int64_t ID() const {
     return GetField<int64_t>(VT_ID, 0);
   }
-  const fbs::Vector *Pos() const {
-    return GetStruct<const fbs::Vector *>(VT_POS);
+  const fbs::MsgVector *Pos() const {
+    return GetStruct<const fbs::MsgVector *>(VT_POS);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int64_t>(verifier, VT_ID) &&
-           VerifyField<fbs::Vector>(verifier, VT_POS) &&
+           VerifyField<fbs::MsgVector>(verifier, VT_POS) &&
            verifier.EndTable();
   }
 };
@@ -40,7 +40,7 @@ struct MoveReqBuilder {
   void add_ID(int64_t ID) {
     fbb_.AddElement<int64_t>(MoveReq::VT_ID, ID, 0);
   }
-  void add_Pos(const fbs::Vector *Pos) {
+  void add_Pos(const fbs::MsgVector *Pos) {
     fbb_.AddStruct(MoveReq::VT_POS, Pos);
   }
   explicit MoveReqBuilder(flatbuffers::FlatBufferBuilder &_fbb)
@@ -58,7 +58,7 @@ struct MoveReqBuilder {
 inline flatbuffers::Offset<MoveReq> CreateMoveReq(
     flatbuffers::FlatBufferBuilder &_fbb,
     int64_t ID = 0,
-    const fbs::Vector *Pos = 0) {
+    const fbs::MsgVector *Pos = 0) {
   MoveReqBuilder builder_(_fbb);
   builder_.add_ID(ID);
   builder_.add_Pos(Pos);

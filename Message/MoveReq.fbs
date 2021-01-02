@@ -1,10 +1,10 @@
-include "Vector.fbs";
+include "MsgVector.fbs";
 
 namespace fbs;
 
 table MoveReq {
 	ID:int64;
-	Pos:Vector;
+	Pos:MsgVector;
 }
 
 root_type MoveReq;

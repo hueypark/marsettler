@@ -1,7 +1,0 @@
-namespace fbs;
-
-table LoginResponse {
-	ID:int64;
-}
-
-root_type LoginResponse;

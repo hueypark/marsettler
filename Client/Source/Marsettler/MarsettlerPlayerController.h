@@ -1,9 +1,8 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+
 #include "MarsettlerPlayerController.generated.h"
 
 UCLASS()
@@ -23,15 +22,12 @@ protected:
 	virtual void SetupInputComponent() override;
 	// End PlayerController interface
 
-	/** Resets HMD orientation in VR. */
-	void OnResetVR();
-
 	/** Navigate player to the current mouse cursor location. */
 	void MoveToMouseCursor();
 
 	/** Navigate player to the current touch location. */
 	void MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location);
-	
+
 	/** Navigate player to the given world location. */
 	void SetNewMoveDestination(const FVector DestLocation);
 
@@ -39,5 +35,3 @@ protected:
 	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
 };
-
-

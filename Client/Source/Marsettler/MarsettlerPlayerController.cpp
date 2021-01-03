@@ -1,11 +1,10 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "MarsettlerPlayerController.h"
+
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "Runtime/Engine/Classes/Components/DecalComponent.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
-#include "MarsettlerCharacter.h"
+#include "Core/Log.h"
 #include "Engine/World.h"
+#include "MarsettlerCharacter.h"
+#include "Runtime/Engine/Classes/Components/DecalComponent.h"
 
 AMarsettlerPlayerController::AMarsettlerPlayerController()
 {
@@ -29,44 +28,26 @@ void AMarsettlerPlayerController::SetupInputComponent()
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	InputComponent->BindAction("SetDestination", IE_Pressed, this, &AMarsettlerPlayerController::OnSetDestinationPressed);
-	InputComponent->BindAction("SetDestination", IE_Released, this, &AMarsettlerPlayerController::OnSetDestinationReleased);
+	InputComponent->BindAction(
+		"SetDestination", IE_Pressed, this, &AMarsettlerPlayerController::OnSetDestinationPressed);
+	InputComponent->BindAction(
+		"SetDestination", IE_Released, this, &AMarsettlerPlayerController::OnSetDestinationReleased);
 
-	// support touch devices 
+	// support touch devices
 	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AMarsettlerPlayerController::MoveToTouchLocation);
 	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AMarsettlerPlayerController::MoveToTouchLocation);
-
-	InputComponent->BindAction("ResetVR", IE_Pressed, this, &AMarsettlerPlayerController::OnResetVR);
-}
-
-void AMarsettlerPlayerController::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
 void AMarsettlerPlayerController::MoveToMouseCursor()
 {
-	if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
-	{
-		if (AMarsettlerCharacter* MyPawn = Cast<AMarsettlerCharacter>(GetPawn()))
-		{
-			if (MyPawn->GetCursorToWorld())
-			{
-				UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, MyPawn->GetCursorToWorld()->GetComponentLocation());
-			}
-		}
-	}
-	else
-	{
-		// Trace to see what is under the mouse cursor
-		FHitResult Hit;
-		GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+	// Trace to see what is under the mouse cursor
+	FHitResult Hit;
+	GetHitResultUnderCursor(ECC_Visibility, false, Hit);
 
-		if (Hit.bBlockingHit)
-		{
-			// We hit something, move there
-			SetNewMoveDestination(Hit.ImpactPoint);
-		}
+	if (Hit.bBlockingHit)
+	{
+		// We hit something, move there
+		SetNewMoveDestination(Hit.ImpactPoint);
 	}
 }
 
@@ -87,15 +68,18 @@ void AMarsettlerPlayerController::MoveToTouchLocation(const ETouchIndex::Type Fi
 void AMarsettlerPlayerController::SetNewMoveDestination(const FVector DestLocation)
 {
 	APawn* const MyPawn = GetPawn();
-	if (MyPawn)
+	if (!MyPawn)
 	{
-		float const Distance = FVector::Dist(DestLocation, MyPawn->GetActorLocation());
+		LOG_PRINT("Pawn is null");
+		return;
+	}
 
-		// We need to issue move command only if far enough in order for walk animation to play correctly
-		if ((Distance > 120.0f))
-		{
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation);
-		}
+	float const Distance = FVector::Dist(DestLocation, MyPawn->GetActorLocation());
+
+	// We need to issue move command only if far enough in order for walk animation to play correctly
+	if ((Distance > 120.0f))
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation);
 	}
 }
 

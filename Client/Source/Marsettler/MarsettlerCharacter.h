@@ -7,7 +7,7 @@
 
 #include "MarsettlerCharacter.generated.h"
 
-class UNetworkComponent;
+class NetworkComponent;
 
 UCLASS(Blueprintable)
 class AMarsettlerCharacter : public ACharacter
@@ -44,20 +44,17 @@ public:
 
 private:
 	/** Top down camera */
-	UPROPERTY(
-		VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
 
 	/** Camera boom positioning the camera above the character */
-	UPROPERTY(
-		VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
 	/** A decal that projects to the cursor location. */
-	UPROPERTY(
-		VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
 
 	// 네트워크 컴포넌트
-	UNetworkComponent* m_networkComponent;
+	NetworkComponent* m_networkComponent;
 };

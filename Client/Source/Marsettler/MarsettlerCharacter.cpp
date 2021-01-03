@@ -25,8 +25,7 @@ AMarsettlerCharacter::AMarsettlerCharacter()
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement =
-		true; // Rotate character to moving direction
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
@@ -37,14 +36,12 @@ AMarsettlerCharacter::AMarsettlerCharacter()
 	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
 	CameraBoom->TargetArmLength = 800.f;
 	CameraBoom->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
-	CameraBoom->bDoCollisionTest =
-		false; // Don't want to pull camera in when it collides with level
+	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 
 	// Create a camera...
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	TopDownCameraComponent->bUsePawnControlRotation =
-		false; // Camera does not rotate relative to arm
+	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Create a decal in the world to show the cursor's location
 	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
@@ -70,7 +67,7 @@ void AMarsettlerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	// 네트워크 컴포너트 추가
-	m_networkComponent = new UNetworkComponent;
+	m_networkComponent = new NetworkComponent;
 }
 
 void AMarsettlerCharacter::EndPlay(const EEndPlayReason::Type endPlayReason)
@@ -99,11 +96,9 @@ void AMarsettlerCharacter::Tick(float DeltaSeconds)
 				FHitResult HitResult;
 				FCollisionQueryParams Params(NAME_None, FCollisionQueryParams::GetUnknownStatId());
 				FVector StartLocation = TopDownCameraComponent->GetComponentLocation();
-				FVector EndLocation =
-					TopDownCameraComponent->GetComponentRotation().Vector() * 2000.0f;
+				FVector EndLocation = TopDownCameraComponent->GetComponentRotation().Vector() * 2000.0f;
 				Params.AddIgnoredActor(this);
-				World->LineTraceSingleByChannel(
-					HitResult, StartLocation, EndLocation, ECC_Visibility, Params);
+				World->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, Params);
 				FQuat SurfaceRotation = HitResult.ImpactNormal.ToOrientationRotator().Quaternion();
 				CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, SurfaceRotation);
 			}

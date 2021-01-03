@@ -1,6 +1,6 @@
 #include "MessageHandlers.h"
 
-#include "Log/Log.h"
+#include "Core/Log.h"
 #include "Message/Message.h"
 #include "MessageHandler/LoginResponseHandler.h"
 

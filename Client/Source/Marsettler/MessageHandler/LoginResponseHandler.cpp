@@ -1,7 +1,7 @@
 #include "LoginResponseHandler.h"
 
 #include "Context.h"
-#include "Log/Log.h"
+#include "Core/Log.h"
 #include "Message/Message.h"
 #include "Message/MessageID.h"
 #include "Message/MsgLoginRes_generated.h"

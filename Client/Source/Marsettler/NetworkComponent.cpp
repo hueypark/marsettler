@@ -1,12 +1,12 @@
 #include "NetworkComponent.h"
 
-#include "Log/Log.h"
+#include "Core/Log.h"
 #include "Message/Message.h"
 #include "Message/MsgLoginReqBuilder_generated.h"
 #include "MessageHandler/MessageHandlers.h"
 #include "Networking.h"
 
-UNetworkComponent::UNetworkComponent() : m_stop(false), m_messageInHeaderBuf(8), m_messageOutHeaderBuf(8)
+NetworkComponent::NetworkComponent() : m_stop(false), m_messageInHeaderBuf(8), m_messageOutHeaderBuf(8)
 {
 	m_socket = nullptr;
 
@@ -18,12 +18,12 @@ UNetworkComponent::UNetworkComponent() : m_stop(false), m_messageInHeaderBuf(8),
 	m_thread = FRunnableThread::Create(this, TEXT("NetworkComponent"), 0, TPri_BelowNormal);
 }
 
-UNetworkComponent::~UNetworkComponent()
+NetworkComponent::~NetworkComponent()
 {
 	_CloseFromServer();
 }
 
-uint32 UNetworkComponent::Run()
+uint32 NetworkComponent::Run()
 {
 	while (true)
 	{
@@ -40,7 +40,7 @@ uint32 UNetworkComponent::Run()
 	return 0;
 }
 
-void UNetworkComponent::Stop()
+void NetworkComponent::Stop()
 {
 	m_stop = true;
 
@@ -51,7 +51,7 @@ void UNetworkComponent::Stop()
 	}
 }
 
-void UNetworkComponent::WriteMessage(const MessageBuilder& builder)
+void NetworkComponent::WriteMessage(const MessageBuilder& builder)
 {
 	builder.Build(m_messageOutBuilder);
 
@@ -79,7 +79,7 @@ void UNetworkComponent::WriteMessage(const MessageBuilder& builder)
 	}
 }
 
-void UNetworkComponent::_CloseFromServer()
+void NetworkComponent::_CloseFromServer()
 {
 	if (!m_socket)
 	{
@@ -91,7 +91,7 @@ void UNetworkComponent::_CloseFromServer()
 	m_socket = nullptr;
 }
 
-bool UNetworkComponent::_ConnectToServer()
+bool NetworkComponent::_ConnectToServer()
 {
 	m_socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("Socket"), false);
 
@@ -102,7 +102,7 @@ bool UNetworkComponent::_ConnectToServer()
 	return m_socket->Connect(*addr);
 }
 
-void UNetworkComponent::_Tick()
+void NetworkComponent::_Tick()
 {
 	if (!m_socket)
 	{
@@ -183,7 +183,7 @@ void UNetworkComponent::_Tick()
 	MessageHandlers::Handle(&message);
 }
 
-void UNetworkComponent::_WriteLogin()
+void NetworkComponent::_WriteLogin()
 {
 	MsgLoginReqBuilder loginReq(0);
 	WriteMessage(loginReq);

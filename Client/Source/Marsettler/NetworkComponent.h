@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "CoreMinimal.h"
 
@@ -8,14 +8,14 @@ class MessageBuilder;
 class FRunnableThread;
 class FSocket;
 
-class MARSETTLER_API UNetworkComponent : public FRunnable
+class NetworkComponent : public FRunnable
 {
 public:
 	// 생성자
-	UNetworkComponent();
+	NetworkComponent();
 
 	// 소멸자
-	virtual ~UNetworkComponent();
+	virtual ~NetworkComponent();
 
 	// 실행한다.
 	virtual uint32 Run() override;

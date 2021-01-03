@@ -2,14 +2,14 @@
 
 #include "Core/Log.h"
 #include "Message/Message.h"
-#include "MessageHandler/LoginResponseHandler.h"
+#include "MessageHandler/MsgLoginResHandler.h"
 
 void MessageHandlers::Handle(const Message* message)
 {
 	switch (message->ID())
 	{
 	case MessageID::LoginRes:
-		LoginResponseHandler::Handle(message);
+		MsgLoginResHandler::Handle(message);
 		break;
 	default:
 		LOG_PRINT("Handler is null. [MessageID: %d]", message->ID());

@@ -2,7 +2,7 @@
 
 class Message;
 
-class LoginResponseHandler
+class MsgLoginResHandler
 {
 public:
 	// 메시지를 처리합니다.

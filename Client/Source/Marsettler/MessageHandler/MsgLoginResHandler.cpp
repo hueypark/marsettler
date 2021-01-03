@@ -1,4 +1,4 @@
-#include "LoginResponseHandler.h"
+#include "MsgLoginResHandler.h"
 
 #include "Context.h"
 #include "Core/Log.h"
@@ -9,7 +9,7 @@
 #include "World/Actor.h"
 #include "World/World.h"
 
-void LoginResponseHandler::Handle(const Message* message)
+void MsgLoginResHandler::Handle(const Message* message)
 {
 	const fbs::MsgLoginRes* loginRes = fbs::GetMsgLoginRes(message->Data());
 	if (!loginRes)

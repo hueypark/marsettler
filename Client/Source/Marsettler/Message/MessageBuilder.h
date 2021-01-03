@@ -8,6 +8,11 @@
 class MessageBuilder
 {
 public:
+	// 소멸자
+	virtual ~MessageBuilder()
+	{
+	}
+
 	// Build 는 FlatBuffers 메시지를 만듭니다.
 	virtual void Build(flatbuffers::FlatBufferBuilder& builder) const = 0;
 

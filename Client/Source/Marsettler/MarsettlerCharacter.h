@@ -1,13 +1,9 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
 #include "MarsettlerCharacter.generated.h"
-
-class NetworkComponent;
 
 UCLASS(Blueprintable)
 class AMarsettlerCharacter : public ACharacter
@@ -54,7 +50,4 @@ private:
 	/** A decal that projects to the cursor location. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
-
-	// 네트워크 컴포넌트
-	NetworkComponent* m_networkComponent;
 };

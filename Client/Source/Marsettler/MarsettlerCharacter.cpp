@@ -1,16 +1,14 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "MarsettlerCharacter.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/DecalComponent.h"
+#include "Core/Log.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
-#include "NetworkComponent.h"
 #include "UObject/ConstructorHelpers.h"
 
 AMarsettlerCharacter::AMarsettlerCharacter()
@@ -54,8 +52,6 @@ AMarsettlerCharacter::AMarsettlerCharacter()
 	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 
-	m_networkComponent = nullptr;
-
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -64,27 +60,16 @@ AMarsettlerCharacter::AMarsettlerCharacter()
 void AMarsettlerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// 네트워크 컴포너트 추가
-	m_networkComponent = new NetworkComponent;
 }
 
 void AMarsettlerCharacter::EndPlay(const EEndPlayReason::Type endPlayReason)
 {
 	Super::EndPlay(endPlayReason);
-
-	if (m_networkComponent)
-	{
-		m_networkComponent->Stop();
-
-		delete m_networkComponent;
-		m_networkComponent = nullptr;
-	}
 }
 
-void AMarsettlerCharacter::Tick(float DeltaSeconds)
+void AMarsettlerCharacter::Tick(float deltaSeconds)
 {
-	Super::Tick(DeltaSeconds);
+	Super::Tick(deltaSeconds);
 
 	if (CursorToWorld != nullptr)
 	{

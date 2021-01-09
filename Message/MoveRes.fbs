@@ -1,6 +1,0 @@
-namespace fbs;
-
-table MoveRes {
-}
-
-root_type MoveRes;

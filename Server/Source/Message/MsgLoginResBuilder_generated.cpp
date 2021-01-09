@@ -3,23 +3,23 @@
 #include "MsgLoginRes_generated.h"
 #include "MsgVector_generated.h"
 
-MsgLoginResBuilder::MsgLoginResBuilder(const int64_t id, const Vector& position) : m_id(id), m_position(position)
+MsgLoginResBuilder::MsgLoginResBuilder(const int64_t id, const Vector& location) : m_id(id), m_location(location)
 {
 }
 
 void MsgLoginResBuilder::Build(flatbuffers::FlatBufferBuilder& builder) const
 {
-	auto position = fbs::MsgVector(m_position.X, m_position.Y);
+	fbs::MsgVector location(m_location.X, m_location.Y);
 
-	auto actor = fbs::CreateMsgActor(builder, m_id, &position);
+	fbs::MsgActor actor(m_id, location);
 
-	auto loginResponse = fbs::CreateMsgLoginRes(builder, actor);
+	auto loginResponse = fbs::CreateMsgLoginRes(builder, &actor);
 	builder.Finish(loginResponse);
 }
 
 std::unique_ptr<MessageBuilder> MsgLoginResBuilder::Clone() const
 {
-	return std::make_unique<MsgLoginResBuilder>(m_id, m_position);
+	return std::make_unique<MsgLoginResBuilder>(m_id, m_location);
 }
 
 MessageID MsgLoginResBuilder::ID() const

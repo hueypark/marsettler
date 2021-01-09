@@ -1,7 +1,8 @@
 #include "MessageHandler.h"
 
 #include "Message/Message.h"
-#include "MessageHandler/LoginHandler.h"
+#include "MessageHandler/MsgLoginReqHandler.h"
+#include "MessageHandler/MsgMoveReqHandler.h"
 
 #include <iostream>
 
@@ -14,7 +15,12 @@ void MessageHandler::Handle(Connection* conn, const Message* message)
 		{
 		case MessageID::LoginReq:
 			{
-				LoginHandler::Handle(conn, message);
+				MsgLoginReqHandler::Handle(conn, message);
+			}
+			break;
+		case MessageID::MoveReq:
+			{
+				MsgMoveReqHandler::Handle(conn, message);
 			}
 			break;
 		default:

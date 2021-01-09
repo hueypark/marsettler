@@ -1,0 +1,10 @@
+include "MsgVector.fbs";
+
+namespace fbs;
+
+table MsgMovePush {
+	ID:int64;
+	Pos:MsgVector;
+}
+
+root_type MsgMovePush;

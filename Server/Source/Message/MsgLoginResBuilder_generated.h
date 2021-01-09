@@ -8,7 +8,7 @@ class MsgLoginResBuilder : public MessageBuilder
 {
 public:
 	// 생성자
-	MsgLoginResBuilder(const int64_t id, const Vector& position);
+	MsgLoginResBuilder(const int64_t id, const Vector& location);
 
 	// Build 는 FlatBuffers 메시지를 만듭니다.
 	virtual void Build(flatbuffers::FlatBufferBuilder& builder) const override;
@@ -24,5 +24,5 @@ private:
 	int64_t m_id;
 
 	// 위치
-	Vector m_position;
+	Vector m_location;
 };

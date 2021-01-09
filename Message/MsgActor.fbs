@@ -2,9 +2,7 @@ include "MsgVector.fbs";
 
 namespace fbs;
 
-table MsgActor {
+struct MsgActor {
 	ID:int64;
-	Pos:MsgVector;
+	Location:MsgVector;
 }
-
-root_type MsgActor;

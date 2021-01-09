@@ -1,6 +1,7 @@
 #pragma once
 
 class Actor;
+class Connection;
 class World;
 
 // 전역 맥락을 가진 컨텍스트
@@ -11,12 +12,18 @@ private:
 	Context();
 
 public:
+	virtual ~Context();
+
+public:
 	// 인스턴스
 	static Context Instance;
 
+	// 월드
+	std::unique_ptr<Connection> Connection;
+
 	// 내 액터
-	class std::shared_ptr<Actor> MyActor;
+	std::shared_ptr<Actor> MyActor;
 
 	// 월드
-	class std::shared_ptr<World> World;
+	std::shared_ptr<World> World;
 };

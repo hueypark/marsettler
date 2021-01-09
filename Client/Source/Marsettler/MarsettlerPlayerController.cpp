@@ -1,10 +1,14 @@
 #include "MarsettlerPlayerController.h"
 
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Connection.h"
+#include "Context.h"
 #include "Core/Log.h"
 #include "Engine/World.h"
 #include "MarsettlerCharacter.h"
+#include "Message/MsgMoveReqBuilder.h"
 #include "Runtime/Engine/Classes/Components/DecalComponent.h"
+#include "World/Actor.h"
 
 AMarsettlerPlayerController::AMarsettlerPlayerController()
 {
@@ -12,14 +16,24 @@ AMarsettlerPlayerController::AMarsettlerPlayerController()
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 }
 
+void AMarsettlerPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void AMarsettlerPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+}
+
 void AMarsettlerPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	// keep updating the destination every tick while desired
-	if (bMoveToMouseCursor)
+	if (Context::Instance.MyActor && Context::Instance.MyActor->GetLocationUpdated())
 	{
-		MoveToMouseCursor();
+		Context::Instance.MyActor->SetLocationUpdated(false);
+
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, Context::Instance.MyActor->Location());
 	}
 }
 
@@ -28,14 +42,8 @@ void AMarsettlerPlayerController::SetupInputComponent()
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	InputComponent->BindAction(
-		"SetDestination", IE_Pressed, this, &AMarsettlerPlayerController::OnSetDestinationPressed);
-	InputComponent->BindAction(
-		"SetDestination", IE_Released, this, &AMarsettlerPlayerController::OnSetDestinationReleased);
-
-	// support touch devices
-	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AMarsettlerPlayerController::MoveToTouchLocation);
-	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AMarsettlerPlayerController::MoveToTouchLocation);
+	InputComponent->BindAction("SetDestination", IE_Released, this, &AMarsettlerPlayerController::MoveToMouseCursor);
+	InputComponent->BindTouch(EInputEvent::IE_Released, this, &AMarsettlerPlayerController::MoveToTouchLocation);
 }
 
 void AMarsettlerPlayerController::MoveToMouseCursor()
@@ -65,32 +73,31 @@ void AMarsettlerPlayerController::MoveToTouchLocation(const ETouchIndex::Type Fi
 	}
 }
 
-void AMarsettlerPlayerController::SetNewMoveDestination(const FVector DestLocation)
+void AMarsettlerPlayerController::SetNewMoveDestination(const FVector destLocation)
 {
 	APawn* const MyPawn = GetPawn();
 	if (!MyPawn)
 	{
 		LOG_PRINT("Pawn is null");
+
 		return;
 	}
 
-	float const Distance = FVector::Dist(DestLocation, MyPawn->GetActorLocation());
+	float const distance = FVector::Dist(destLocation, MyPawn->GetActorLocation());
 
 	// We need to issue move command only if far enough in order for walk animation to play correctly
-	if ((Distance > 120.0f))
+	if (distance > 120.0f)
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation);
+		_SendMoveMessage(destLocation);
 	}
 }
 
-void AMarsettlerPlayerController::OnSetDestinationPressed()
+void AMarsettlerPlayerController::_SendMoveMessage(const FVector destLocation)
 {
-	// set flag to keep updating destination until released
-	bMoveToMouseCursor = true;
-}
+	if (Context::Instance.MyActor)
+	{
+		MsgMoveReqBuilder msgMoveReq(Context::Instance.MyActor->ID(), fbs::MsgVector(destLocation.X, destLocation.Y));
 
-void AMarsettlerPlayerController::OnSetDestinationReleased()
-{
-	// clear flag to indicate we should stop updating the destination
-	bMoveToMouseCursor = false;
+		Context::Instance.Connection->WriteMessage(msgMoveReq);
+	}
 }

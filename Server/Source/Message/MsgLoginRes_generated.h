@@ -20,12 +20,11 @@ struct MsgLoginRes FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_ACTOR = 4
   };
   const fbs::MsgActor *Actor() const {
-    return GetPointer<const fbs::MsgActor *>(VT_ACTOR);
+    return GetStruct<const fbs::MsgActor *>(VT_ACTOR);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_ACTOR) &&
-           verifier.VerifyTable(Actor()) &&
+           VerifyField<fbs::MsgActor>(verifier, VT_ACTOR) &&
            verifier.EndTable();
   }
 };
@@ -34,8 +33,8 @@ struct MsgLoginResBuilder {
   typedef MsgLoginRes Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_Actor(flatbuffers::Offset<fbs::MsgActor> Actor) {
-    fbb_.AddOffset(MsgLoginRes::VT_ACTOR, Actor);
+  void add_Actor(const fbs::MsgActor *Actor) {
+    fbb_.AddStruct(MsgLoginRes::VT_ACTOR, Actor);
   }
   explicit MsgLoginResBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -51,7 +50,7 @@ struct MsgLoginResBuilder {
 
 inline flatbuffers::Offset<MsgLoginRes> CreateMsgLoginRes(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<fbs::MsgActor> Actor = 0) {
+    const fbs::MsgActor *Actor = 0) {
   MsgLoginResBuilder builder_(_fbb);
   builder_.add_Actor(Actor);
   return builder_.Finish();

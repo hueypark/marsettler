@@ -1,7 +1,13 @@
 #include "Context.h"
 
+#include "Connection.h"
+
 Context Context::Instance;
 
-Context::Context() : MyActor(nullptr), World(nullptr)
+Context::Context() : Connection(nullptr), MyActor(nullptr), World(nullptr)
+{
+}
+
+Context::~Context()
 {
 }

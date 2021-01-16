@@ -38,6 +38,7 @@ void Connection::Tick()
 	m_messageIns.consume_all(
 		[this](const Message* message)
 		{
+			// TODO(jaewan): exception 발생시 message delete 하지 않는 현상 수정
 			try
 			{
 				MessageHandler::Handle(this, message);

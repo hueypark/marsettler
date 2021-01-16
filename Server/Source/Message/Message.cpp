@@ -22,5 +22,5 @@ MessageID Message::ID() const
 
 const int32_t Message::Size() const
 {
-	return m_body.size();
+	return (int32_t)(m_body.size());
 }

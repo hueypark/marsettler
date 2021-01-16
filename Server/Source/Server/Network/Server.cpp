@@ -1,6 +1,8 @@
 #include "Server.h"
 
 #include "Connection.h"
+#include "Engine/World/World.h"
+#include "Server/Context.h"
 
 #include <chrono>
 #include <iostream>
@@ -84,4 +86,6 @@ void Server::_Tick()
 
 		connection->Tick();
 	}
+
+	Context::Instance.GameWorld->Tick();
 }

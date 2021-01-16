@@ -5,7 +5,6 @@
 #include "Engine/World/World.h"
 #include "Message/Message.h"
 #include "Message/MsgLoginReq_generated.h"
-#include "Message/MsgLoginResBuilder_generated.h"
 #include "Network/Connection.h"
 
 void MsgLoginReqHandler::Handle(Connection* conn, const Message* message)
@@ -31,8 +30,5 @@ void MsgLoginReqHandler::Handle(Connection* conn, const Message* message)
 		id = newID;
 	}
 
-	std::shared_ptr<Actor> actor = Context::Instance.GameWorld->GetOrNewActor(id);
-
-	MsgLoginResBuilder loginRes(id, actor->Position());
-	conn->Write(loginRes);
+	Context::Instance.GameWorld->LoginActor(id);
 }

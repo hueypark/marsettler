@@ -13,7 +13,10 @@ private:
 	using Work = std::function<void()>;
 
 public:
-	/// 작업을 추가합니다.
+	// 생성자
+	Worker();
+
+	// 작업을 추가합니다.
 	void AddWork(const Work& work);
 
 	// 매 틱마다 호출됩니다.

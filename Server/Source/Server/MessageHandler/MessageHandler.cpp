@@ -1,8 +1,8 @@
 #include "MessageHandler.h"
 
 #include "Message/Message.h"
-#include "MessageHandler/MsgLoginReqHandler.h"
-#include "MessageHandler/MsgMoveReqHandler.h"
+#include "Server/MessageHandler/MsgLoginReqHandler.h"
+#include "Server/MessageHandler/MsgMoveReqHandler.h"
 
 #include <iostream>
 

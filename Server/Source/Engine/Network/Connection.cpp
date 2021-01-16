@@ -1,10 +1,9 @@
 #include "Connection.h"
 
-#include "MessageHandler/MessageHandler.h"
-
-#include <Message/Message.h>
-#include <Message/MessageID.h>
-#include <boost/asio.hpp>
+#include "Message/Message.h"
+#include "Message/MessageID.h"
+#include "Server/MessageHandler/MessageHandler.h"
+#include "boost/asio.hpp"
 
 #include <iostream>
 

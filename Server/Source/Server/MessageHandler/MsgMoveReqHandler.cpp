@@ -1,10 +1,10 @@
 #include "MsgMoveReqHandler.h"
 
+#include "Engine/Network/Connection.h"
 #include "Message/Message.h"
 #include "Message/MsgMovePushBuilder.h"
 #include "Message/MsgMovePush_generated.h"
 #include "Message/MsgMoveReq_generated.h"
-#include "Network/Connection.h"
 
 void MsgMoveReqHandler::Handle(Connection* conn, const Message* message)
 {

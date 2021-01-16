@@ -1,11 +1,11 @@
 #include "MsgLoginReqHandler.h"
 
-#include "Context.h"
+#include "Engine/Network/Connection.h"
 #include "Engine/World/Actor.h"
 #include "Engine/World/World.h"
 #include "Message/Message.h"
 #include "Message/MsgLoginReq_generated.h"
-#include "Network/Connection.h"
+#include "Server/Context.h"
 
 void MsgLoginReqHandler::Handle(Connection* conn, const Message* message)
 {

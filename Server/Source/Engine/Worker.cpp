@@ -1,5 +1,9 @@
 #include "Worker.h"
 
+Worker::Worker() : m_works(0)
+{
+}
+
 void Worker::AddWork(const Work& work)
 {
 	Work* newWork = new Work(work);

@@ -30,5 +30,6 @@ void MsgLoginReqHandler::Handle(Connection* conn, const Message* message)
 		id = newID;
 	}
 
-	Context::Instance.GameWorld->LoginActor(id);
+	Connection::Ptr connPtr = conn->shared_from_this();
+	Context::Instance.GameWorld->LoginActor(id, connPtr);
 }

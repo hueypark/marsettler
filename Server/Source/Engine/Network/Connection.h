@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Message/MessageBuilder.h>
-#include <boost/asio.hpp>
-#include <boost/lockfree/queue.hpp>
-#include <flatbuffers/flatbuffers.h>
+#include "Message/MessageBuilder.h"
+#include "boost/asio.hpp"
+#include "boost/lockfree/queue.hpp"
+#include "flatbuffers/flatbuffers.h"
 
 #include <mutex>
 #include <queue>
@@ -13,8 +13,11 @@ class MessageHandler;
 enum class MessageID;
 
 // Connection 은 클라이언트와의 연결을 표현합니다.
-class Connection
+class Connection : public std::enable_shared_from_this<Connection>
 {
+public:
+	using Ptr = std::shared_ptr<Connection>;
+
 public:
 	// 생성자
 	Connection(boost::asio::io_context& ioContext);

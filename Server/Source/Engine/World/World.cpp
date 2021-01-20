@@ -2,7 +2,7 @@
 
 #include "Engine/Math/Vector.h"
 #include "Engine/Worker.h"
-#include "Engine/World/Actor.h"
+#include "Engine/World/NetworkActor.h"
 #include "Message/MsgLoginResBuilder_generated.h"
 
 World::World()
@@ -15,15 +15,28 @@ World::~World()
 	delete m_worker;
 }
 
-void World::LoginActor(const int64_t id)
+void World::LoginActor(const int64_t id, const std::weak_ptr<Connection>& connection)
 {
 	m_worker->AddWork(
-		[this, id]()
+		[this, id, connection]()
 		{
-			Actor::Ptr actor = _GetOrNewActor(id);
+			NetworkActor::Ptr networkActor = nullptr;
 
-			MsgLoginResBuilder loginRes(id, actor->Position());
-			actor->Write(loginRes);
+			Actor::Ptr actor = _GetActor(id);
+			if (actor)
+			{
+				networkActor = std::dynamic_pointer_cast<NetworkActor>(actor);
+			}
+			else
+			{
+				networkActor = _NewNetworkActor(id);
+				actor = networkActor;
+			}
+
+			networkActor->SetConnection(connection);
+
+			MsgLoginResBuilder loginRes(id, networkActor->Position());
+			networkActor->Write(loginRes);
 		});
 }
 
@@ -32,12 +45,22 @@ void World::Tick()
 	m_worker->Tick();
 }
 
-std::shared_ptr<Actor> World::_GetOrNewActor(const int64_t id)
+std::shared_ptr<Actor> World::_GetActor(const int64_t id)
 {
-	if (m_actors.find(id) == m_actors.end())
+	auto iter = m_actors.find(id);
+	if (iter == m_actors.end())
 	{
-		m_actors[id] = std::make_shared<Actor>(id, Vector());
+		return nullptr;
 	}
 
-	return m_actors[id];
+	return iter->second;
+}
+
+std::shared_ptr<NetworkActor> World::_NewNetworkActor(const int64_t id)
+{
+	NetworkActor::Ptr actor = std::make_shared<NetworkActor>(id, Vector());
+
+	m_actors[id] = actor;
+
+	return actor;
 }

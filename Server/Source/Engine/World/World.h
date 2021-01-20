@@ -4,6 +4,8 @@
 #include <memory>
 
 class Actor;
+class Connection;
+class NetworkActor;
 class Worker;
 
 // 월드
@@ -17,14 +19,17 @@ public:
 	virtual ~World();
 
 	// 로그인한다.
-	void LoginActor(const int64_t id);
+	void LoginActor(const int64_t id, const std::weak_ptr<Connection>& connection);
 
 	// 매 틱마다 호출됩니다.
 	void Tick();
 
 private:
-	// 액터가 있으면 바로 반환하고 없으면 생성해 반환한다.
-	std::shared_ptr<Actor> _GetOrNewActor(const int64_t id);
+	// 액터를 반환한다.
+	std::shared_ptr<Actor> _GetActor(const int64_t id);
+
+	// 새 네트워크 액터를 만든다.
+	std::shared_ptr<NetworkActor> _NewNetworkActor(const int64_t id);
 
 private:
 	// 액터들

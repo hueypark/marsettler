@@ -6,9 +6,16 @@
 #include "Message/Message.h"
 #include "Message/MsgLoginReq_generated.h"
 #include "Server/Context.h"
+#include "bsoncxx/builder/stream/document.hpp"
+#include "mongocxx/client.hpp"
+#include "mongocxx/instance.hpp"
 
 void MsgLoginReqHandler::Handle(Connection* conn, const Message* message)
 {
+	mongocxx::instance instance{};
+	// mongocxx::uri uri("mongodb://localhost:27017");
+	// mongocxx::client client{uri};
+
 	const fbs::MsgLoginReq* loginReq = fbs::GetMsgLoginReq(message->Data());
 	if (!loginReq)
 	{

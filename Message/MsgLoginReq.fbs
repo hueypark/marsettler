@@ -1,7 +1,0 @@
-namespace fbs;
-
-table MsgLoginReq {
-	ID:int64;
-}
-
-root_type MsgLoginReq;

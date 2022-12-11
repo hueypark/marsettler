@@ -1,8 +1,0 @@
-include "MsgVector.fbs";
-
-namespace fbs;
-
-struct MsgActor {
-	ID:int64;
-	Location:MsgVector;
-}

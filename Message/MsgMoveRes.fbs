@@ -1,6 +1,0 @@
-namespace fbs;
-
-table MsgMoveRes {
-}
-
-root_type MsgMoveRes;

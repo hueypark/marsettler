@@ -1,9 +1,0 @@
-include "MsgActor.fbs";
-
-namespace fbs;
-
-table MsgActorPush {
-	Actor:MsgActor;
-}
-
-root_type MsgActorPush;

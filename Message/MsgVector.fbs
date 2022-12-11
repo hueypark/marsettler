@@ -1,6 +1,0 @@
-namespace fbs;
-
-struct MsgVector {
-	X:float32;
-	Y:float32;
-}

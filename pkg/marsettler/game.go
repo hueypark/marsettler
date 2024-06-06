@@ -2,16 +2,23 @@ package marsettler
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hueypark/marsettler/pkg/world"
 )
 
 // Game is the main game struct.
 type Game struct {
+	actors map[int]world.Actor
 }
 
 // NewGame creates a new game.
 func NewGame() *Game {
-	return &Game{}
+	game := &Game{
+		actors: make(map[int]world.Actor),
+	}
+
+	game.actors[0] = world.NewWorker()
+
+	return game
 }
 
 // Update is the main game update loop.
@@ -21,7 +28,9 @@ func (g *Game) Update() error {
 
 // Draw is the main game draw loop.
 func (g *Game) Draw(screen *ebiten.Image) {
-	ebitenutil.DebugPrint(screen, "Hello, World!")
+	for _, actor := range g.actors {
+		actor.Draw(screen)
+	}
 }
 
 // Layout is the main game layout loop.

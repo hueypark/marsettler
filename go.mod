@@ -15,8 +15,8 @@ require (
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/unitoftime/cod v0.0.0-20230626194639-7603fae7c5d2 // indirect
 	github.com/unitoftime/ecs v0.0.1 // indirect
-	golang.org/x/image v0.16.0 // indirect
+	golang.org/x/image v0.18.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
+	golang.org/x/text v0.16.0 // indirect
 )

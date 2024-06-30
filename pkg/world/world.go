@@ -2,16 +2,19 @@ package world
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/jakecoffman/cp/v2"
 	"github.com/unitoftime/flow/phy2"
 )
 
 type World struct {
+	space           *cp.Space
 	lastGeneratedID int
 	nodes           []*Node
 }
 
 func New() *World {
 	return &World{
+		space:           cp.NewSpace(),
 		lastGeneratedID: -1,
 	}
 }

@@ -5,6 +5,7 @@ go 1.22
 require (
 	github.com/hajimehoshi/bitmapfont/v3 v3.0.0
 	github.com/hajimehoshi/ebiten/v2 v2.7.5
+	github.com/jakecoffman/cp/v2 v2.0.2
 	github.com/unitoftime/flow v0.0.0-20240531175911-f383209fd3b2
 )
 

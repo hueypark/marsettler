@@ -5,6 +5,7 @@ fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.04, 0.04, 0.04)))
         .insert_resource(SnakeSegments::default())
+        .insert_resource(LastTailPosition::default())
         .add_systems(Startup, setup_camera)
         .add_systems(Startup, spawn_snake)
         .add_systems(Update, snake_movement_input.before(snake_movement))
@@ -16,6 +17,13 @@ fn main() {
             Update,
             food_spawner.run_if(on_timer(Duration::from_secs(1))),
         )
+        .add_systems(
+            Update,
+            snake_eating
+                .after(snake_movement)
+                .run_if(on_timer(Duration::from_millis(150))),
+        )
+        .add_systems(Update, snake_growth.after(snake_eating))
         .add_systems(PostUpdate, (position_translation, size_scaling))
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
@@ -25,6 +33,7 @@ fn main() {
             }),
             ..default()
         }))
+        .add_event::<GrowthEvent>()
         .run();
 }
 
@@ -109,12 +118,13 @@ fn snake_movement_input(
 }
 
 fn snake_movement(
+    mut last_tail_position: ResMut<LastTailPosition>,
     segments: ResMut<SnakeSegments>,
     mut heads: Query<(Entity, &SnakeHead)>,
     mut positions: Query<&mut Position>,
 ) {
     if let Some((head_entity, head)) = heads.iter_mut().next() {
-        let segment_positions = segments
+        let segment_positions: Vec<Position> = segments
             .iter()
             .map(|e| *positions.get_mut(*e).unwrap())
             .collect::<Vec<Position>>();
@@ -139,6 +149,7 @@ fn snake_movement(
             .for_each(|(pos, segment)| {
                 *positions.get_mut(*segment).unwrap() = *pos;
             });
+        *last_tail_position = LastTailPosition(Some(*segment_positions.last().unwrap()));
     }
 }
 // fn snake_movement(
@@ -255,5 +266,38 @@ impl Direction {
             Self::Up => Self::Down,
             Self::Down => Self::Up,
         }
+    }
+}
+
+fn snake_eating(
+    mut commands: Commands,
+    mut growth_writer: EventWriter<GrowthEvent>,
+    food_positions: Query<(Entity, &Position), With<Food>>,
+    head_positions: Query<&Position, With<SnakeHead>>,
+) {
+    for head_pos in head_positions.iter() {
+        for (ent, food_pos) in food_positions.iter() {
+            if food_pos == head_pos {
+                commands.entity(ent).despawn();
+                growth_writer.send(GrowthEvent);
+            }
+        }
+    }
+}
+
+#[derive(Event)]
+struct GrowthEvent;
+
+#[derive(Default, Resource)]
+struct LastTailPosition(Option<Position>);
+
+fn snake_growth(
+    commands: Commands,
+    last_tail_position: Res<LastTailPosition>,
+    mut segments: ResMut<SnakeSegments>,
+    mut growth_reader: EventReader<GrowthEvent>,
+) {
+    if growth_reader.read().next().is_some() {
+        segments.push(spawn_segment(commands, last_tail_position.0.unwrap()));
     }
 }

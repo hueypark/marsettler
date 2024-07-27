@@ -4,6 +4,7 @@ use rand::prelude::random;
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.04, 0.04, 0.04)))
+        .insert_resource(SnakeSegments::default())
         .add_systems(Startup, setup_camera)
         .add_systems(Startup, spawn_snake)
         .add_systems(Update, snake_movement_input.before(snake_movement))
@@ -32,6 +33,7 @@ fn setup_camera(mut commands: Commands) {
 }
 
 const SNAKE_HEAD_COLOR: Color = Color::srgb(0.7, 0.7, 0.7);
+const SNAKE_SEGMENT_COLOR: Color = Color::srgb(0.3, 0.3, 0.3);
 const FOOD_COLOR: Color = Color::srgb(1.0, 0.0, 1.0);
 
 #[derive(Component)]
@@ -39,24 +41,49 @@ struct SnakeHead {
     direction: Direction,
 }
 
-fn spawn_snake(mut commands: Commands) {
+#[derive(Component)]
+struct SnakeSegment;
+
+#[derive(Default, Deref, DerefMut, Resource)]
+struct SnakeSegments(Vec<Entity>);
+
+fn spawn_snake(mut commands: Commands, mut segments: ResMut<SnakeSegments>) {
+    *segments = SnakeSegments(vec![
+        commands
+            .spawn(SpriteBundle {
+                sprite: Sprite {
+                    color: SNAKE_HEAD_COLOR,
+                    ..default()
+                },
+                transform: Transform {
+                    scale: Vec3::new(10.0, 10.0, 10.0),
+                    ..default()
+                },
+                ..default()
+            })
+            .insert(SnakeHead {
+                direction: Direction::Up,
+            })
+            .insert(Position { x: 3, y: 3 })
+            .insert(Size::square(0.8))
+            .id(),
+        spawn_segment(commands, Position { x: 3, y: 2 }),
+    ]);
+}
+
+fn spawn_segment(mut commands: Commands, position: Position) -> Entity {
     commands
         .spawn(SpriteBundle {
             sprite: Sprite {
-                color: SNAKE_HEAD_COLOR,
-                ..default()
-            },
-            transform: Transform {
-                scale: Vec3::new(10.0, 10.0, 10.0),
+                color: SNAKE_SEGMENT_COLOR,
                 ..default()
             },
             ..default()
         })
-        .insert(SnakeHead {
-            direction: Direction::Up,
-        })
-        .insert(Position { x: 3, y: 3 })
-        .insert(Size::square(0.8));
+        .insert(SnakeSegment)
+        .insert(position)
+        .insert(Size::square(0.65))
+        .id()
 }
 
 fn snake_movement_input(

@@ -25,6 +25,7 @@ fn main() {
         )
         .add_systems(Update, snake_growth.after(snake_eating))
         .add_systems(PostUpdate, (position_translation, size_scaling))
+        .add_systems(Update, game_over.after(snake_movement))
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Snake!".to_string(),
@@ -34,6 +35,7 @@ fn main() {
             ..default()
         }))
         .add_event::<GrowthEvent>()
+        .add_event::<GameOverEvent>()
         .run();
 }
 
@@ -119,6 +121,7 @@ fn snake_movement_input(
 
 fn snake_movement(
     mut last_tail_position: ResMut<LastTailPosition>,
+    mut game_over_writer: EventWriter<GameOverEvent>,
     segments: ResMut<SnakeSegments>,
     mut heads: Query<(Entity, &SnakeHead)>,
     mut positions: Query<&mut Position>,
@@ -143,6 +146,17 @@ fn snake_movement(
                 head_pos.y -= 1;
             }
         };
+        if head_pos.x < 0
+            || head_pos.y < 0
+            || head_pos.x as u32 >= ARENA_WIDTH
+            || head_pos.y as u32 >= ARENA_HEIGHT
+        {
+            game_over_writer.send(GameOverEvent);
+        }
+        if segment_positions.contains(&head_pos) {
+            game_over_writer.send(GameOverEvent);
+        }
+
         segment_positions
             .iter()
             .zip(segments.iter().skip(1))
@@ -152,25 +166,6 @@ fn snake_movement(
         *last_tail_position = LastTailPosition(Some(*segment_positions.last().unwrap()));
     }
 }
-// fn snake_movement(
-//     keyboard_input: Res<ButtonInput<KeyCode>>,
-//     mut head_positions: Query<&mut Position, With<SnakeHead>>,
-// ) {
-//     for mut pos in head_positions.iter_mut() {
-//         if keyboard_input.pressed(KeyCode::ArrowLeft) {
-//             pos.x -= 1;
-//         }
-//         if keyboard_input.pressed(KeyCode::ArrowRight) {
-//             pos.x += 1;
-//         }
-//         if keyboard_input.pressed(KeyCode::ArrowDown) {
-//             pos.y -= 1;
-//         }
-//         if keyboard_input.pressed(KeyCode::ArrowUp) {
-//             pos.y += 1;
-//         }
-//     }
-// }
 
 const ARENA_WIDTH: u32 = 10;
 const ARENA_HEIGHT: u32 = 10;
@@ -299,5 +294,23 @@ fn snake_growth(
 ) {
     if growth_reader.read().next().is_some() {
         segments.push(spawn_segment(commands, last_tail_position.0.unwrap()));
+    }
+}
+
+#[derive(Event)]
+struct GameOverEvent;
+
+fn game_over(
+    mut commands: Commands,
+    mut reader: EventReader<GameOverEvent>,
+    segments_res: ResMut<SnakeSegments>,
+    food: Query<Entity, With<Food>>,
+    segments: Query<Entity, With<SnakeSegment>>,
+) {
+    if reader.read().next().is_some() {
+        for ent in food.iter().chain(segments.iter()) {
+            commands.entity(ent).despawn();
+        }
+        spawn_snake(commands, segments_res);
     }
 }

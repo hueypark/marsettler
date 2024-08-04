@@ -1,7 +1,7 @@
 mod snake;
 
 use avian2d::prelude::*;
-use bevy::{audio::AudioPlugin, prelude::*, window::WindowPlugin};
+use bevy::{audio::AudioPlugin, prelude::*, window::PrimaryWindow, window::WindowPlugin};
 use snake::{move_snakes, spawn_snake_head, SnakeHead};
 
 fn main() {
@@ -27,13 +27,22 @@ fn main() {
         .insert_resource(Gravity(Vec2::ZERO))
         .add_systems(Startup, setup_camera)
         .add_systems(Startup, spawn_snake_head)
-        .add_systems(Update, move_snakes)
-        .add_systems(Update, print_debug_message)
+        .add_systems(
+            Update,
+            (
+                move_snakes,
+                print_debug_message,
+                print_cursor_world_position,
+            ),
+        )
         .run();
 }
 
+#[derive(Component)]
+struct MainCamera;
+
 fn setup_camera(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn((Camera2dBundle::default(), MainCamera));
 }
 
 #[derive(Resource)]
@@ -51,4 +60,37 @@ fn print_debug_message(
     for transform in query.iter() {
         info!("Snake head position: {:?}", transform.translation);
     }
+}
+
+fn print_cursor_world_position(
+    primary_query: Query<&Window, With<PrimaryWindow>>,
+    camera_query: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
+    buttons: Res<ButtonInput<MouseButton>>,
+) {
+    if !buttons.just_pressed(MouseButton::Left) {
+        return;
+    }
+
+    let Ok(window) = primary_query.get_single() else {
+        return;
+    };
+
+    let Ok((camera, camera_transform)) = camera_query.get_single() else {
+        return;
+    };
+
+    let Some(cursor_position) = window.cursor_position() else {
+        return;
+    };
+
+    let Some(ray) = camera.viewport_to_world(camera_transform, cursor_position) else {
+        return;
+    };
+
+    let world_position = ray.origin.truncate();
+
+    info!(
+        "Cursor world position: x: {}, y: {}",
+        world_position.x, world_position.y
+    );
 }

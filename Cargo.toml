@@ -18,3 +18,7 @@ path = "lumberjack/main.rs"
 [[bin]]
 name = "snake"
 path = "snake/main.rs"
+
+[[bin]]
+name = "snake_v2"
+path = "snake_v2/main.rs"

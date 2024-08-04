@@ -1,23 +1,32 @@
+use avian2d::prelude::*;
 use bevy::prelude::*;
 
 pub fn spawn_snake_head(mut cmds: Commands) {
-    cmds.spawn(SpriteBundle {
-        sprite: Sprite {
-            color: SNAKE_HEAD_COLOR,
+    const LENGTH: f32 = 10.0;
+
+    cmds.spawn((
+        SpriteBundle {
+            sprite: Sprite {
+                color: SNAKE_HEAD_COLOR,
+                ..default()
+            },
+            transform: Transform {
+                scale: Vec3::splat(LENGTH),
+                ..default()
+            },
             ..default()
         },
-        transform: Transform {
-            scale: Vec3::splat(10.0),
-            ..default()
-        },
-        ..default()
-    })
-    .insert(SnakeHead {});
+        RigidBody::Dynamic,
+        Collider::rectangle(LENGTH, LENGTH),
+        SnakeHead {},
+    ));
 }
 
-pub fn move_snakes(mut query: Query<&mut Transform, With<SnakeHead>>) {
-    for mut transform in query.iter_mut() {
-        transform.translation.x += 1.0;
+pub fn move_snakes(mut query: Query<(&mut LinearVelocity, &Transform), With<SnakeHead>>) {
+    for (mut vel, transform) in query.iter_mut() {
+        let forward = transform.rotation * Vec3::Y;
+        vel.x = forward.x * 100.0;
+        vel.y = forward.y * 100.0;
     }
 }
 

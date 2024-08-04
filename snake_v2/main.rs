@@ -1,11 +1,12 @@
 mod snake;
 
+use avian2d::prelude::*;
 use bevy::{audio::AudioPlugin, prelude::*, window::WindowPlugin};
 use snake::{move_snakes, spawn_snake_head, SnakeHead};
 
 fn main() {
     App::new()
-        .add_plugins(
+        .add_plugins((
             DefaultPlugins
                 .build()
                 .set(WindowPlugin {
@@ -17,11 +18,13 @@ fn main() {
                     ..default()
                 })
                 .disable::<AudioPlugin>(),
-        )
+            PhysicsPlugins::default(),
+        ))
         .insert_resource(PrintDebugTimer(Timer::from_seconds(
             1.0,
             TimerMode::Repeating,
         )))
+        .insert_resource(Gravity(Vec2::ZERO))
         .add_systems(Startup, setup_camera)
         .add_systems(Startup, spawn_snake_head)
         .add_systems(Update, move_snakes)

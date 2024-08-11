@@ -20,10 +20,6 @@ fn main() {
                 .disable::<AudioPlugin>(),
             PhysicsPlugins::default(),
         ))
-        .insert_resource(PrintDebugTimer(Timer::from_seconds(
-            1.0,
-            TimerMode::Repeating,
-        )))
         .insert_resource(Gravity(Vec2::ZERO))
         .add_systems(Startup, setup_camera)
         .add_systems(Startup, spawn_snake_head)
@@ -41,13 +37,10 @@ fn setup_camera(mut commands: Commands) {
     commands.spawn((Camera2dBundle::default(), MainCamera));
 }
 
-#[derive(Resource)]
-struct PrintDebugTimer(Timer);
-
 fn print_cursor_world_position(
     primary_query: Query<&Window, With<PrimaryWindow>>,
     camera_query: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
-    mut snake_head_query: Query<(&mut SnakeHead), With<SnakeHead>>,
+    mut snake_head_query: Query<&mut SnakeHead, With<SnakeHead>>,
     buttons: Res<ButtonInput<MouseButton>>,
 ) {
     if !buttons.just_pressed(MouseButton::Left) {

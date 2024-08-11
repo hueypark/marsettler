@@ -2,7 +2,7 @@ mod snake;
 
 use avian2d::prelude::*;
 use bevy::{audio::AudioPlugin, prelude::*, window::PrimaryWindow, window::WindowPlugin};
-use snake::{move_snakes, spawn_snake_head, SnakeHead};
+use snake::{move_snakes, rotate_snakes, spawn_snake_head, SnakeHead};
 
 fn main() {
     App::new()
@@ -29,11 +29,7 @@ fn main() {
         .add_systems(Startup, spawn_snake_head)
         .add_systems(
             Update,
-            (
-                move_snakes,
-                print_debug_message,
-                print_cursor_world_position,
-            ),
+            (rotate_snakes, move_snakes, print_cursor_world_position),
         )
         .run();
 }
@@ -48,23 +44,10 @@ fn setup_camera(mut commands: Commands) {
 #[derive(Resource)]
 struct PrintDebugTimer(Timer);
 
-fn print_debug_message(
-    time: Res<Time>,
-    mut timer: ResMut<PrintDebugTimer>,
-    query: Query<&Transform, With<SnakeHead>>,
-) {
-    if !timer.0.tick(time.delta()).just_finished() {
-        return;
-    }
-
-    for transform in query.iter() {
-        info!("Snake head position: {:?}", transform.translation);
-    }
-}
-
 fn print_cursor_world_position(
     primary_query: Query<&Window, With<PrimaryWindow>>,
     camera_query: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
+    mut snake_head_query: Query<(&mut SnakeHead), With<SnakeHead>>,
     buttons: Res<ButtonInput<MouseButton>>,
 ) {
     if !buttons.just_pressed(MouseButton::Left) {
@@ -87,10 +70,9 @@ fn print_cursor_world_position(
         return;
     };
 
-    let world_position = ray.origin.truncate();
+    let world_position = Vec3::new(ray.origin.x, ray.origin.y, 0.0);
 
-    info!(
-        "Cursor world position: x: {}, y: {}",
-        world_position.x, world_position.y
-    );
+    for mut snake_head in snake_head_query.iter_mut() {
+        snake_head.desired_position = world_position;
+    }
 }

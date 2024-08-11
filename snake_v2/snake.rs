@@ -26,6 +26,7 @@ pub fn spawn_snake_head(mut cmds: Commands) {
 
 pub fn rotate_snakes(time: Res<Time>, mut query: Query<(&mut Transform, &SnakeHead)>) {
     const ROT_SPEED: f32 = 90.0;
+
     let ds = time.delta_seconds();
     let rot_speed = ROT_SPEED.to_radians() * ds;
 
@@ -41,15 +42,23 @@ pub fn rotate_snakes(time: Res<Time>, mut query: Query<(&mut Transform, &SnakeHe
     }
 }
 
-pub fn move_snakes(mut query: Query<(&mut LinearVelocity, &Transform, &SnakeHead)>) {
-    const MAX_SPEED: f32 = 100.0;
+pub fn move_snakes(time: Res<Time>, mut query: Query<(&mut LinearVelocity, &Transform)>) {
+    const ACC: f32 = 200.0;
+    const MAX_SPEED: f32 = 150.0;
 
-    for (mut vel, transform, snake_head) in query.iter_mut() {
-        let forward = transform.rotation * Vec3::Y;
+    let ds = time.delta_seconds();
+
+    for (mut vel, transform) in query.iter_mut() {
+        let forward = (transform.rotation * Vec3::Y).truncate();
         let desired_velocity = forward * MAX_SPEED;
 
-        vel.x = desired_velocity.x;
-        vel.y = desired_velocity.y;
+        let diff = desired_velocity - vel.0;
+
+        if diff.length() < ACC {
+            vel.0 = desired_velocity;
+        } else {
+            vel.0 += diff.normalize() * ACC * ds;
+        }
     }
 }
 

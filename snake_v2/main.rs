@@ -21,8 +21,7 @@ fn main() {
             PhysicsPlugins::default(),
         ))
         .insert_resource(Gravity(Vec2::ZERO))
-        .add_systems(Startup, setup_camera)
-        .add_systems(Startup, spawn_snake_head)
+        .add_systems(Startup, (setup_camera, setup_debug, spawn_snake_head))
         .add_systems(
             Update,
             (rotate_snakes, move_snakes, print_cursor_world_position),
@@ -35,6 +34,23 @@ struct MainCamera;
 
 fn setup_camera(mut commands: Commands) {
     commands.spawn((Camera2dBundle::default(), MainCamera));
+}
+
+fn setup_debug(mut commands: Commands) {
+    commands.spawn((TextBundle::from_section(
+        String::from("v") + env!("CARGO_PKG_VERSION"),
+        TextStyle {
+            font_size: 40.0,
+            ..default()
+        },
+    )
+    .with_text_justify(JustifyText::Center)
+    .with_style(Style {
+        position_type: PositionType::Absolute,
+        top: Val::Px(5.0),
+        left: Val::Px(5.0),
+        ..default()
+    }),));
 }
 
 fn print_cursor_world_position(

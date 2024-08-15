@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>snake_v2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #bevy {
+            height: 0;
+        }
+    </style>
+    <link data-trunk rel="rust" data-bin="snake_v2" />
+</head>
+
+<body>
+    <div id="game">
+        <canvas id="bevy"> Javascript and canvas support is required </canvas>
+    </div>
+</body>
+
+</html>

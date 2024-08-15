@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    env:
+      BUILD_FILE: tmp/build.zip
+    runs-on: ubuntu-latest
+    permissions:
+      # Required to create a GitHub release (https://docs.github.com/en/rest/releases/releases#create-a-release).
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        run: |
+          echo "CARGO_PKG_VERSION=v$(cargo pkgid | cut -d# -f2 | cut -d: -f2)" >> $GITHUB_ENV
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@v1.10.2
+
+      - name: Install trunk
+        run: cargo binstall --no-confirm trunk
+
+      - name: Build
+        run: make trunk-build BUILD_FILE=${{ env.BUILD_FILE }}
+
+      - name: Upload package to Github release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.BUILD_FILE }}
+          asset_name: ${{ env.CARGO_PKG_VERSION }}.zip
+          release_name: ${{ env.CARGO_PKG_VERSION }}
+          tag: ${{ env.CARGO_PKG_VERSION }}
+          overwrite: true

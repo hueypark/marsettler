@@ -30,8 +30,8 @@ jobs:
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@v1.10.2
 
-      - name: Install trunk
-        run: cargo binstall --no-confirm trunk
+      - name: Install wasm related tools
+        run: cargo binstall --no-confirm trunk wasm-bindgen-cli wasm-opt
 
       - name: Build
         run: make trunk-build BUILD_FILE=${{ env.BUILD_FILE }}

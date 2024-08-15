@@ -15,6 +15,9 @@ jobs:
       contents: write
 
     steps:
+      - name: Prepare output directory
+        run: mkdir tmp
+
       - name: Checkout code
         uses: actions/checkout@v4
 

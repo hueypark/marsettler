@@ -7,17 +7,12 @@ on:
 
 jobs:
   build:
-    env:
-      BUILD_FILE: tmp/build.zip
     runs-on: ubuntu-latest
     permissions:
       # Required to create a GitHub release (https://docs.github.com/en/rest/releases/releases#create-a-release).
       contents: write
 
     steps:
-      - name: Prepare output directory
-        run: mkdir tmp
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -37,13 +32,16 @@ jobs:
         run: cargo binstall --no-confirm trunk wasm-bindgen-cli wasm-opt
 
       - name: Build
-        run: make trunk-build BUILD_FILE=${{ env.BUILD_FILE }}
+        run: trunk build --release --dist .build
+
+      - name: Package
+        run: zip --recurse-paths ${{ env.CARGO_PKG_VERSION }}.zip .build
 
       - name: Upload package to Github release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.BUILD_FILE }}
+          file: ${{ env.CARGO_PKG_VERSION }}.zip
           asset_name: ${{ env.CARGO_PKG_VERSION }}.zip
           release_name: ${{ env.CARGO_PKG_VERSION }}
           tag: ${{ env.CARGO_PKG_VERSION }}

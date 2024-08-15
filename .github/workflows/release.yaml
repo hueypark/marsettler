@@ -11,6 +11,8 @@ jobs:
     permissions:
       # Required to create a GitHub release (https://docs.github.com/en/rest/releases/releases#create-a-release).
       contents: write
+    env:
+      ITCH_TARGET: hueypark/snake-v2
 
     steps:
       - name: Checkout code
@@ -46,3 +48,19 @@ jobs:
           release_name: ${{ env.CARGO_PKG_VERSION }}
           tag: ${{ env.CARGO_PKG_VERSION }}
           overwrite: true
+
+      - name: Install butler
+        run: |
+          curl -L -o butler.zip 'https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default'
+          unzip butler.zip
+          chmod +x butler
+          ./butler -V
+
+      - name: Upload package to Itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
+        run: | 
+          ./butler push \
+            --userversion='${{ env.CARGO_PKG_VERSION }}' \
+            ${{ env.CARGO_PKG_VERSION }}.zip \
+            ${{ env.ITCH_TARGET }}:web

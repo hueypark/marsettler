@@ -13,6 +13,8 @@ jobs:
       contents: write
     env:
       ITCH_TARGET: hueypark/snake-v2
+      JORNET_LEADERBOARD_ID: ${{ secrets.JORNET_LEADERBOARD_ID }}
+      JORNET_LEADERBOARD_KEY: ${{ secrets.JORNET_LEADERBOARD_KEY }}
 
     steps:
       - name: Checkout code

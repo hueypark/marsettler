@@ -1,7 +1,13 @@
+mod leaderboard;
 mod snake;
+mod status;
+mod ui;
 
 use avian2d::prelude::*;
-use bevy::{audio::AudioPlugin, prelude::*, window::PrimaryWindow, window::WindowPlugin};
+use bevy::{
+    audio::AudioPlugin, log::LogPlugin, prelude::*, window::PrimaryWindow, window::WindowPlugin,
+};
+use bevy_jornet::JornetPlugin;
 use snake::{move_snakes, rotate_snakes, spawn_snake_head, SnakeHead};
 
 fn main() {
@@ -17,14 +23,44 @@ fn main() {
                     }),
                     ..default()
                 })
+                .set(LogPlugin {
+                    level: option_env!("BEVY_LOG_LEVEL")
+                        .map(|s| s.parse().expect("Invalid log level"))
+                        .unwrap_or(bevy::log::Level::INFO),
+                    ..default()
+                })
                 .disable::<AudioPlugin>(),
             PhysicsPlugins::default(),
+            JornetPlugin::with_leaderboard(
+                option_env!("JORNET_LEADERBOARD_ID").unwrap_or(""),
+                option_env!("JORNET_LEADERBOARD_KEY").unwrap_or(""),
+            ),
         ))
         .insert_resource(Gravity(Vec2::ZERO))
-        .add_systems(Startup, (setup_camera, setup_debug, spawn_snake_head))
+        .insert_resource(status::Status::new())
+        .add_event::<leaderboard::SendScoreEvent>()
+        .add_systems(
+            Startup,
+            (
+                setup_camera,
+                setup_debug,
+                spawn_snake_head,
+                leaderboard::setup_leaderboard,
+                ui::spawn_leaderboard,
+            ),
+        )
         .add_systems(
             Update,
-            (rotate_snakes, move_snakes, print_cursor_world_position),
+            (
+                rotate_snakes,
+                move_snakes,
+                print_cursor_world_position,
+                on_esc_button,
+                status::update_game_time,
+                leaderboard::send_score,
+                ui::update_status,
+                ui::update_leaderboard,
+            ),
         )
         .run();
 }
@@ -84,4 +120,16 @@ fn print_cursor_world_position(
     for mut snake_head in snake_head_query.iter_mut() {
         snake_head.desired_position = world_position;
     }
+}
+
+fn on_esc_button(
+    buttons: Res<ButtonInput<KeyCode>>,
+    st: Res<status::Status>,
+    mut event_writer: EventWriter<leaderboard::SendScoreEvent>,
+) {
+    if !buttons.just_pressed(KeyCode::Escape) {
+        return;
+    }
+
+    event_writer.send(leaderboard::SendScoreEvent { score: st.score() });
 }

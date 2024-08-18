@@ -128,6 +128,8 @@ pub fn update_leaderboard(
     let mut scores = leaderboard.get_leaderboard();
     scores.sort_by(|s1, s2| s2.score.partial_cmp(&s1.score).unwrap_or(Ordering::Equal));
 
+    scores = scores.iter().take(5).cloned().collect();
+
     let ui = query.single();
     commands.entity(ui).despawn_descendants();
 

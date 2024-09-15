@@ -13,10 +13,6 @@ impl Status {
         }
     }
 
-    pub fn score(&self) -> f32 {
-        return self.stopwatch.elapsed().as_secs() as f32;
-    }
-
     pub fn time(&self) -> f32 {
         return self.stopwatch.elapsed().as_secs_f32();
     }

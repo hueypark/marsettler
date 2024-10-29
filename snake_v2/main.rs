@@ -1,11 +1,14 @@
+mod food;
 mod snake;
 mod status;
 mod ui;
 
 use avian2d::prelude::*;
 use bevy::{
-    audio::AudioPlugin, log::LogPlugin, prelude::*, window::PrimaryWindow, window::WindowPlugin,
+    audio::AudioPlugin, log::LogPlugin, prelude::*, time::common_conditions::on_timer,
+    utils::Duration, window::PrimaryWindow, window::WindowPlugin,
 };
+use rand::random;
 use snake::{move_snakes, rotate_snakes, spawn_snake_head, SnakeHead};
 
 fn main() {
@@ -38,11 +41,12 @@ fn main() {
             (
                 rotate_snakes,
                 move_snakes,
-                print_cursor_world_position,
+                on_click,
                 status::update_game_time,
                 ui::update_status,
             ),
         )
+        .add_systems(Update, spawn_food.run_if(on_timer(Duration::from_secs(1))))
         .run();
 }
 
@@ -70,7 +74,7 @@ fn setup_debug(mut commands: Commands) {
     }),));
 }
 
-fn print_cursor_world_position(
+fn on_click(
     primary_query: Query<&Window, With<PrimaryWindow>>,
     camera_query: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
     mut snake_head_query: Query<&mut SnakeHead, With<SnakeHead>>,
@@ -101,4 +105,17 @@ fn print_cursor_world_position(
     for mut snake_head in snake_head_query.iter_mut() {
         snake_head.desired_position = world_position;
     }
+}
+
+fn spawn_food(cmds: Commands, primary_query: Query<&Window, With<PrimaryWindow>>) {
+    let Ok(window) = primary_query.get_single() else {
+        return;
+    };
+
+    let position = Vec2 {
+        x: window.size().x - (random::<f32>() * window.size().x),
+        y: window.size().y - (random::<f32>() * window.size().y),
+    };
+
+    food::spawn_food(cmds, position)
 }

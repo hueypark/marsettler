@@ -4,8 +4,8 @@ version = "0.1.2"
 edition = "2021"
 
 [dependencies]
-avian2d = "0.1"
-bevy = "0.14.0"
+avian2d = "0.1.2"
+bevy = "0.14.2"
 rand = "0.8.5"
 
 [[bin]]

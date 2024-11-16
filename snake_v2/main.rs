@@ -12,28 +12,33 @@ use rand::random;
 use snake::{move_snakes, rotate_snakes, spawn_snake_head, SnakeHead};
 
 fn main() {
-    App::new()
-        .add_plugins((
-            DefaultPlugins
-                .build()
-                .set(WindowPlugin {
-                    primary_window: Some(Window {
-                        title: "Snake!".to_string(),
-                        resolution: (1024.0, 768.0).into(),
-                        ..default()
-                    }),
+    let mut app = App::new();
+
+    app.add_plugins((
+        DefaultPlugins
+            .build()
+            .set(WindowPlugin {
+                primary_window: Some(Window {
+                    title: "Snake!".to_string(),
+                    resolution: (1024.0, 768.0).into(),
                     ..default()
-                })
-                .set(LogPlugin {
-                    level: option_env!("BEVY_LOG_LEVEL")
-                        .map(|s| s.parse().expect("Invalid log level"))
-                        .unwrap_or(bevy::log::Level::INFO),
-                    ..default()
-                })
-                .disable::<AudioPlugin>(),
-            PhysicsPlugins::default(),
-        ))
-        .insert_resource(Gravity(Vec2::ZERO))
+                }),
+                ..default()
+            })
+            .set(LogPlugin {
+                level: option_env!("BEVY_LOG_LEVEL")
+                    .map(|s| s.parse().expect("Invalid log level"))
+                    .unwrap_or(bevy::log::Level::INFO),
+                ..default()
+            })
+            .disable::<AudioPlugin>(),
+        PhysicsPlugins::default(),
+    ));
+    if cfg!(debug_assertions) {
+        app.add_plugins(PhysicsDebugPlugin::default());
+    }
+
+    app.insert_resource(Gravity(Vec2::ZERO))
         .insert_resource(status::Status::new())
         .add_systems(Startup, (setup_camera, setup_debug, spawn_snake_head))
         .add_systems(
@@ -46,8 +51,9 @@ fn main() {
                 ui::update_status,
             ),
         )
-        .add_systems(Update, spawn_food.run_if(on_timer(Duration::from_secs(1))))
-        .run();
+        .add_systems(Update, spawn_food.run_if(on_timer(Duration::from_secs(1))));
+
+    app.run();
 }
 
 #[derive(Component)]

@@ -50,8 +50,8 @@ fn main() {
                 status::update_game_time,
                 ui::update_status,
             ),
-        )
-        .add_systems(Update, spawn_food.run_if(on_timer(Duration::from_secs(1))));
+        );
+    // .add_systems(Update, spawn_food.run_if(on_timer(Duration::from_secs(1))));
 
     app.run();
 }

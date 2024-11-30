@@ -2,7 +2,7 @@ use avian2d::prelude::*;
 use bevy::prelude::*;
 
 pub fn spawn_snake_head(mut cmds: Commands) {
-    const LENGTH: f32 = 10.0;
+    const LENGTH: f32 = 5.0;
 
     cmds.spawn((
         SpriteBundle {

@@ -9,6 +9,7 @@ pub fn spawn_food(mut cmds: Commands, position: Vec2) {
         SpriteBundle {
             sprite: Sprite {
                 color: FOOD_COLOR,
+                custom_size: Some(Vec2::splat(LENGTH)),
                 ..default()
             },
             transform: Transform {

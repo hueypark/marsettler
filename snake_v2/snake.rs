@@ -8,6 +8,7 @@ pub fn spawn_snake_head(mut cmds: Commands) {
         SpriteBundle {
             sprite: Sprite {
                 color: SNAKE_HEAD_COLOR,
+                custom_size: Some(Vec2::splat(LENGTH)),
                 ..default()
             },
             transform: Transform {

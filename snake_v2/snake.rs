@@ -18,6 +18,8 @@ pub fn spawn_snake_head(mut cmds: Commands) {
             ..default()
         },
         RigidBody::Dynamic,
+        LinearDamping(1.6),
+        AngularDamping(1.0),
         Collider::rectangle(LENGTH, LENGTH),
         SnakeHead {
             desired_position: Vec3::ZERO,
@@ -25,41 +27,34 @@ pub fn spawn_snake_head(mut cmds: Commands) {
     ));
 }
 
-pub fn rotate_snakes(time: Res<Time>, mut query: Query<(&mut Transform, &SnakeHead)>) {
-    const ROT_SPEED: f32 = 90.0;
+pub fn rotate_snakes(mut query: Query<(&mut Transform, &mut ExternalTorque, &SnakeHead)>) {
+    const TORQUE: f32 = 300_000.0;
 
-    let ds = time.delta_seconds();
-    let rot_speed = ROT_SPEED.to_radians() * ds;
+    for (transform, mut et, snake_head) in query.iter_mut() {
+        let direction = (snake_head.desired_position - transform.translation).normalize();
+        let rot = transform.rotation * Vec3::Y;
 
-    for (mut transform, snake_head) in query.iter_mut() {
-        let desired_forward = snake_head.desired_position - transform.translation;
-        if desired_forward.length() < 0.1 {
-            continue;
-        }
+        let cross = direction.cross(rot).z;
 
-        let desired_rotation = Quat::from_rotation_arc(Vec3::Y, (desired_forward).normalize());
+        let mul = if 0.0 <= cross { -1.0 } else { 1.0 };
 
-        transform.rotation = transform.rotation.slerp(desired_rotation, rot_speed);
+        et.set_torque(TORQUE * mul);
     }
 }
 
-pub fn move_snakes(time: Res<Time>, mut query: Query<(&mut LinearVelocity, &Transform)>) {
-    const ACC: f32 = 200.0;
-    const MAX_SPEED: f32 = 150.0;
+pub fn move_snakes(mut query: Query<(&LinearVelocity, &mut ExternalForce, &Transform)>) {
+    const MAX_SPEED: f32 = 250.0;
+    const FORCE: f32 = 300_000.0;
 
-    let ds = time.delta_seconds();
-
-    for (mut vel, transform) in query.iter_mut() {
+    for (vel, mut force, transform) in query.iter_mut() {
         let forward = (transform.rotation * Vec3::Y).truncate();
-        let desired_velocity = forward * MAX_SPEED;
 
-        let diff = desired_velocity - vel.0;
-
-        if diff.length() < ACC {
-            vel.0 = desired_velocity;
-        } else {
-            vel.0 += diff.normalize() * ACC * ds;
+        let speed = vel.0.dot(forward);
+        if MAX_SPEED <= speed {
+            continue;
         }
+
+        force.set_force(forward * FORCE);
     }
 }
 

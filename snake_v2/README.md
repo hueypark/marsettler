@@ -1,4 +1,4 @@
-# Snake v2
+# Gameplay First: Snake Meets Dynamic Physics 
 
 # Core mechanics
 

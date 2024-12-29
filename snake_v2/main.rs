@@ -5,8 +5,13 @@ mod ui;
 
 use avian2d::prelude::*;
 use bevy::{
-    audio::AudioPlugin, log::LogPlugin, prelude::*, time::common_conditions::on_timer,
-    utils::Duration, window::PrimaryWindow, window::WindowPlugin,
+    audio::AudioPlugin,
+    log::LogPlugin,
+    prelude::*,
+    text::cosmic_text::ttf_parser::Style,
+    time::common_conditions::on_timer,
+    utils::Duration,
+    window::{PrimaryWindow, WindowPlugin},
 };
 use rand::random;
 use snake::{move_snakes, rotate_snakes, spawn_snake_head, SnakeHead};
@@ -60,24 +65,27 @@ fn main() {
 struct MainCamera;
 
 fn setup_camera(mut commands: Commands) {
-    commands.spawn((Camera2dBundle::default(), MainCamera));
+    commands.spawn((Camera2d::default(), MainCamera));
 }
 
 fn setup_debug(mut commands: Commands) {
-    commands.spawn((TextBundle::from_section(
-        String::from("v") + env!("CARGO_PKG_VERSION"),
-        TextStyle {
+    commands.spawn((
+        Text::new(String::from("v") + env!("CARGO_PKG_VERSION")),
+        TextFont {
             font_size: 40.0,
             ..default()
         },
-    )
-    .with_text_justify(JustifyText::Center)
-    .with_style(Style {
-        position_type: PositionType::Absolute,
-        top: Val::Px(5.0),
-        left: Val::Px(5.0),
-        ..default()
-    }),));
+        TextLayout {
+            justify: JustifyText::Center,
+            ..default()
+        },
+        Node {
+            position_type: PositionType::Absolute,
+            top: Val::Px(5.0),
+            left: Val::Px(5.0),
+            ..default()
+        },
+    ));
 }
 
 fn on_click(
@@ -102,7 +110,7 @@ fn on_click(
         return;
     };
 
-    let Some(ray) = camera.viewport_to_world(camera_transform, cursor_position) else {
+    let Ok(ray) = camera.viewport_to_world(camera_transform, cursor_position) else {
         return;
     };
 
